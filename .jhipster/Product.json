@@ -1,0 +1,66 @@
+{
+  "applications": ["web"],
+  "changelogDate": "20221101122017",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "product",
+  "fields": [
+    {
+      "fieldName": "productName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "productPrice",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "productPriceSale",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "productDescription",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "productShortDescription",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "productQuantity",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "productCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "productPointRating",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdTime",
+      "fieldType": "ZonedDateTime"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": true,
+  "name": "Product",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "categories",
+      "otherEntityRelationshipName": "product",
+      "relationshipName": "categories",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceClass"
+}
