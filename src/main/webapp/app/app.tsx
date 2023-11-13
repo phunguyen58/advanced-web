@@ -1,6 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css';
 import './app.scss';
-import 'app/config/dayjs.ts';
+import 'app/config/dayjs';
 
 import React, { useEffect } from 'react';
 import { Card } from 'reactstrap';
@@ -51,7 +51,7 @@ export const App = () => {
           />
         </ErrorBoundary>
         <div className="container-fluid view-container" id="app-view-container">
-          <Card className="jh-card">
+          <Card className="jh-card border-0">
             <ErrorBoundary>
               <AppRoutes />
             </ErrorBoundary>

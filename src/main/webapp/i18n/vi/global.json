@@ -18,7 +18,8 @@
         "sessions": "Phiên đăng nhập",
         "login": "Đăng nhập",
         "logout": "Đăng xuất",
-        "register": "Đăng ký"
+        "register": "Đăng ký",
+        "profile": "Hồ sơ"
       },
       "admin": {
         "main": "Quản trị",
