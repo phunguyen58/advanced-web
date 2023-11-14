@@ -1,0 +1,47 @@
+.aw-account-info {
+  .aw-account-text {
+    text-transform: capitalize;
+    color: #0d0c22;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 29px; /* 145% */
+  }
+  .aw-account-sub-text {
+    color: #6e6d7a;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18.2px; /* 130% */
+  }
+}
+
+.aw-list {
+  position: relative;
+  border-radius: 6px;
+}
+
+.aw-divider {
+  width: 100%;
+  height: 1px;
+  border-top: 1px #dbdbde solid;
+}
+
+.aw-menu-item-text {
+  color: #6e6d7a;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.aw-item {
+  padding: 10px 0;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.aw-bold {
+  font-weight: bold;
+}
