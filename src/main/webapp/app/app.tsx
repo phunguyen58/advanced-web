@@ -50,13 +50,13 @@ export const App = () => {
             isOpenAPIEnabled={isOpenAPIEnabled}
           />
         </ErrorBoundary>
-        <div className="container-fluid view-container" id="app-view-container">
-          <Card className="jh-card border-0">
+        <div id="app-view-container">
+          <div>
             <ErrorBoundary>
               <AppRoutes />
             </ErrorBoundary>
-          </Card>
-          <Footer />
+          </div>
+          {/* <Footer /> */}
         </div>
       </div>
     </BrowserRouter>

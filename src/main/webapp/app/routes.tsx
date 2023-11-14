@@ -15,6 +15,7 @@ import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
 import { sendActivity } from 'app/config/websocket-middleware';
+import Landing from './modules/landing/landing';
 
 const loading = <div>loading ...</div>;
 
@@ -72,6 +73,7 @@ const AppRoutes = () => {
           }
         />
         <Route path="*" element={<PageNotFound />} />
+        <Route path="/landing" element={<Landing />} />
       </ErrorBoundaryRoutes>
     </div>
   );
