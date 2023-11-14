@@ -1,13 +1,14 @@
 {
   "settings": {
-    "title": "Cài đặt người dùng của [<strong>{{username}}</strong>]",
+    "title": "Hồ sơ của {{username}} ",
     "form": {
       "firstname": "Tên",
       "firstname.placeholder": "Nhập tên của bạn",
       "lastname": "Họ",
       "lastname.placeholder": "Nhập họ của bạn",
       "language": "Ngôn ngữ",
-      "button": "Lưu"
+      "button": "Lưu",
+      "saveChanges": "Lưu thay đổi"
     },
     "messages": {
       "error": {
