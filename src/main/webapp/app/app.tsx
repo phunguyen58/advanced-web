@@ -1,6 +1,5 @@
 import 'react-toastify/dist/ReactToastify.css';
 import './app.scss';
-import 'app/config/dayjs.ts';
 
 import React, { useEffect } from 'react';
 import { Card } from 'reactstrap';
@@ -50,13 +49,13 @@ export const App = () => {
             isOpenAPIEnabled={isOpenAPIEnabled}
           />
         </ErrorBoundary>
-        <div className="container-fluid view-container" id="app-view-container">
-          <Card className="jh-card">
+        <div id="app-view-container">
+          <div>
             <ErrorBoundary>
               <AppRoutes />
             </ErrorBoundary>
-          </Card>
-          <Footer />
+          </div>
+          {/* <Footer /> */}
         </div>
       </div>
     </BrowserRouter>
