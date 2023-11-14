@@ -4,6 +4,8 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Alert, Row, Col, Fo
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
+import './login.scss';
+
 export interface ILoginModalProps {
   showModal: boolean;
   loginError: boolean;
@@ -30,7 +32,7 @@ const LoginModal = (props: ILoginModalProps) => {
 
   return (
     <Modal isOpen={props.showModal} toggle={handleClose} backdrop="static" id="login-page" autoFocus={false}>
-      <Form onSubmit={handleLoginSubmit}>
+      <Form onSubmit={handleLoginSubmit} className="aw-form-container">
         <ModalHeader id="login-title" data-cy="loginTitle" toggle={handleClose}>
           <Translate contentKey="login.title">Sign in</Translate>
         </ModalHeader>
@@ -57,6 +59,7 @@ const LoginModal = (props: ILoginModalProps) => {
                 register={register}
                 error={errors.username}
                 isTouched={touchedFields.username}
+                inputClass="aw-input-field"
               />
               <ValidatedField
                 name="password"
@@ -81,12 +84,12 @@ const LoginModal = (props: ILoginModalProps) => {
             </Col>
           </Row>
           <div className="mt-1">&nbsp;</div>
-          <Alert color="warning">
+          <Alert className="aw-alert-container">
             <Link to="/account/reset/request" data-cy="forgetYourPasswordSelector">
               <Translate contentKey="login.password.forgot">Did you forget your password?</Translate>
             </Link>
           </Alert>
-          <Alert color="warning">
+          <Alert className="aw-alert-container">
             <span>
               <Translate contentKey="global.messages.info.register.noaccount">You don&apos;t have an account yet?</Translate>
             </span>{' '}
@@ -96,10 +99,10 @@ const LoginModal = (props: ILoginModalProps) => {
           </Alert>
         </ModalBody>
         <ModalFooter>
-          <Button color="secondary" onClick={handleClose} tabIndex={1}>
+          <Button className="aw-cancel-button" onClick={handleClose} tabIndex={1}>
             <Translate contentKey="entity.action.cancel">Cancel</Translate>
           </Button>{' '}
-          <Button color="primary" type="submit" data-cy="submit">
+          <Button className="aw-submit-button" type="submit" data-cy="submit">
             <Translate contentKey="login.form.button">Sign in</Translate>
           </Button>
         </ModalFooter>

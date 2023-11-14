@@ -1,0 +1,43 @@
+.aw-form-container {
+  border-radius: 20px;
+  background: #f7f5fa;
+  box-shadow: 0px 50px 80px 0px rgba(0, 0, 0, 0.05);
+
+  .aw-input-field {
+    border-radius: 10px;
+    border: 1px solid #dedde4;
+    background: #fff;
+  }
+  .aw-submit-button {
+    background-color: #9c4df4;
+    color: white;
+    border-radius: 10px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    &:hover {
+      filter: brightness(90%);
+      background-color: #9c4df4 !important;
+    }
+  }
+
+  .aw-cancel-button {
+    background-color: transparent !important;
+    color: #9c4df4 !important;
+    border-radius: 10px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    border: solid 1px #9c4df4 !important;
+    &:hover {
+      filter: brightness(90%);
+    }
+  }
+
+  .aw-alert-container {
+    background-color: white;
+    border: none;
+  }
+}

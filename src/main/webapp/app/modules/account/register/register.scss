@@ -1,0 +1,22 @@
+.aw-submit-button {
+  background-color: #9c4df4;
+  color: white;
+  border-radius: 10px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  &:hover {
+    filter: brightness(90%);
+    background-color: #9c4df4 !important;
+  }
+  float: right;
+}
+
+.aw-label-input {
+  color: #0d0c22;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 22px; /* 137.5% */
+}
