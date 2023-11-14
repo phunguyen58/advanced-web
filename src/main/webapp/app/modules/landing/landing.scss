@@ -5,9 +5,9 @@ Main page styles
 
 .landing {
   height: 100vh;
-  width: 100vw;
   background: url('../../../content/images/Background-2.png');
   background-size: 100% 100%;
+  overflow: hidden;
 
   display: flex;
   flex-direction: column;
