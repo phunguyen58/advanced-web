@@ -15,7 +15,7 @@ export const ProfilePage = () => {
   const [selectedItem, setSelectedItem] = useState(0);
 
   return (
-    <div className="container-lg">
+    <div className="container-lg mt-4">
       <div className="aw-account-info d-flex flex-row gap-1 mb-3 ps-3">
         <img src="../../../../content/images/default_profile.svg" alt="" />
         <div className="d-flex flex-column gap-1 ms-2">

@@ -17,7 +17,9 @@ const accountMenuItemsAuthenticated = () => (
       <Translate contentKey="global.menu.account.password">Password</Translate>
     </MenuItem> */}
     <MenuItem icon="sign-out-alt" to="/logout" data-cy="logout">
-      <Translate contentKey="global.menu.account.logout">Sign out</Translate>
+      <span>
+        <Translate contentKey="global.menu.account.logout">Sign out</Translate>
+      </span>
     </MenuItem>
   </>
 );
