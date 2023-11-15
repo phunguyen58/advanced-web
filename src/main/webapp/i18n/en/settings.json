@@ -1,6 +1,9 @@
 {
   "settings": {
     "title": "{{username}} Profile",
+    "description": "Manage your profile settings",
+    "general": "General",
+    "security": "Security",
     "form": {
       "firstname": "First Name",
       "firstname.placeholder": "Your first name",
@@ -8,7 +11,7 @@
       "lastname.placeholder": "Your last name",
       "language": "Language",
       "button": "Save",
-      "saveChanges": "Save changes"
+      "saveChanges": "Save change"
     },
     "messages": {
       "error": {
