@@ -45,7 +45,7 @@ interface IAuthParams {
   rememberMe?: boolean;
 }
 
-interface IFacebookAuthParams {
+interface ISocialAuthParams {
   jwt: string;
   userId: string;
 }
@@ -58,9 +58,9 @@ export const authenticate = createAsyncThunk(
   }
 );
 
-export const authenticateFacebook = createAsyncThunk(
+export const authenticateSocialLogin = createAsyncThunk(
   'authentication/login',
-  async (auth: IFacebookAuthParams) => axios.post<any>('api/authenticate/facebook', auth),
+  async (auth: ISocialAuthParams) => axios.post<any>('api/authenticate/social-login', auth),
   {
     serializeError: serializeAxiosError,
   }
@@ -84,13 +84,13 @@ export const login: (username: string, password: string, rememberMe?: boolean) =
   };
 
 export const socialLogin: (jwt: string, userId: string) => AppThunk = (jwt, userId) => async dispatch => {
-  const result = await dispatch(authenticateFacebook({ jwt, userId }));
+  const result = await dispatch(authenticateSocialLogin({ jwt, userId }));
   const response = result.payload as AxiosResponse;
   const bearerToken = response?.headers?.authorization;
   if (bearerToken && bearerToken.slice(0, 7) === 'Bearer ') {
-    const jwt = bearerToken.slice(7, bearerToken.length);
-    Storage.local.set(AUTH_TOKEN_KEY, jwt);
-    Storage.session.set(AUTH_TOKEN_KEY, jwt);
+    const token = bearerToken.slice(7, bearerToken.length);
+    Storage.local.set(AUTH_TOKEN_KEY, token);
+    Storage.session.set(AUTH_TOKEN_KEY, token);
   }
   dispatch(getSession());
 };

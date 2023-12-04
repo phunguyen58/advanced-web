@@ -1,7 +1,6 @@
 package com.ptudw.web.web.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ptudw.web.domain.User;
 import com.ptudw.web.repository.UserRepository;
 import com.ptudw.web.security.jwt.JWTFilter;
 import com.ptudw.web.security.jwt.TokenProvider;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api")
-public class UserFacebookController {
+public class UserSocialLoginController {
 
     private final TokenProvider tokenProvider;
 
@@ -34,7 +33,7 @@ public class UserFacebookController {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public UserFacebookController(
+    public UserSocialLoginController(
         TokenProvider tokenProvider,
         AuthenticationManagerBuilder authenticationManagerBuilder,
         UserService userService,
@@ -46,10 +45,10 @@ public class UserFacebookController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/authenticate/facebook")
-    public ResponseEntity<JWTToken> authorizeWithFacebook(@Valid @RequestBody FacebookLoginVM facebookLoginVM) {
+    @PostMapping("/authenticate/social-login")
+    public ResponseEntity<JWTToken> authorizeWithSocialLogin(@Valid @RequestBody SocialLoginVM socialLoginVM) {
         // Assuming FacebookLoginVM includes a field for the Facebook access token
-        String facebookAccessToken = facebookLoginVM.getJwt();
+        String accessToken = socialLoginVM.getJwt();
 
         // You need to validate the Facebook access token here before proceeding
 
@@ -58,15 +57,15 @@ public class UserFacebookController {
 
         // Now, proceed with authentication
         AdminUserDTO adminUserDTO = new AdminUserDTO();
-        adminUserDTO.setLogin(facebookLoginVM.getUserId());
+        adminUserDTO.setLogin(socialLoginVM.getUserId());
 
-        if (!this.userRepository.findOneByLogin(facebookLoginVM.getUserId().toLowerCase()).isPresent()) {
-            userService.registerFacebookUser(adminUserDTO, facebookLoginVM.getUserId());
+        if (!this.userRepository.findOneByLogin(socialLoginVM.getUserId().toLowerCase()).isPresent()) {
+            userService.registerFacebookUser(adminUserDTO, socialLoginVM.getUserId());
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-            facebookLoginVM.getUserId(),
-            facebookLoginVM.getUserId()
+            socialLoginVM.getUserId(),
+            socialLoginVM.getUserId()
         );
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -81,7 +80,7 @@ public class UserFacebookController {
     /**
      * Object to receive Facebook login details.
      */
-    static class FacebookLoginVM {
+    static class SocialLoginVM {
 
         private String jwt;
         private String userId;
