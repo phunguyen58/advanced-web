@@ -79,7 +79,7 @@ public class SecurityConfiguration {
             .antMatchers("/swagger-ui/**").permitAll()
             .antMatchers("/test/**").permitAll()
             .antMatchers("/h2-console/**").permitAll()
-            .antMatchers("/api/authenticate").permitAll()
+            .antMatchers("/api/authenticate/**").permitAll()
             .antMatchers("/api/register").permitAll()
             .antMatchers("/api/activate").permitAll()
             .antMatchers("/api/account/reset-password/init").permitAll()
