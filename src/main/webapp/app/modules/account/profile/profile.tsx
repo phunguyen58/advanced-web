@@ -1,36 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Col, Row } from 'reactstrap';
-import { Translate, translate, ValidatedField, ValidatedForm, isEmail } from 'react-jhipster';
-import { toast } from 'react-toastify';
+import React, { useState } from 'react';
+import { Translate } from 'react-jhipster';
 import './profile.scss';
 
-import { locales, languages } from 'app/config/translation';
-import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getSession } from 'app/shared/reducers/authentication';
-import SettingsPage from '../settings/settings';
+import { useAppSelector } from 'app/config/store';
 import PasswordPage from '../password/password';
+import SettingsPage from '../settings/settings';
 
 export const ProfilePage = () => {
   const account = useAppSelector(state => state.authentication.account);
   const [selectedItem, setSelectedItem] = useState(0);
 
   return (
-    <div className="container-lg">
+    <div className="container-lg mt-4">
       <div className="aw-account-info d-flex flex-row gap-1 mb-3 ps-3">
         <img src="../../../../content/images/default_profile.svg" alt="" />
         <div className="d-flex flex-column gap-1 ms-2">
           <span className="aw-account-text">{account.firstName}</span>
-          <span className="aw-account-sub-text">Update your username and manage your account</span>
+          <span className="aw-account-sub-text">
+            <Translate contentKey="settings.description">Update your username and manage your account</Translate>
+          </span>
         </div>
       </div>
       <div className="d-flex container-lg flex-row">
         <div className="d-flex col-4">
           <div className="aw-list container-fluid d-flex flex-column">
             <div className={'aw-menu-item-text aw-item ' + (selectedItem === 0 ? 'aw-bold' : '')} onClick={() => setSelectedItem(0)}>
-              Gereral
+              <Translate contentKey="settings.general">Gereral</Translate>
             </div>
             <div className={'aw-menu-item-text aw-item ' + (selectedItem === 1 ? 'aw-bold' : '')} onClick={() => setSelectedItem(1)}>
-              Password
+              <Translate contentKey="settings.security">Password</Translate>
             </div>
             <div className="aw-divider aw-item" />
           </div>

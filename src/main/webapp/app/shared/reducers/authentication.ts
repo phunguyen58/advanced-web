@@ -45,9 +45,22 @@ interface IAuthParams {
   rememberMe?: boolean;
 }
 
+interface ISocialAuthParams {
+  jwt: string;
+  userId: string;
+}
+
 export const authenticate = createAsyncThunk(
   'authentication/login',
   async (auth: IAuthParams) => axios.post<any>('api/authenticate', auth),
+  {
+    serializeError: serializeAxiosError,
+  }
+);
+
+export const authenticateSocialLogin = createAsyncThunk(
+  'authentication/login',
+  async (auth: ISocialAuthParams) => axios.post<any>('api/authenticate/social-login', auth),
   {
     serializeError: serializeAxiosError,
   }
@@ -69,6 +82,18 @@ export const login: (username: string, password: string, rememberMe?: boolean) =
     }
     dispatch(getSession());
   };
+
+export const socialLogin: (jwt: string, userId: string) => AppThunk = (jwt, userId) => async dispatch => {
+  const result = await dispatch(authenticateSocialLogin({ jwt, userId }));
+  const response = result.payload as AxiosResponse;
+  const bearerToken = response?.headers?.authorization;
+  if (bearerToken && bearerToken.slice(0, 7) === 'Bearer ') {
+    const token = bearerToken.slice(7, bearerToken.length);
+    Storage.local.set(AUTH_TOKEN_KEY, token);
+    Storage.session.set(AUTH_TOKEN_KEY, token);
+  }
+  dispatch(getSession());
+};
 
 export const clearAuthToken = () => {
   if (Storage.local.get(AUTH_TOKEN_KEY)) {

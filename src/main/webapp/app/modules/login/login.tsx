@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { login } from 'app/shared/reducers/authentication';
+import { login, socialLogin } from 'app/shared/reducers/authentication';
 import LoginModal from './login-modal';
 
 export const Login = () => {
@@ -20,6 +20,8 @@ export const Login = () => {
 
   const handleLogin = (username, password, rememberMe = false) => dispatch(login(username, password, rememberMe));
 
+  const handleSocialLogin = (jwt, userId) => dispatch(socialLogin(jwt, userId));
+
   const handleClose = () => {
     setShowModal(false);
     navigate('/');
@@ -29,7 +31,15 @@ export const Login = () => {
   if (isAuthenticated) {
     return <Navigate to={from} replace />;
   }
-  return <LoginModal showModal={showModal} handleLogin={handleLogin} handleClose={handleClose} loginError={loginError} />;
+  return (
+    <LoginModal
+      showModal={showModal}
+      handleLogin={handleLogin}
+      handleClose={handleClose}
+      loginError={loginError}
+      handleSocialLogin={handleSocialLogin}
+    />
+  );
 };
 
 export default Login;

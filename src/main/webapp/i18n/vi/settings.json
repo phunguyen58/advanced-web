@@ -1,6 +1,9 @@
 {
   "settings": {
     "title": "Hồ sơ của {{username}} ",
+    "description": "Quản lý thông tin cá nhân",
+    "general": "Thông tin chung",
+    "security": "Bảo mật",
     "form": {
       "firstname": "Tên",
       "firstname.placeholder": "Nhập tên của bạn",

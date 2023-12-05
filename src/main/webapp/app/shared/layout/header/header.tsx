@@ -56,15 +56,17 @@ const Header = (props: IHeaderProps) => {
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ms-auto" navbar>
             <Home />
-            <NavItem>
-              <NavLink tag={Link} to="/landing" className="d-flex align-items-center">
-                <FontAwesomeIcon icon="heart" /> <span>Landing Page</span>
-              </NavLink>
-            </NavItem>
-            {props.isAuthenticated && <EntitiesMenu />}
+            {!props.isAuthenticated && (
+              <NavItem>
+                <NavLink tag={Link} to="/landing" className="d-flex align-items-center">
+                  <FontAwesomeIcon icon="heart" /> <span>Landing Page</span>
+                </NavLink>
+              </NavItem>
+            )}
+            {/* {props.isAuthenticated && <EntitiesMenu />}
             {props.isAuthenticated && props.isAdmin && (
               <AdminMenu showOpenAPI={props.isOpenAPIEnabled} showDatabase={!props.isInProduction} />
-            )}
+            )} */}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />
             <AccountMenu isAuthenticated={props.isAuthenticated} />
           </Nav>

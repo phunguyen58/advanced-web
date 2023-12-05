@@ -39,5 +39,47 @@
   .aw-alert-container {
     background-color: white;
     border: none;
+    a {
+      text-decoration: none;
+      color: #9c4df4;
+      font-size: 14px;
+    }
+  }
+
+  .aw-social-login-button-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 31.495px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    box-shadow: 0px 38.487px 71.476px 0px rgba(0, 0, 0, 0.07);
+    margin-bottom: 16px;
+    border: none;
+    width: 100%;
+    .aw-social-login-icon {
+      margin-left: 16px;
+      width: 50.392px;
+      height: 50.392px;
+      flex-shrink: 0;
+    }
+    .aw-social-login-button-label {
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+    }
+  }
+
+  .aw-facebook-background-color {
+    background-color: #1877f2;
+  }
+  .aw-facebook-label-color {
+    color: #fff;
+  }
+  .aw-google-background-color {
+    background-color: #fff;
+  }
+  .aw-google-label-color {
+    color: rgba(0, 0, 0, 0.54);
   }
 }
