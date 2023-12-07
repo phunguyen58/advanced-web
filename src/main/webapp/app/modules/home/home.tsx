@@ -14,7 +14,7 @@ export const Home = () => {
     <div className="home">
       <div className="title">
         <div className="logo-container">
-          <img className="logo" src="../../../content/images/open-book 1.svg" />
+          <img className="logo" src="/content/images/open-book 1.svg" />
         </div>
         <div className="title-text-container">
           <span className="title-text">Eduvi</span>
