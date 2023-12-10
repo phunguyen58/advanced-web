@@ -39,29 +39,80 @@ application {
   entities *
 }
 
-entity Categories {
-	categoryName String required
-    categoryDescription String
-    categoryUrl String
-    createdBy String
-    createdTime ZonedDateTime
+entity Course {
+    code String required
+    name String required
+    invitationCode String required
+    expirationDate ZonedDateTime
+    gradeStructureId Long required
+    isDeleted Boolean
+    createdBy String required
+    createdDate ZonedDateTime required
+    lastModifiedBy String required
+    lastModifiedDate ZonedDateTime required
 }
 
-entity Product { 
-	productName String required
-    productPrice Double required
-    productPriceSale Double
-    productDescription String required
-    productShortDescription String
-    productQuantity Integer 
-    productCode String
-    productPointRating Double
-    createdBy String
-    createdTime ZonedDateTime
+entity GradeStructure {
+    courseId Long required
+    isDeleted Boolean
+    createdBy String required
+    createdDate ZonedDateTime required
+    lastModifiedBy String required
+    lastModifiedDate ZonedDateTime required
+}
+
+entity GradeComposition {
+    name String required
+    minGradeScale Long required
+    maxGradeScale Long required
+    position Long required
+    isDeleted Boolean
+    createdBy String required
+    createdDate ZonedDateTime required
+    lastModifiedBy String required
+    lastModifiedDate ZonedDateTime required
+}
+
+entity Assignment {
+    name String required
+    weight Long
+    isDeleted Boolean
+    createdBy String required
+    createdDate ZonedDateTime required
+    lastModifiedBy String required
+    lastModifiedDate ZonedDateTime required
+}
+
+entity AssignmentGrade {
+    studentId String required,
+    grade Long required
+    isDeleted Boolean
+    createdBy String required
+    createdDate ZonedDateTime required
+    lastModifiedBy String required
+    lastModifiedDate ZonedDateTime required
+}
+
+entity CourseGrade {
+    gradeCompositionId Long
+    studentId String required,
+    isMarked Boolean
+    isDeleted Boolean
+    createdBy String required
+    createdDate ZonedDateTime required
+    lastModifiedBy String required
+    lastModifiedDate ZonedDateTime required
+}
+
+entity UserCourse {
+    courseId Long required
+    userId String required
 }
 
 relationship OneToMany {
-	Categories{product} to Product{categories}
+    Assignment{course} to Course{assignments}
+    GradeComposition{gradeStructure} to GradeStructure{gradeCompositions}
+    AssignmentGrade{assignment} to Assignment{assignmentGrades}
 }
 
 filter *
