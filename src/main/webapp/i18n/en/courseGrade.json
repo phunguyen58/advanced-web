@@ -1,0 +1,31 @@
+{
+  "webApp": {
+    "courseGrade": {
+      "home": {
+        "title": "Course Grades",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Course Grade",
+        "createOrEditLabel": "Create or edit a Course Grade",
+        "notFound": "No Course Grades found"
+      },
+      "created": "A new Course Grade is created with identifier {{ param }}",
+      "updated": "A Course Grade is updated with identifier {{ param }}",
+      "deleted": "A Course Grade is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Course Grade {{ id }}?"
+      },
+      "detail": {
+        "title": "Course Grade"
+      },
+      "id": "ID",
+      "gradeCompositionId": "Grade Composition Id",
+      "studentId": "Student Id",
+      "isMarked": "Is Marked",
+      "isDeleted": "Is Deleted",
+      "createdBy": "Created By",
+      "createdDate": "Created Date",
+      "lastModifiedBy": "Last Modified By",
+      "lastModifiedDate": "Last Modified Date"
+    }
+  }
+}

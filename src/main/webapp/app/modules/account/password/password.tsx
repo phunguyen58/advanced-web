@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Translate, translate, ValidatedField, ValidatedForm } from 'react-jhipster';
 import { Row, Col, Button } from 'reactstrap';
 import { toast } from 'react-toastify';
-import './password.scss';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getSession } from 'app/shared/reducers/authentication';
@@ -41,19 +40,18 @@ export const PasswordPage = () => {
   }, [successMessage, errorMessage]);
 
   return (
-    <div className="d-flex container-fluid">
-      <Row className="container-fluid">
+    <div>
+      <Row className="justify-content-center">
         <Col md="8">
-          {/* <h2 id="password-title">
+          <h2 id="password-title">
             <Translate contentKey="password.title" interpolate={{ username: account.login }}>
               Password for {account.login}
             </Translate>
-          </h2> */}
-          <ValidatedForm className="d-flex flex-column" id="password-form" onSubmit={handleValidSubmit}>
+          </h2>
+          <ValidatedForm id="password-form" onSubmit={handleValidSubmit}>
             <ValidatedField
               name="currentPassword"
               label={translate('global.form.currentpassword.label')}
-              labelClass="aw-label-input"
               placeholder={translate('global.form.currentpassword.placeholder')}
               type="password"
               validate={{
@@ -64,7 +62,6 @@ export const PasswordPage = () => {
             <ValidatedField
               name="newPassword"
               label={translate('global.form.newpassword.label')}
-              labelClass="aw-label-input"
               placeholder={translate('global.form.newpassword.placeholder')}
               type="password"
               validate={{
@@ -79,7 +76,6 @@ export const PasswordPage = () => {
             <ValidatedField
               name="confirmPassword"
               label={translate('global.form.confirmpassword.label')}
-              labelClass="aw-label-input"
               placeholder={translate('global.form.confirmpassword.placeholder')}
               type="password"
               validate={{
@@ -90,11 +86,9 @@ export const PasswordPage = () => {
               }}
               data-cy="confirmPassword"
             />
-            <div className="aw-button-container">
-              <Button className="aw-save-button" type="submit" data-cy="submit">
-                <Translate contentKey="password.form.button">Save</Translate>
-              </Button>
-            </div>
+            <Button color="success" type="submit" data-cy="submit">
+              <Translate contentKey="password.form.button">Save</Translate>
+            </Button>
           </ValidatedForm>
         </Col>
       </Row>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Translate, translate, ValidatedField, ValidatedForm, isEmail } from 'react-jhipster';
 import { Row, Col, Alert, Button } from 'reactstrap';
 import { toast } from 'react-toastify';
-import './register.scss';
 
 import PasswordStrengthBar from 'app/shared/layout/password/password-strength-bar';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
@@ -36,7 +35,7 @@ export const RegisterPage = () => {
   }, [successMessage]);
 
   return (
-    <div className="container-lg mt-4">
+    <div>
       <Row className="justify-content-center">
         <Col md="8">
           <h1 id="register-title" data-cy="registerTitle">
@@ -50,7 +49,6 @@ export const RegisterPage = () => {
             <ValidatedField
               name="username"
               label={translate('global.form.username.label')}
-              labelClass="aw-label-input"
               placeholder={translate('global.form.username.placeholder')}
               validate={{
                 required: { value: true, message: translate('register.messages.validate.login.required') },
@@ -66,7 +64,6 @@ export const RegisterPage = () => {
             <ValidatedField
               name="email"
               label={translate('global.form.email.label')}
-              labelClass="aw-label-input"
               placeholder={translate('global.form.email.placeholder')}
               type="email"
               validate={{
@@ -80,7 +77,6 @@ export const RegisterPage = () => {
             <ValidatedField
               name="firstPassword"
               label={translate('global.form.newpassword.label')}
-              labelClass="aw-label-input"
               placeholder={translate('global.form.newpassword.placeholder')}
               type="password"
               onChange={updatePassword}
@@ -95,7 +91,6 @@ export const RegisterPage = () => {
             <ValidatedField
               name="secondPassword"
               label={translate('global.form.confirmpassword.label')}
-              labelClass="aw-label-input"
               placeholder={translate('global.form.confirmpassword.placeholder')}
               type="password"
               validate={{
@@ -106,12 +101,12 @@ export const RegisterPage = () => {
               }}
               data-cy="secondPassword"
             />
-            <Button id="register-submit" className="aw-submit-button" type="submit" data-cy="submit">
+            <Button id="register-submit" color="primary" type="submit" data-cy="submit">
               <Translate contentKey="register.form.button">Register</Translate>
             </Button>
           </ValidatedForm>
           <p>&nbsp;</p>
-          {/* <Alert color="warning">
+          <Alert color="warning">
             <span>
               <Translate contentKey="global.messages.info.authenticated.prefix">If you want to </Translate>
             </span>
@@ -125,7 +120,7 @@ export const RegisterPage = () => {
                 <br />- User (login=&quot;user&quot; and password=&quot;user&quot;).
               </Translate>
             </span>
-          </Alert> */}
+          </Alert>
         </Col>
       </Row>
     </div>

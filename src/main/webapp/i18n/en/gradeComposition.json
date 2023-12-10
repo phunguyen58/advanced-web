@@ -1,0 +1,33 @@
+{
+  "webApp": {
+    "gradeComposition": {
+      "home": {
+        "title": "Grade Compositions",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Grade Composition",
+        "createOrEditLabel": "Create or edit a Grade Composition",
+        "notFound": "No Grade Compositions found"
+      },
+      "created": "A new Grade Composition is created with identifier {{ param }}",
+      "updated": "A Grade Composition is updated with identifier {{ param }}",
+      "deleted": "A Grade Composition is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Grade Composition {{ id }}?"
+      },
+      "detail": {
+        "title": "Grade Composition"
+      },
+      "id": "ID",
+      "name": "Name",
+      "minGradeScale": "Min Grade Scale",
+      "maxGradeScale": "Max Grade Scale",
+      "position": "Position",
+      "isDeleted": "Is Deleted",
+      "createdBy": "Created By",
+      "createdDate": "Created Date",
+      "lastModifiedBy": "Last Modified By",
+      "lastModifiedDate": "Last Modified Date",
+      "gradeStructure": "Grade Structure"
+    }
+  }
+}

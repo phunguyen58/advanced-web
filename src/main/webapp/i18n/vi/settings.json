@@ -1,17 +1,13 @@
 {
   "settings": {
-    "title": "Hồ sơ của {{username}} ",
-    "description": "Quản lý thông tin cá nhân",
-    "general": "Thông tin chung",
-    "security": "Bảo mật",
+    "title": "Cài đặt người dùng của [<strong>{{username}}</strong>]",
     "form": {
       "firstname": "Tên",
       "firstname.placeholder": "Nhập tên của bạn",
       "lastname": "Họ",
       "lastname.placeholder": "Nhập họ của bạn",
       "language": "Ngôn ngữ",
-      "button": "Lưu",
-      "saveChanges": "Lưu thay đổi"
+      "button": "Lưu"
     },
     "messages": {
       "error": {

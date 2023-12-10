@@ -9,6 +9,13 @@
         "main": "Thực thể",
         "categories": "Categories",
         "product": "Product",
+        "course": "Course",
+        "gradeStructure": "Grade Structure",
+        "gradeComposition": "Grade Composition",
+        "assignment": "Assignment",
+        "assignmentGrade": "Assignment Grade",
+        "courseGrade": "Course Grade",
+        "userCourse": "User Course",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {
@@ -18,8 +25,7 @@
         "sessions": "Phiên đăng nhập",
         "login": "Đăng nhập",
         "logout": "Đăng xuất",
-        "register": "Đăng ký",
-        "profile": "Hồ sơ"
+        "register": "Đăng ký"
       },
       "admin": {
         "main": "Quản trị",
@@ -38,8 +44,6 @@
     "form": {
       "username.label": "Tên tài khoản",
       "username.placeholder": "Nhập tên tài khoản của bạn",
-      "currentpassword.label": "Mật khẩu hiện tại",
-      "currentpassword.placeholder": "Nhập mật khẩu hiện tại",
       "newpassword.label": "Mật khẩu mới",
       "newpassword.placeholder": "Nhập mật khẩu mới",
       "confirmpassword.label": "Xác nhận mật khẩu mới",
