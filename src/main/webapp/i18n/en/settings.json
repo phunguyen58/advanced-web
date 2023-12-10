@@ -1,13 +1,17 @@
 {
   "settings": {
-    "title": "User settings for [<strong>{{username}}</strong>]",
+    "title": "{{username}} Profile",
+    "description": "Manage your profile settings",
+    "general": "General",
+    "security": "Security",
     "form": {
       "firstname": "First Name",
       "firstname.placeholder": "Your first name",
       "lastname": "Last Name",
       "lastname.placeholder": "Your last name",
       "language": "Language",
-      "button": "Save"
+      "button": "Save",
+      "saveChanges": "Save change"
     },
     "messages": {
       "error": {
