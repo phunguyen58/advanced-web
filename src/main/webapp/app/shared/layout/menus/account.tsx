@@ -5,14 +5,21 @@ import { NavDropdown } from './menu-components';
 
 const accountMenuItemsAuthenticated = () => (
   <>
-    <MenuItem icon="wrench" to="/account/settings" data-cy="settings">
+    <MenuItem icon="users-cog" to="/account/profile" data-cy="profile">
+      <span>
+        <Translate contentKey="global.menu.account.profile">Profile</Translate>
+      </span>
+    </MenuItem>
+    {/* <MenuItem icon="wrench" to="/account/settings" data-cy="settings">
       <Translate contentKey="global.menu.account.settings">Settings</Translate>
     </MenuItem>
     <MenuItem icon="lock" to="/account/password" data-cy="passwordItem">
       <Translate contentKey="global.menu.account.password">Password</Translate>
-    </MenuItem>
+    </MenuItem> */}
     <MenuItem icon="sign-out-alt" to="/logout" data-cy="logout">
-      <Translate contentKey="global.menu.account.logout">Sign out</Translate>
+      <span>
+        <Translate contentKey="global.menu.account.logout">Sign out</Translate>
+      </span>
     </MenuItem>
   </>
 );
