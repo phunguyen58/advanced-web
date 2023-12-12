@@ -15,7 +15,7 @@ jobs:
 
       - name: SSH to Host with Password
         run: |
-          sshpass -p ${{secrets.YOURPASSWORD}} ssh ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} 
+          sshpass -p ${{secrets.YOURPASSWORD}} ssh -t ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} 
       - name: Checkout code
         uses: actions/checkout@v2
 
