@@ -22,6 +22,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: connect and pull
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORKING_DIR }}"
       # - name: Set up Java
       #   uses: actions/setup-java@v2
       #   with:
@@ -48,6 +50,6 @@ jobs:
       - name: Bring up Docker Compose
         run: docker-compose up -d
         
-      - name: cleanup
-        run: rm -rf ~/.ssh
+      # - name: cleanup
+      #   run: rm -rf ~/.ssh
         
