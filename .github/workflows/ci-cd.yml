@@ -47,10 +47,18 @@ jobs:
       - name: Remove existing Docker image
         run: docker rmi nvphu0508/web || true
 
-      - name: Bring up Docker Compose
-        run: |
-          cd ${{ secrets.WORKING_DIR }}
-          docker-compose up -d
+      - uses: alex-ac/github-action-ssh-docker-compose@master
+        name: Docker-Compose Remote Deployment
+        with:
+          ssh_host: ${{ secrets.SSH_HOST }}
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh_user: ${{ secrets.SSH_USER }}
+          docker_compose_prefix: docker-compose
+
+      # - name: Bring up Docker Compose
+      #   run: |
+      #     cd ${{ secrets.WORKING_DIR }}
+      #     docker-compose up -d
         
       # - name: cleanup
       #   run: rm -rf ~/.ssh
