@@ -57,8 +57,15 @@ jobs:
 
       - name: Bring up Docker Compose
         run: |
-          cd ${{ secrets.WORKING_DIR }}
-          docker-compose up -d
+          echo "WORKING_DIR: ${{ secrets.WORKING_DIR }}"
+          if [ -d "${{ secrets.WORKING_DIR }}" ]; then
+            cd ${{ secrets.WORKING_DIR }}
+            echo "Changed directory to ${{ secrets.WORKING_DIR }}"
+            docker-compose up -d
+          else
+            echo "Directory not found: ${{ secrets.WORKING_DIR }}"
+            exit 1
+          fi
         
       - name: cleanup
         run: rm -rf ~/.ssh
