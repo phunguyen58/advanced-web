@@ -1,0 +1,31 @@
+{
+  "webApp": {
+    "assignmentGrade": {
+      "home": {
+        "title": "Assignment Grades",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Assignment Grade",
+        "createOrEditLabel": "Create or edit a Assignment Grade",
+        "notFound": "No Assignment Grades found"
+      },
+      "created": "A new Assignment Grade is created with identifier {{ param }}",
+      "updated": "A Assignment Grade is updated with identifier {{ param }}",
+      "deleted": "A Assignment Grade is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Assignment Grade {{ id }}?"
+      },
+      "detail": {
+        "title": "Assignment Grade"
+      },
+      "id": "ID",
+      "studentId": "Student Id",
+      "grade": "Grade",
+      "isDeleted": "Is Deleted",
+      "createdBy": "Created By",
+      "createdDate": "Created Date",
+      "lastModifiedBy": "Last Modified By",
+      "lastModifiedDate": "Last Modified Date",
+      "assignment": "Assignment"
+    }
+  }
+}

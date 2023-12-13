@@ -9,6 +9,13 @@
         "main": "Entities",
         "categories": "Categories",
         "product": "Product",
+        "course": "Course",
+        "gradeStructure": "Grade Structure",
+        "gradeComposition": "Grade Composition",
+        "assignment": "Assignment",
+        "assignmentGrade": "Assignment Grade",
+        "courseGrade": "Course Grade",
+        "userCourse": "User Course",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

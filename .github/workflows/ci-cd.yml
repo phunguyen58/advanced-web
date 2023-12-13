@@ -1,0 +1,84 @@
+name: Advanced Web CI/CD
+
+on:
+  push:
+    branches:
+      - main  # Change this to your main branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors' 
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+    
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # - name: connect and pull
+      #   run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORKING_DIR }}"
+      # - name: Set up Java
+      #   uses: actions/setup-java@v2
+      #   with:
+      #     java-version: '11'  # Change this to your desired Java version
+
+      - name: Build and package with Maven
+        run: |
+          ./mvnw package -Pprod verify jib:dockerBuild -DskipTests
+
+      - name: Docker login
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Tag and push Docker image
+        run: |
+          docker tag web:latest nvphu0508/web:latest
+          docker push nvphu0508/web:latest
+
+      - name: Stop and remove existing Docker container
+        run: docker rm -f web-web-1 || true
+
+      - name: Remove existing Docker image
+        run: docker rmi nvphu0508/web || true
+
+      # - uses: alex-ac/github-action-ssh-docker-compose@master
+      #   name: Docker-Compose Remote Deployment
+      #   with:
+      #     ssh_host: ${{ secrets.SSH_HOST }}
+      #     ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     ssh_user: ${{ secrets.SSH_USER }}
+      #     docker_compose_prefix: docker-compose
+      - name: Deploy
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key-web
+          chmod 600 key-web
+          
+          # Using SSH to execute commands on the remote server
+          ssh -i key-web -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            # Commands to be executed on the remote server
+            echo "WORKING_DIR: ${{ secrets.WORKING_DIR }}"
+            
+            if [ -d "${{ secrets.WORKING_DIR }}" ]; then
+              cd ${{ secrets.WORKING_DIR }}
+              echo "Changed directory to ${{ secrets.WORKING_DIR }}"
+              echo "Stop and remove existing Docker container"
+              docker rm -f web-web-1 
+              echo "Remove existing Docker image"
+              docker rmi nvphu0508/web
+              docker-compose up -d
+            else
+              echo "Directory not found: ${{ secrets.WORKING_DIR }}"
+              exit 1
+            fi
+          EOF
+        
+      - name: cleanup
+        run: rm -rf ~/.ssh
+      #test
+        
