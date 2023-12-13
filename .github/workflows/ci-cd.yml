@@ -67,6 +67,10 @@ jobs:
             if [ -d "${{ secrets.WORKING_DIR }}" ]; then
               cd ${{ secrets.WORKING_DIR }}
               echo "Changed directory to ${{ secrets.WORKING_DIR }}"
+              echo "Stop and remove existing Docker container"
+              docker rm -f web-web-1 
+              echo "Remove existing Docker image"
+              docker rmi nvphu0508/web
               docker-compose up -d
             else
               echo "Directory not found: ${{ secrets.WORKING_DIR }}"
