@@ -17,7 +17,7 @@ export const Home = () => {
           <img className="logo" src="/content/images/open-book 1.svg" />
         </div>
         <div className="title-text-container">
-          <span className="title-text">Eduvi - Education Online</span>
+          <span className="title-text">Eduvi</span>
         </div>
       </div>
       <div className="introduction">
