@@ -54,19 +54,25 @@ jobs:
       #     ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
       #     ssh_user: ${{ secrets.SSH_USER }}
       #     docker_compose_prefix: docker-compose
-
-      - name: Bring up Docker Compose
+      - name: Deploy
         run: |
-          pwd
-          echo "WORKING_DIR: ${{ secrets.WORKING_DIR }}"
-          if [ -d "${{ secrets.WORKING_DIR }}" ]; then
-            cd ${{ secrets.WORKING_DIR }}
-            echo "Changed directory to ${{ secrets.WORKING_DIR }}"
-            docker-compose up -d
-          else
-            echo "Directory not found: ${{ secrets.WORKING_DIR }}"
-            exit 1
-          fi
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key-web
+          chmod 600 key-web
+          
+          # Using SSH to execute commands on the remote server
+          ssh -i key-web -o StrictHostKeyChecking=no {{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            # Commands to be executed on the remote server
+            echo "WORKING_DIR: ${{ secrets.WORKING_DIR }}"
+            
+            if [ -d "${{ secrets.WORKING_DIR }}" ]; then
+              cd ${{ secrets.WORKING_DIR }}
+              echo "Changed directory to ${{ secrets.WORKING_DIR }}"
+              docker-compose up -d
+            else
+              echo "Directory not found: ${{ secrets.WORKING_DIR }}"
+              exit 1
+            fi
+          EOF
         
       - name: cleanup
         run: rm -rf ~/.ssh
