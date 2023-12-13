@@ -60,7 +60,7 @@ jobs:
           chmod 600 key-web
           
           # Using SSH to execute commands on the remote server
-          ssh -i key-web -o StrictHostKeyChecking=no {{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -i key-web -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             # Commands to be executed on the remote server
             echo "WORKING_DIR: ${{ secrets.WORKING_DIR }}"
             
