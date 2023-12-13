@@ -22,13 +22,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # - name: connect and pull
-      #   run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORKING_DIR }}"
-      # - name: Set up Java
-      #   uses: actions/setup-java@v2
-      #   with:
-      #     java-version: '11'  # Change this to your desired Java version
-
       - name: Build and package with Maven
         run: |
           ./mvnw package -Pprod verify jib:dockerBuild -DskipTests
@@ -40,20 +33,6 @@ jobs:
         run: |
           docker tag web:latest nvphu0508/web:latest
           docker push nvphu0508/web:latest
-
-      - name: Stop and remove existing Docker container
-        run: docker rm -f web-web-1 || true
-
-      - name: Remove existing Docker image
-        run: docker rmi nvphu0508/web || true
-
-      # - uses: alex-ac/github-action-ssh-docker-compose@master
-      #   name: Docker-Compose Remote Deployment
-      #   with:
-      #     ssh_host: ${{ secrets.SSH_HOST }}
-      #     ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     ssh_user: ${{ secrets.SSH_USER }}
-      #     docker_compose_prefix: docker-compose
       - name: Deploy
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > key-web
@@ -80,5 +59,3 @@ jobs:
         
       - name: cleanup
         run: rm -rf ~/.ssh
-      #test
-        
