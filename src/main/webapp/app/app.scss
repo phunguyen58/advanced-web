@@ -1,9 +1,11 @@
 // Override Boostrap variables
 // Import Bootstrap source files from node_modules
 @import '~bootstrap/scss/bootstrap';
+@import '/src/main/webapp/content/scss/typography';
 body {
   background: #fafafa;
   margin: 0;
+  font-family: $aw-global-font;
 }
 
 a {

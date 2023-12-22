@@ -48,7 +48,7 @@ const Header = (props: IHeaderProps) => {
 
   return (
     <div id="app-header">
-      {renderDevRibbon()}
+      {/* {renderDevRibbon()} */}
       <LoadingBar className="loading-bar" />
       <Navbar data-cy="navbar" dark expand="md" fixed="top" className="jh-navbar">
         <NavbarToggler aria-label="Menu" onClick={toggleMenu} />
@@ -57,16 +57,16 @@ const Header = (props: IHeaderProps) => {
           <Nav id="header-tabs" className="ms-auto" navbar>
             <Home />
             {!props.isAuthenticated && (
-              <NavItem>
+              <NavItem active={true}>
                 <NavLink tag={Link} to="/landing" className="d-flex align-items-center">
                   <FontAwesomeIcon icon="heart" /> <span>Landing Page</span>
                 </NavLink>
               </NavItem>
             )}
-            {/* {props.isAuthenticated && <EntitiesMenu />}
+            {props.isAuthenticated && <EntitiesMenu />}
             {props.isAuthenticated && props.isAdmin && (
               <AdminMenu showOpenAPI={props.isOpenAPIEnabled} showDatabase={!props.isInProduction} />
-            )} */}
+            )}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />
             <AccountMenu isAuthenticated={props.isAuthenticated} />
           </Nav>

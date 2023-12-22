@@ -1,4 +1,5 @@
-$header-color: #fff;
+@import '../../../../content/scss/typography.scss';
+$header-color: #0a033c;
 $header-color-secondary: #bbb;
 $header-color-hover: darken($header-color, 20%);
 
@@ -31,6 +32,7 @@ Developement Ribbon
     text-decoration: none;
     text-shadow: 0 0 5px #444;
     pointer-events: none;
+    @extend .aw-title;
   }
 }
 
@@ -38,7 +40,7 @@ Developement Ribbon
 Navbar styles
 ========================================================================== */
 .jh-navbar {
-  background-color: #353d47;
+  background-color: #f7f5fa;
   padding: 0.2em 1em;
   .profile-image {
     margin: -10px 0px;
@@ -62,9 +64,24 @@ Navbar styles
   }
   a.nav-link {
     font-weight: 400;
+    color: #0a033c;
+
     > span {
       margin-left: 5px;
     }
+  }
+
+  .nav-link.active {
+    color: #9c4df4;
+  }
+
+  .navbar-nav .show > .nav-link,
+  .navbar-nav .nav-link.active {
+    color: #9c4df4;
+  }
+
+  .jh-navbar a.nav-link {
+    color: #9c4df4;
   }
   .jh-navbar-toggler {
     color: #ccc;
@@ -91,17 +108,21 @@ Navbar styles
 }
 
 .brand-logo {
+  display: flex;
+  gap: 5px;
   &:hover {
     text-decoration: none;
   }
   .brand-icon {
     height: 35px;
-    width: auto;
-    display: inline-block;
+    background-color: #ff6652;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    border-radius: 3px;
+    padding: 5px;
     img {
-      margin-bottom: 10px;
-      margin-right: 5px;
-      height: 45px;
+      height: 25px;
     }
   }
 }
