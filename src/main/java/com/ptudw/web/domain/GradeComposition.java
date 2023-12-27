@@ -1,10 +1,9 @@
 package com.ptudw.web.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.ptudw.web.domain.enumeration.GradeType;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
@@ -16,7 +15,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "grade_composition")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@SuppressWarnings("common-java:DuplicatedBlocks")
 public class GradeComposition implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,17 +29,8 @@ public class GradeComposition implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull
-    @Column(name = "min_grade_scale", nullable = false)
-    private Long minGradeScale;
-
-    @NotNull
-    @Column(name = "max_grade_scale", nullable = false)
-    private Long maxGradeScale;
-
-    @NotNull
-    @Column(name = "position", nullable = false)
-    private Long position;
+    @Column(name = "scale")
+    private Long scale;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
@@ -62,10 +51,14 @@ public class GradeComposition implements Serializable {
     @Column(name = "last_modified_date", nullable = false)
     private ZonedDateTime lastModifiedDate;
 
-    @OneToMany(mappedBy = "gradeCompositions")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private GradeType type;
+
+    @ManyToOne
     @JsonIgnoreProperties(value = { "gradeCompositions" }, allowSetters = true)
-    private Set<GradeStructure> gradeStructures = new HashSet<>();
+    private GradeStructure gradeStructure;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -95,43 +88,17 @@ public class GradeComposition implements Serializable {
         this.name = name;
     }
 
-    public Long getMinGradeScale() {
-        return this.minGradeScale;
+    public Long getScale() {
+        return this.scale;
     }
 
-    public GradeComposition minGradeScale(Long minGradeScale) {
-        this.setMinGradeScale(minGradeScale);
+    public GradeComposition scale(Long scale) {
+        this.setScale(scale);
         return this;
     }
 
-    public void setMinGradeScale(Long minGradeScale) {
-        this.minGradeScale = minGradeScale;
-    }
-
-    public Long getMaxGradeScale() {
-        return this.maxGradeScale;
-    }
-
-    public GradeComposition maxGradeScale(Long maxGradeScale) {
-        this.setMaxGradeScale(maxGradeScale);
-        return this;
-    }
-
-    public void setMaxGradeScale(Long maxGradeScale) {
-        this.maxGradeScale = maxGradeScale;
-    }
-
-    public Long getPosition() {
-        return this.position;
-    }
-
-    public GradeComposition position(Long position) {
-        this.setPosition(position);
-        return this;
-    }
-
-    public void setPosition(Long position) {
-        this.position = position;
+    public void setScale(Long scale) {
+        this.scale = scale;
     }
 
     public Boolean getIsDeleted() {
@@ -199,34 +166,29 @@ public class GradeComposition implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public Set<GradeStructure> getGradeStructures() {
-        return this.gradeStructures;
+    public GradeType getType() {
+        return this.type;
     }
 
-    public void setGradeStructures(Set<GradeStructure> gradeStructures) {
-        if (this.gradeStructures != null) {
-            this.gradeStructures.forEach(i -> i.setGradeCompositions(null));
-        }
-        if (gradeStructures != null) {
-            gradeStructures.forEach(i -> i.setGradeCompositions(this));
-        }
-        this.gradeStructures = gradeStructures;
-    }
-
-    public GradeComposition gradeStructures(Set<GradeStructure> gradeStructures) {
-        this.setGradeStructures(gradeStructures);
+    public GradeComposition type(GradeType type) {
+        this.setType(type);
         return this;
     }
 
-    public GradeComposition addGradeStructure(GradeStructure gradeStructure) {
-        this.gradeStructures.add(gradeStructure);
-        gradeStructure.setGradeCompositions(this);
-        return this;
+    public void setType(GradeType type) {
+        this.type = type;
     }
 
-    public GradeComposition removeGradeStructure(GradeStructure gradeStructure) {
-        this.gradeStructures.remove(gradeStructure);
-        gradeStructure.setGradeCompositions(null);
+    public GradeStructure getGradeStructure() {
+        return this.gradeStructure;
+    }
+
+    public void setGradeStructure(GradeStructure gradeStructure) {
+        this.gradeStructure = gradeStructure;
+    }
+
+    public GradeComposition gradeStructure(GradeStructure gradeStructure) {
+        this.setGradeStructure(gradeStructure);
         return this;
     }
 
@@ -255,14 +217,13 @@ public class GradeComposition implements Serializable {
         return "GradeComposition{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
-            ", minGradeScale=" + getMinGradeScale() +
-            ", maxGradeScale=" + getMaxGradeScale() +
-            ", position=" + getPosition() +
+            ", scale=" + getScale() +
             ", isDeleted='" + getIsDeleted() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
+            ", type='" + getType() + "'" +
             "}";
     }
 }

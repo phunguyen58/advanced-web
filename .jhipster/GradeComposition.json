@@ -11,19 +11,8 @@
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "minGradeScale",
-      "fieldType": "Long",
-      "fieldValidateRules": ["required"]
-    },
-    {
-      "fieldName": "maxGradeScale",
-      "fieldType": "Long",
-      "fieldValidateRules": ["required"]
-    },
-    {
-      "fieldName": "position",
-      "fieldType": "Long",
-      "fieldValidateRules": ["required"]
+      "fieldName": "scale",
+      "fieldType": "Long"
     },
     {
       "fieldName": "isDeleted",
@@ -48,6 +37,12 @@
       "fieldName": "lastModifiedDate",
       "fieldType": "ZonedDateTime",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "GradeType",
+      "fieldValues": "PERCENTAGE,POINT,NONE",
+      "fieldValidateRules": ["required"]
     }
   ],
   "fluentMethods": true,
@@ -57,10 +52,10 @@
   "readOnly": false,
   "relationships": [
     {
+      "relationshipType": "many-to-one",
       "otherEntityName": "gradeStructure",
       "otherEntityRelationshipName": "gradeCompositions",
-      "relationshipName": "gradeStructure",
-      "relationshipType": "one-to-many"
+      "relationshipName": "gradeStructure"
     }
   ],
   "service": "serviceClass"

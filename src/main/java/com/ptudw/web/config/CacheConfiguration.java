@@ -53,8 +53,8 @@ public class CacheConfiguration {
             createCache(cm, com.ptudw.web.domain.Product.class.getName());
             createCache(cm, com.ptudw.web.domain.Course.class.getName());
             createCache(cm, com.ptudw.web.domain.GradeStructure.class.getName());
+            createCache(cm, com.ptudw.web.domain.GradeStructure.class.getName() + ".gradeCompositions");
             createCache(cm, com.ptudw.web.domain.GradeComposition.class.getName());
-            createCache(cm, com.ptudw.web.domain.GradeComposition.class.getName() + ".gradeStructures");
             createCache(cm, com.ptudw.web.domain.Assignment.class.getName());
             createCache(cm, com.ptudw.web.domain.Assignment.class.getName() + ".courses");
             createCache(cm, com.ptudw.web.domain.AssignmentGrade.class.getName());

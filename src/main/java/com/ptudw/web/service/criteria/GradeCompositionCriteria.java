@@ -1,10 +1,17 @@
 package com.ptudw.web.service.criteria;
 
+import com.ptudw.web.domain.enumeration.GradeType;
 import java.io.Serializable;
 import java.util.Objects;
-import org.springdoc.api.annotations.ParameterObject;
 import tech.jhipster.service.Criteria;
-import tech.jhipster.service.filter.*;
+import tech.jhipster.service.filter.BooleanFilter;
+import tech.jhipster.service.filter.DoubleFilter;
+import tech.jhipster.service.filter.Filter;
+import tech.jhipster.service.filter.FloatFilter;
+import tech.jhipster.service.filter.IntegerFilter;
+import tech.jhipster.service.filter.LongFilter;
+import tech.jhipster.service.filter.StringFilter;
+import tech.jhipster.service.filter.ZonedDateTimeFilter;
 
 /**
  * Criteria class for the {@link com.ptudw.web.domain.GradeComposition} entity. This class is used
@@ -15,9 +22,24 @@ import tech.jhipster.service.filter.*;
  * As Spring is unable to properly convert the types, unless specific {@link Filter} class are used, we need to use
  * fix type specific filters.
  */
-@ParameterObject
-@SuppressWarnings("common-java:DuplicatedBlocks")
 public class GradeCompositionCriteria implements Serializable, Criteria {
+
+    /**
+     * Class for filtering GradeType
+     */
+    public static class GradeTypeFilter extends Filter<GradeType> {
+
+        public GradeTypeFilter() {}
+
+        public GradeTypeFilter(GradeTypeFilter filter) {
+            super(filter);
+        }
+
+        @Override
+        public GradeTypeFilter copy() {
+            return new GradeTypeFilter(this);
+        }
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -25,11 +47,7 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
 
     private StringFilter name;
 
-    private LongFilter minGradeScale;
-
-    private LongFilter maxGradeScale;
-
-    private LongFilter position;
+    private LongFilter scale;
 
     private BooleanFilter isDeleted;
 
@@ -41,6 +59,8 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
 
     private ZonedDateTimeFilter lastModifiedDate;
 
+    private GradeTypeFilter type;
+
     private LongFilter gradeStructureId;
 
     private Boolean distinct;
@@ -50,14 +70,13 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
     public GradeCompositionCriteria(GradeCompositionCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
         this.name = other.name == null ? null : other.name.copy();
-        this.minGradeScale = other.minGradeScale == null ? null : other.minGradeScale.copy();
-        this.maxGradeScale = other.maxGradeScale == null ? null : other.maxGradeScale.copy();
-        this.position = other.position == null ? null : other.position.copy();
+        this.scale = other.scale == null ? null : other.scale.copy();
         this.isDeleted = other.isDeleted == null ? null : other.isDeleted.copy();
         this.createdBy = other.createdBy == null ? null : other.createdBy.copy();
         this.createdDate = other.createdDate == null ? null : other.createdDate.copy();
         this.lastModifiedBy = other.lastModifiedBy == null ? null : other.lastModifiedBy.copy();
         this.lastModifiedDate = other.lastModifiedDate == null ? null : other.lastModifiedDate.copy();
+        this.type = other.type == null ? null : other.type.copy();
         this.gradeStructureId = other.gradeStructureId == null ? null : other.gradeStructureId.copy();
         this.distinct = other.distinct;
     }
@@ -97,49 +116,19 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         this.name = name;
     }
 
-    public LongFilter getMinGradeScale() {
-        return minGradeScale;
+    public LongFilter getScale() {
+        return scale;
     }
 
-    public LongFilter minGradeScale() {
-        if (minGradeScale == null) {
-            minGradeScale = new LongFilter();
+    public LongFilter scale() {
+        if (scale == null) {
+            scale = new LongFilter();
         }
-        return minGradeScale;
+        return scale;
     }
 
-    public void setMinGradeScale(LongFilter minGradeScale) {
-        this.minGradeScale = minGradeScale;
-    }
-
-    public LongFilter getMaxGradeScale() {
-        return maxGradeScale;
-    }
-
-    public LongFilter maxGradeScale() {
-        if (maxGradeScale == null) {
-            maxGradeScale = new LongFilter();
-        }
-        return maxGradeScale;
-    }
-
-    public void setMaxGradeScale(LongFilter maxGradeScale) {
-        this.maxGradeScale = maxGradeScale;
-    }
-
-    public LongFilter getPosition() {
-        return position;
-    }
-
-    public LongFilter position() {
-        if (position == null) {
-            position = new LongFilter();
-        }
-        return position;
-    }
-
-    public void setPosition(LongFilter position) {
-        this.position = position;
+    public void setScale(LongFilter scale) {
+        this.scale = scale;
     }
 
     public BooleanFilter getIsDeleted() {
@@ -217,6 +206,21 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         this.lastModifiedDate = lastModifiedDate;
     }
 
+    public GradeTypeFilter getType() {
+        return type;
+    }
+
+    public GradeTypeFilter type() {
+        if (type == null) {
+            type = new GradeTypeFilter();
+        }
+        return type;
+    }
+
+    public void setType(GradeTypeFilter type) {
+        this.type = type;
+    }
+
     public LongFilter getGradeStructureId() {
         return gradeStructureId;
     }
@@ -252,14 +256,13 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         return (
             Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
-            Objects.equals(minGradeScale, that.minGradeScale) &&
-            Objects.equals(maxGradeScale, that.maxGradeScale) &&
-            Objects.equals(position, that.position) &&
+            Objects.equals(scale, that.scale) &&
             Objects.equals(isDeleted, that.isDeleted) &&
             Objects.equals(createdBy, that.createdBy) &&
             Objects.equals(createdDate, that.createdDate) &&
             Objects.equals(lastModifiedBy, that.lastModifiedBy) &&
             Objects.equals(lastModifiedDate, that.lastModifiedDate) &&
+            Objects.equals(type, that.type) &&
             Objects.equals(gradeStructureId, that.gradeStructureId) &&
             Objects.equals(distinct, that.distinct)
         );
@@ -270,14 +273,13 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         return Objects.hash(
             id,
             name,
-            minGradeScale,
-            maxGradeScale,
-            position,
+            scale,
             isDeleted,
             createdBy,
             createdDate,
             lastModifiedBy,
             lastModifiedDate,
+            type,
             gradeStructureId,
             distinct
         );
@@ -289,14 +291,13 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         return "GradeCompositionCriteria{" +
             (id != null ? "id=" + id + ", " : "") +
             (name != null ? "name=" + name + ", " : "") +
-            (minGradeScale != null ? "minGradeScale=" + minGradeScale + ", " : "") +
-            (maxGradeScale != null ? "maxGradeScale=" + maxGradeScale + ", " : "") +
-            (position != null ? "position=" + position + ", " : "") +
+            (scale != null ? "scale=" + scale + ", " : "") +
             (isDeleted != null ? "isDeleted=" + isDeleted + ", " : "") +
             (createdBy != null ? "createdBy=" + createdBy + ", " : "") +
             (createdDate != null ? "createdDate=" + createdDate + ", " : "") +
             (lastModifiedBy != null ? "lastModifiedBy=" + lastModifiedBy + ", " : "") +
             (lastModifiedDate != null ? "lastModifiedDate=" + lastModifiedDate + ", " : "") +
+            (type != null ? "type=" + type + ", " : "") +
             (gradeStructureId != null ? "gradeStructureId=" + gradeStructureId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";

@@ -33,6 +33,12 @@
       "fieldName": "lastModifiedDate",
       "fieldType": "ZonedDateTime",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "GradeType",
+      "fieldValues": "PERCENTAGE,POINT,NONE",
+      "fieldValidateRules": ["required"]
     }
   ],
   "fluentMethods": true,
@@ -42,10 +48,10 @@
   "readOnly": false,
   "relationships": [
     {
+      "relationshipType": "one-to-many",
       "otherEntityName": "gradeComposition",
       "otherEntityRelationshipName": "gradeStructure",
-      "relationshipName": "gradeCompositions",
-      "relationshipType": "many-to-one"
+      "relationshipName": "gradeCompositions"
     }
   ],
   "service": "serviceClass"

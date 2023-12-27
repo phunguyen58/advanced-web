@@ -59,18 +59,24 @@ entity GradeStructure {
     createdDate ZonedDateTime required
     lastModifiedBy String required
     lastModifiedDate ZonedDateTime required
+    type GradeType required
+}
+
+enum GradeType{
+	PERCENTAGE,
+    POINT,
+    NONE
 }
 
 entity GradeComposition {
     name String required
-    minGradeScale Long required
-    maxGradeScale Long required
-    position Long required
+    scale Long
     isDeleted Boolean
     createdBy String required
     createdDate ZonedDateTime required
     lastModifiedBy String required
     lastModifiedDate ZonedDateTime required
+    type GradeType required
 }
 
 entity Assignment {
@@ -111,7 +117,7 @@ entity UserCourse {
 
 relationship OneToMany {
     Assignment{course} to Course{assignments}
-    GradeComposition{gradeStructure} to GradeStructure{gradeCompositions}
+    GradeStructure{gradeCompositions} to GradeComposition{gradeStructure} 
     AssignmentGrade{assignment} to Assignment{assignmentGrades}
 }
 

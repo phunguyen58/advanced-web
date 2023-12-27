@@ -88,14 +88,8 @@ public class GradeCompositionQueryService extends QueryService<GradeComposition>
             if (criteria.getName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getName(), GradeComposition_.name));
             }
-            if (criteria.getMinGradeScale() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getMinGradeScale(), GradeComposition_.minGradeScale));
-            }
-            if (criteria.getMaxGradeScale() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getMaxGradeScale(), GradeComposition_.maxGradeScale));
-            }
-            if (criteria.getPosition() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getPosition(), GradeComposition_.position));
+            if (criteria.getScale() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getScale(), GradeComposition_.scale));
             }
             if (criteria.getIsDeleted() != null) {
                 specification = specification.and(buildSpecification(criteria.getIsDeleted(), GradeComposition_.isDeleted));
@@ -113,12 +107,15 @@ public class GradeCompositionQueryService extends QueryService<GradeComposition>
                 specification =
                     specification.and(buildRangeSpecification(criteria.getLastModifiedDate(), GradeComposition_.lastModifiedDate));
             }
+            if (criteria.getType() != null) {
+                specification = specification.and(buildSpecification(criteria.getType(), GradeComposition_.type));
+            }
             if (criteria.getGradeStructureId() != null) {
                 specification =
                     specification.and(
                         buildSpecification(
                             criteria.getGradeStructureId(),
-                            root -> root.join(GradeComposition_.gradeStructures, JoinType.LEFT).get(GradeStructure_.id)
+                            root -> root.join(GradeComposition_.gradeStructure, JoinType.LEFT).get(GradeStructure_.id)
                         )
                     );
             }

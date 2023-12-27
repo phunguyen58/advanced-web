@@ -86,7 +86,7 @@ export const GradeComposition = () => {
       <h2 id="grade-composition-heading" data-cy="GradeCompositionHeading">
         <Translate contentKey="webApp.gradeComposition.home.title">Grade Compositions</Translate>
         <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
+          <Button className="mr-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
             <Translate contentKey="webApp.gradeComposition.home.refreshListLabel">Refresh List</Translate>
           </Button>
@@ -108,14 +108,8 @@ export const GradeComposition = () => {
                 <th className="hand" onClick={sort('name')}>
                   <Translate contentKey="webApp.gradeComposition.name">Name</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('minGradeScale')}>
-                  <Translate contentKey="webApp.gradeComposition.minGradeScale">Min Grade Scale</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('maxGradeScale')}>
-                  <Translate contentKey="webApp.gradeComposition.maxGradeScale">Max Grade Scale</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('position')}>
-                  <Translate contentKey="webApp.gradeComposition.position">Position</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand" onClick={sort('scale')}>
+                  <Translate contentKey="webApp.gradeComposition.scale">Scale</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('isDeleted')}>
                   <Translate contentKey="webApp.gradeComposition.isDeleted">Is Deleted</Translate> <FontAwesomeIcon icon="sort" />
@@ -134,6 +128,12 @@ export const GradeComposition = () => {
                   <Translate contentKey="webApp.gradeComposition.lastModifiedDate">Last Modified Date</Translate>{' '}
                   <FontAwesomeIcon icon="sort" />
                 </th>
+                <th className="hand" onClick={sort('type')}>
+                  <Translate contentKey="webApp.gradeComposition.type">Type</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th>
+                  <Translate contentKey="webApp.gradeComposition.gradeStructure">Grade Structure</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
                 <th />
               </tr>
             </thead>
@@ -146,9 +146,7 @@ export const GradeComposition = () => {
                     </Button>
                   </td>
                   <td>{gradeComposition.name}</td>
-                  <td>{gradeComposition.minGradeScale}</td>
-                  <td>{gradeComposition.maxGradeScale}</td>
-                  <td>{gradeComposition.position}</td>
+                  <td>{gradeComposition.scale}</td>
                   <td>{gradeComposition.isDeleted ? 'true' : 'false'}</td>
                   <td>{gradeComposition.createdBy}</td>
                   <td>
@@ -162,7 +160,17 @@ export const GradeComposition = () => {
                       <TextFormat type="date" value={gradeComposition.lastModifiedDate} format={APP_DATE_FORMAT} />
                     ) : null}
                   </td>
-                  <td className="text-end">
+                  <td>
+                    <Translate contentKey={`webApp.GradeType.${gradeComposition.type}`} />
+                  </td>
+                  <td>
+                    {gradeComposition.gradeStructure ? (
+                      <Link to={`grade-structure/${gradeComposition.gradeStructure.id}`}>{gradeComposition.gradeStructure.id}</Link>
+                    ) : (
+                      ''
+                    )}
+                  </td>
+                  <td className="text-right">
                     <div className="btn-group flex-btn-group-container">
                       <Button
                         tag={Link}

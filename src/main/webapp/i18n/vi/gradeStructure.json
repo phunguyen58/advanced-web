@@ -24,6 +24,7 @@
       "createdDate": "Created Date",
       "lastModifiedBy": "Last Modified By",
       "lastModifiedDate": "Last Modified Date",
+      "type": "Type",
       "gradeCompositions": "Grade Compositions"
     }
   }

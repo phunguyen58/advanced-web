@@ -71,6 +71,7 @@ export const GradeStructureUpdate = () => {
           lastModifiedDate: displayDefaultDateTime(),
         }
       : {
+          type: 'PERCENTAGE',
           ...gradeStructureEntity,
           createdDate: convertDateTimeFromServer(gradeStructureEntity.createdDate),
           lastModifiedDate: convertDateTimeFromServer(gradeStructureEntity.lastModifiedDate),
@@ -164,20 +165,15 @@ export const GradeStructureUpdate = () => {
                 }}
               />
               <ValidatedField
-                id="grade-structure-gradeCompositions"
-                name="gradeCompositions"
-                data-cy="gradeCompositions"
-                label={translate('webApp.gradeStructure.gradeCompositions')}
+                label={translate('webApp.gradeStructure.type')}
+                id="grade-structure-type"
+                name="type"
+                data-cy="type"
                 type="select"
               >
-                <option value="" key="0" />
-                {gradeCompositions
-                  ? gradeCompositions.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.id}
-                      </option>
-                    ))
-                  : null}
+                <option value="PERCENTAGE">{translate('webApp.GradeType.PERCENTAGE')}</option>
+                <option value="POINT">{translate('webApp.GradeType.POINT')}</option>
+                <option value="NONE">{translate('webApp.GradeType.NONE')}</option>
               </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/grade-structure" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />

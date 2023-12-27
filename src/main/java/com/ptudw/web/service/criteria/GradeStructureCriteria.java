@@ -1,10 +1,17 @@
 package com.ptudw.web.service.criteria;
 
+import com.ptudw.web.domain.enumeration.GradeType;
 import java.io.Serializable;
 import java.util.Objects;
-import org.springdoc.api.annotations.ParameterObject;
 import tech.jhipster.service.Criteria;
-import tech.jhipster.service.filter.*;
+import tech.jhipster.service.filter.BooleanFilter;
+import tech.jhipster.service.filter.DoubleFilter;
+import tech.jhipster.service.filter.Filter;
+import tech.jhipster.service.filter.FloatFilter;
+import tech.jhipster.service.filter.IntegerFilter;
+import tech.jhipster.service.filter.LongFilter;
+import tech.jhipster.service.filter.StringFilter;
+import tech.jhipster.service.filter.ZonedDateTimeFilter;
 
 /**
  * Criteria class for the {@link com.ptudw.web.domain.GradeStructure} entity. This class is used
@@ -15,9 +22,24 @@ import tech.jhipster.service.filter.*;
  * As Spring is unable to properly convert the types, unless specific {@link Filter} class are used, we need to use
  * fix type specific filters.
  */
-@ParameterObject
-@SuppressWarnings("common-java:DuplicatedBlocks")
 public class GradeStructureCriteria implements Serializable, Criteria {
+
+    /**
+     * Class for filtering GradeType
+     */
+    public static class GradeTypeFilter extends Filter<GradeType> {
+
+        public GradeTypeFilter() {}
+
+        public GradeTypeFilter(GradeTypeFilter filter) {
+            super(filter);
+        }
+
+        @Override
+        public GradeTypeFilter copy() {
+            return new GradeTypeFilter(this);
+        }
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -35,6 +57,8 @@ public class GradeStructureCriteria implements Serializable, Criteria {
 
     private ZonedDateTimeFilter lastModifiedDate;
 
+    private GradeTypeFilter type;
+
     private LongFilter gradeCompositionsId;
 
     private Boolean distinct;
@@ -49,6 +73,7 @@ public class GradeStructureCriteria implements Serializable, Criteria {
         this.createdDate = other.createdDate == null ? null : other.createdDate.copy();
         this.lastModifiedBy = other.lastModifiedBy == null ? null : other.lastModifiedBy.copy();
         this.lastModifiedDate = other.lastModifiedDate == null ? null : other.lastModifiedDate.copy();
+        this.type = other.type == null ? null : other.type.copy();
         this.gradeCompositionsId = other.gradeCompositionsId == null ? null : other.gradeCompositionsId.copy();
         this.distinct = other.distinct;
     }
@@ -163,6 +188,21 @@ public class GradeStructureCriteria implements Serializable, Criteria {
         this.lastModifiedDate = lastModifiedDate;
     }
 
+    public GradeTypeFilter getType() {
+        return type;
+    }
+
+    public GradeTypeFilter type() {
+        if (type == null) {
+            type = new GradeTypeFilter();
+        }
+        return type;
+    }
+
+    public void setType(GradeTypeFilter type) {
+        this.type = type;
+    }
+
     public LongFilter getGradeCompositionsId() {
         return gradeCompositionsId;
     }
@@ -203,6 +243,7 @@ public class GradeStructureCriteria implements Serializable, Criteria {
             Objects.equals(createdDate, that.createdDate) &&
             Objects.equals(lastModifiedBy, that.lastModifiedBy) &&
             Objects.equals(lastModifiedDate, that.lastModifiedDate) &&
+            Objects.equals(type, that.type) &&
             Objects.equals(gradeCompositionsId, that.gradeCompositionsId) &&
             Objects.equals(distinct, that.distinct)
         );
@@ -218,6 +259,7 @@ public class GradeStructureCriteria implements Serializable, Criteria {
             createdDate,
             lastModifiedBy,
             lastModifiedDate,
+            type,
             gradeCompositionsId,
             distinct
         );
@@ -234,6 +276,7 @@ public class GradeStructureCriteria implements Serializable, Criteria {
             (createdDate != null ? "createdDate=" + createdDate + ", " : "") +
             (lastModifiedBy != null ? "lastModifiedBy=" + lastModifiedBy + ", " : "") +
             (lastModifiedDate != null ? "lastModifiedDate=" + lastModifiedDate + ", " : "") +
+            (type != null ? "type=" + type + ", " : "") +
             (gradeCompositionsId != null ? "gradeCompositionsId=" + gradeCompositionsId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
