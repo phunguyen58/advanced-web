@@ -1,10 +1,11 @@
 {
   "userManagement": {
     "home": {
-      "title": "Users",
+      "title": "User management",
       "refreshListLabel": "Refresh list",
       "createLabel": "Create a new user",
-      "createOrEditLabel": "Create or edit a user"
+      "createOrEditLabel": "Create or edit a user",
+      "editLabel": "Edit a user"
     },
     "created": "A new user is created with identifier {{ param }}",
     "updated": "A user is updated with identifier {{ param }}",
