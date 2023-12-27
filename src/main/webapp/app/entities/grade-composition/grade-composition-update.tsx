@@ -4,6 +4,8 @@ import { Button, Row, Col, FormText } from 'reactstrap';
 import { isNumber, Translate, translate, ValidatedField, ValidatedForm } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { IGradeStructure } from 'app/shared/model/grade-structure.model';
+import { getEntities as getGradeStructures } from 'app/entities/grade-structure/grade-structure.reducer';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
@@ -34,6 +36,8 @@ export const GradeCompositionUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
+
+    dispatch(getGradeStructures({}));
   }, []);
 
   useEffect(() => {
@@ -65,9 +69,11 @@ export const GradeCompositionUpdate = () => {
           lastModifiedDate: displayDefaultDateTime(),
         }
       : {
+          type: 'PERCENTAGE',
           ...gradeCompositionEntity,
           createdDate: convertDateTimeFromServer(gradeCompositionEntity.createdDate),
           lastModifiedDate: convertDateTimeFromServer(gradeCompositionEntity.lastModifiedDate),
+          gradeStructureId: gradeCompositionEntity?.gradeStructure?.id,
         };
 
   return (
@@ -106,37 +112,11 @@ export const GradeCompositionUpdate = () => {
                 }}
               />
               <ValidatedField
-                label={translate('webApp.gradeComposition.minGradeScale')}
-                id="grade-composition-minGradeScale"
-                name="minGradeScale"
-                data-cy="minGradeScale"
+                label={translate('webApp.gradeComposition.scale')}
+                id="grade-composition-scale"
+                name="scale"
+                data-cy="scale"
                 type="text"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                  validate: v => isNumber(v) || translate('entity.validation.number'),
-                }}
-              />
-              <ValidatedField
-                label={translate('webApp.gradeComposition.maxGradeScale')}
-                id="grade-composition-maxGradeScale"
-                name="maxGradeScale"
-                data-cy="maxGradeScale"
-                type="text"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                  validate: v => isNumber(v) || translate('entity.validation.number'),
-                }}
-              />
-              <ValidatedField
-                label={translate('webApp.gradeComposition.position')}
-                id="grade-composition-position"
-                name="position"
-                data-cy="position"
-                type="text"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                  validate: v => isNumber(v) || translate('entity.validation.number'),
-                }}
               />
               <ValidatedField
                 label={translate('webApp.gradeComposition.isDeleted')}
@@ -188,6 +168,17 @@ export const GradeCompositionUpdate = () => {
                   required: { value: true, message: translate('entity.validation.required') },
                 }}
               />
+              <ValidatedField
+                label={translate('webApp.gradeComposition.type')}
+                id="grade-composition-type"
+                name="type"
+                data-cy="type"
+                type="select"
+              >
+                <option value="PERCENTAGE">{translate('webApp.GradeType.PERCENTAGE')}</option>
+                <option value="POINT">{translate('webApp.GradeType.POINT')}</option>
+                <option value="NONE">{translate('webApp.GradeType.NONE')}</option>
+              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/grade-composition" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

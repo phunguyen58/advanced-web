@@ -1,8 +1,11 @@
 package com.ptudw.web.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.ptudw.web.domain.enumeration.GradeType;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
@@ -14,7 +17,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "grade_structure")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@SuppressWarnings("common-java:DuplicatedBlocks")
 public class GradeStructure implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -48,9 +50,15 @@ public class GradeStructure implements Serializable {
     @Column(name = "last_modified_date", nullable = false)
     private ZonedDateTime lastModifiedDate;
 
-    @ManyToOne
-    @JsonIgnoreProperties(value = { "gradeStructures" }, allowSetters = true)
-    private GradeComposition gradeCompositions;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private GradeType type;
+
+    @OneToMany(mappedBy = "gradeStructure")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "gradeStructure" }, allowSetters = true)
+    private Set<GradeComposition> gradeCompositions = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -145,16 +153,47 @@ public class GradeStructure implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public GradeComposition getGradeCompositions() {
+    public GradeType getType() {
+        return this.type;
+    }
+
+    public GradeStructure type(GradeType type) {
+        this.setType(type);
+        return this;
+    }
+
+    public void setType(GradeType type) {
+        this.type = type;
+    }
+
+    public Set<GradeComposition> getGradeCompositions() {
         return this.gradeCompositions;
     }
 
-    public void setGradeCompositions(GradeComposition gradeComposition) {
-        this.gradeCompositions = gradeComposition;
+    public void setGradeCompositions(Set<GradeComposition> gradeCompositions) {
+        if (this.gradeCompositions != null) {
+            this.gradeCompositions.forEach(i -> i.setGradeStructure(null));
+        }
+        if (gradeCompositions != null) {
+            gradeCompositions.forEach(i -> i.setGradeStructure(this));
+        }
+        this.gradeCompositions = gradeCompositions;
     }
 
-    public GradeStructure gradeCompositions(GradeComposition gradeComposition) {
-        this.setGradeCompositions(gradeComposition);
+    public GradeStructure gradeCompositions(Set<GradeComposition> gradeCompositions) {
+        this.setGradeCompositions(gradeCompositions);
+        return this;
+    }
+
+    public GradeStructure addGradeCompositions(GradeComposition gradeComposition) {
+        this.gradeCompositions.add(gradeComposition);
+        gradeComposition.setGradeStructure(this);
+        return this;
+    }
+
+    public GradeStructure removeGradeCompositions(GradeComposition gradeComposition) {
+        this.gradeCompositions.remove(gradeComposition);
+        gradeComposition.setGradeStructure(null);
         return this;
     }
 
@@ -188,6 +227,7 @@ public class GradeStructure implements Serializable {
             ", createdDate='" + getCreatedDate() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
+            ", type='" + getType() + "'" +
             "}";
     }
 }

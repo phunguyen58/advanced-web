@@ -19,14 +19,13 @@
       },
       "id": "ID",
       "name": "Name",
-      "minGradeScale": "Min Grade Scale",
-      "maxGradeScale": "Max Grade Scale",
-      "position": "Position",
+      "scale": "Scale",
       "isDeleted": "Is Deleted",
       "createdBy": "Created By",
       "createdDate": "Created Date",
       "lastModifiedBy": "Last Modified By",
       "lastModifiedDate": "Last Modified Date",
+      "type": "Type",
       "gradeStructure": "Grade Structure"
     }
   }
