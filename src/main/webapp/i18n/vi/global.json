@@ -25,7 +25,8 @@
         "sessions": "Phiên đăng nhập",
         "login": "Đăng nhập",
         "logout": "Đăng xuất",
-        "register": "Đăng ký"
+        "register": "Đăng ký",
+        "profile": "Hồ sơ"
       },
       "admin": {
         "main": "Quản trị",
@@ -44,6 +45,8 @@
     "form": {
       "username.label": "Tên tài khoản",
       "username.placeholder": "Nhập tên tài khoản của bạn",
+      "currentpassword.label": "Mật khẩu hiện tại",
+      "currentpassword.placeholder": "Nhập mật khẩu hiện tại",
       "newpassword.label": "Mật khẩu mới",
       "newpassword.placeholder": "Nhập mật khẩu mới",
       "confirmpassword.label": "Xác nhận mật khẩu mới",
@@ -104,7 +107,8 @@
       "edit": "Sửa",
       "open": "Mở",
       "save": "Lưu",
-      "view": "Xem"
+      "view": "Xem",
+      "show": "Show {{otherEntity}}"
     },
     "detail": {
       "field": "Trường",
@@ -124,6 +128,11 @@
       "pattern": "Trường này phải theo định dạng {{ pattern }}.",
       "number": "Trường này phải là một số.",
       "datetimelocal": "Trường này phải là định dạng thời gian."
+    },
+    "filters": {
+      "set": "Following filters are set",
+      "clear": "Clear filter",
+      "clearAll": "Clear all filters"
     }
   },
   "error": {
