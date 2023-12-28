@@ -12,6 +12,9 @@ import { setLocale } from 'app/shared/reducers/locale';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -44,10 +47,28 @@ const Header = (props: IHeaderProps) => {
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
+  const [isDisplayedJoinClass, toggleJoinClassPanel] = useState(false);
+
+  const [codeToJoinClass, setCodeToJoinClass] = useState('');
+
+  const handleCodeEntry = () => {
+    // Perform the action you want when the code is entered
+    console.log('Code entered:', codeToJoinClass);
+    // You can trigger an API call, validation, or any other action here
+  };
   /* jhipster-needle-add-element-to-menu - JHipster will add new menu items here */
 
   return (
     <div id="app-header">
+      <Dialog header="Join a class" visible={isDisplayedJoinClass} style={{ width: '50vw' }} onHide={() => toggleJoinClassPanel(false)}>
+        <div className="">
+          <span className="">Enter code to join class</span>
+          <p className="m-0">
+            <InputText value={codeToJoinClass} onChange={e => setCodeToJoinClass(e.target.value)} />
+            <Button label="Join" icon="pi pi-external-link" onClick={handleCodeEntry} />
+          </p>
+        </div>
+      </Dialog>
       {/* {renderDevRibbon()} */}
       <LoadingBar className="loading-bar" />
       <Navbar data-cy="navbar" dark expand="md" fixed="top" className="jh-navbar">
@@ -55,6 +76,7 @@ const Header = (props: IHeaderProps) => {
         <Brand />
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ms-auto" navbar>
+            <Button label="Join course" icon="pi pi-external-link" onClick={() => toggleJoinClassPanel(true)} />
             <Home />
             {!props.isAuthenticated && (
               <NavItem active={true}>

@@ -150,7 +150,10 @@
     "file": {
       "could.not.extract": "Could not extract file",
       "not.image": "File was expected to be an image but was found to be \"{{ fileType }}\""
-    }
+    },
+    "invitationcodeinvalid": "Mã mời không hợp lệ",
+    "userinvalid": "Tài khoản không hợp lệ",
+    "useralreadyjoined": "Tài khoản đã tham gia khóa học này"
   },
   "footer": "Đây là chân trang của bạn"
 }
