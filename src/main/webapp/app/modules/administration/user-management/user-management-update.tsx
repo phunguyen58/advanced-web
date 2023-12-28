@@ -11,14 +11,23 @@ import { MultiSelect } from 'primereact/multiselect';
 import { Checkbox } from 'primereact/checkbox';
 import { Dropdown } from 'primereact/dropdown';
 import { Skeleton } from 'primereact/skeleton';
+import { hasAnyAuthority } from 'app/shared/auth/private-route';
+import { AUTHORITIES } from 'app/config/constants';
 
 export const UserManagementUpdate = () => {
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
 
+  const [userId, setUserId] = useState(null);
+  const [userLogin, setUserLogin] = useState('');
+  const [userFirstName, setUserFirstName] = useState('');
+  const [userLastName, setUserLastName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [userStudentId, setUserStudentId] = useState('');
   const [userAuthorities, setUserAuthorities] = useState([]);
   const [userActivated, setUserActivated] = useState(false);
+  const [userLangKey, setUserLangKey] = useState('');
 
   const { login } = useParams<'login'>();
   const isNew = login === undefined;
@@ -42,6 +51,13 @@ export const UserManagementUpdate = () => {
   const saveUser = values => {
     values.authorities = userAuthorities;
     values.activated = userActivated;
+    values.id = userId;
+    values.login = userLogin;
+    values.firstName = userFirstName;
+    values.lastName = userLastName;
+    values.email = userEmail;
+    values.studentId = userStudentId;
+    values.langKey = userLangKey;
     if (isNew) {
       dispatch(createUser(values));
     } else {
@@ -59,6 +75,13 @@ export const UserManagementUpdate = () => {
   useEffect(() => {
     setUserAuthorities(user.authorities);
     setUserActivated(user.activated);
+    setUserId(user.id);
+    setUserLogin(user.login);
+    setUserFirstName(user.firstName);
+    setUserLastName(user.lastName);
+    setUserEmail(user.email);
+    setUserStudentId(user.studentId);
+    setUserLangKey(user.langKey);
   }, [user.authorities]);
 
   return (
@@ -95,8 +118,11 @@ export const UserManagementUpdate = () => {
                     required
                     readOnly
                     label={translate('global.field.id')}
-                    value={user.id}
+                    value={userId}
                     validate={{ required: true }}
+                    onChange={e => {
+                      setUserId(e.target.value);
+                    }}
                   />
                 </Col>
               ) : null}
@@ -106,6 +132,10 @@ export const UserManagementUpdate = () => {
                   name="login"
                   label={translate('userManagement.login')}
                   value={user.login}
+                  readOnly={Boolean(user.login)}
+                  onChange={e => {
+                    setUserLogin(e.target.value);
+                  }}
                   validate={{
                     required: {
                       value: true,
@@ -137,7 +167,10 @@ export const UserManagementUpdate = () => {
                       message: translate('entity.validation.maxlength', { max: 50 }),
                     },
                   }}
-                  value={user.firstName}
+                  value={userFirstName}
+                  onChange={e => {
+                    setUserFirstName(e.target.value);
+                  }}
                 />
               </Col>
               <Col md="6">
@@ -151,7 +184,10 @@ export const UserManagementUpdate = () => {
                       message: translate('entity.validation.maxlength', { max: 50 }),
                     },
                   }}
-                  value={user.lastName}
+                  value={userLastName}
+                  onChange={e => {
+                    setUserLastName(e.target.value);
+                  }}
                 />
                 {/* <FormText>This field cannot be longer than 50 characters.</FormText> */}
               </Col>
@@ -159,7 +195,7 @@ export const UserManagementUpdate = () => {
                 <ValidatedField
                   name="email"
                   label={translate('global.form.email.label')}
-                  value={user.email}
+                  value={userEmail}
                   placeholder={translate('global.form.email.placeholder')}
                   type="email"
                   validate={{
@@ -177,10 +213,20 @@ export const UserManagementUpdate = () => {
                     },
                     validate: v => isEmail(v) || translate('global.messages.validate.email.invalid'),
                   }}
+                  onChange={e => {
+                    setUserEmail(e.target.value);
+                  }}
                 />
               </Col>
               <Col md="6">
-                <ValidatedField type="select" name="langKey" label={translate('userManagement.langKey')}>
+                <ValidatedField
+                  type="select"
+                  name="langKey"
+                  label={translate('userManagement.langKey')}
+                  onChange={e => {
+                    setUserLangKey(e.target.value);
+                  }}
+                >
                   {locales.map(locale => (
                     <option value={locale} key={locale}>
                       {languages[locale].name}
@@ -208,6 +254,25 @@ export const UserManagementUpdate = () => {
                   ))}
                 </ValidatedField> */}
               </Col>
+              {hasAnyAuthority(userAuthorities, [AUTHORITIES.STUDENT]) ? (
+                <Col md="6">
+                  <ValidatedField
+                    type="text"
+                    name="studentId"
+                    label={translate('userManagement.studentId')}
+                    validate={{
+                      maxLength: {
+                        value: 10,
+                        message: translate('entity.validation.maxlength', { max: 10 }),
+                      },
+                    }}
+                    value={userStudentId}
+                    onChange={e => {
+                      setUserStudentId(e.target.value);
+                    }}
+                  />
+                </Col>
+              ) : null}
               {user.id ? (
                 <Col md="6">
                   <Label>{translate('userManagement.activated')}</Label>

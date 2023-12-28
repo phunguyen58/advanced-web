@@ -117,6 +117,8 @@ public class UserResource {
             throw new LoginAlreadyUsedException();
         } else if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
             throw new EmailAlreadyUsedException();
+        } else if (userRepository.findOneByStudentIdAndActivated(userDTO.getStudentId(), true).isPresent()) {
+            throw new BadRequestAlertException("Student ID already existed", applicationName, "studentIdExisted");
         } else {
             User newUser = userService.createUser(userDTO);
             mailService.sendCreationEmail(newUser);
@@ -146,6 +148,11 @@ public class UserResource {
         existingUser = userRepository.findOneByLogin(userDTO.getLogin().toLowerCase());
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
             throw new LoginAlreadyUsedException();
+        }
+
+        existingUser = userRepository.findOneByStudentIdAndActivated(userDTO.getStudentId(), true);
+        if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
+            throw new BadRequestAlertException("Student ID already existed", applicationName, "studentIdExisted");
         }
         Optional<AdminUserDTO> updatedUser = userService.updateUser(userDTO);
 

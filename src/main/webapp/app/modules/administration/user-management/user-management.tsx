@@ -133,6 +133,12 @@ export const UserManagement = () => {
             <th>
               <Translate contentKey="userManagement.profiles">Profiles</Translate>
             </th>
+            <th className="hand" onClick={sort('studentId')}>
+              <div className="d-flex gap-2 align-items-center">
+                <Translate contentKey="userManagement.studentId">Student ID</Translate>
+                <FontAwesomeIcon icon="sort" />
+              </div>
+            </th>
             {/* <th className="hand" onClick={sort('createdDate')}>
               <Translate contentKey="userManagement.createdDate">Created Date</Translate>
               <FontAwesomeIcon icon="sort" />
@@ -179,6 +185,7 @@ export const UserManagement = () => {
                     ))
                   : null}
               </td>
+              <td>{user.studentId}</td>
               {/* <td>
                 {user.createdDate ? <TextFormat value={user.createdDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid /> : null}
               </td>
