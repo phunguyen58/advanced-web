@@ -23,7 +23,7 @@ application {
     languages [vi, en]
     messageBroker false
     nativeLanguage en
-    otherModules []
+    // otherModules []
     packageName com.ptudw.web
     prodDatabaseType postgresql
     reactive false
@@ -112,7 +112,7 @@ entity CourseGrade {
 
 entity UserCourse {
     courseId Long required
-    userId String required
+    userId Long required
 }
 
 relationship OneToMany {

@@ -29,7 +29,7 @@ public class UserCourse implements Serializable {
 
     @NotNull
     @Column(name = "user_id", nullable = false)
-    private String userId;
+    private Long userId;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -59,16 +59,16 @@ public class UserCourse implements Serializable {
         this.courseId = courseId;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return this.userId;
     }
 
-    public UserCourse userId(String userId) {
+    public UserCourse userId(Long userId) {
         this.setUserId(userId);
         return this;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -82,7 +82,7 @@ public class UserCourse implements Serializable {
         if (!(o instanceof UserCourse)) {
             return false;
         }
-        return id != null && id.equals(((UserCourse) o).id);
+        return getId() != null && getId().equals(((UserCourse) o).getId());
     }
 
     @Override
@@ -97,7 +97,7 @@ public class UserCourse implements Serializable {
         return "UserCourse{" +
             "id=" + getId() +
             ", courseId=" + getCourseId() +
-            ", userId='" + getUserId() + "'" +
+            ", userId=" + getUserId() +
             "}";
     }
 }

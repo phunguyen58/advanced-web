@@ -1,8 +1,6 @@
 {
   "applications": ["web"],
   "changelogDate": "20231210053425",
-  "dto": "no",
-  "embedded": false,
   "entityTableName": "user_course",
   "fields": [
     {
@@ -12,15 +10,14 @@
     },
     {
       "fieldName": "userId",
-      "fieldType": "String",
+      "fieldType": "Long",
       "fieldValidateRules": ["required"]
     }
   ],
-  "fluentMethods": true,
   "jpaMetamodelFiltering": true,
   "name": "UserCourse",
   "pagination": "pagination",
-  "readOnly": false,
   "relationships": [],
+  "searchEngine": "no",
   "service": "serviceClass"
 }

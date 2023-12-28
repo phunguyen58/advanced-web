@@ -30,7 +30,7 @@ import tech.jhipster.web.util.ResponseUtil;
  * REST controller for managing {@link com.ptudw.web.domain.UserCourse}.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user-courses")
 public class UserCourseResource {
 
     private final Logger log = LoggerFactory.getLogger(UserCourseResource.class);
@@ -63,7 +63,7 @@ public class UserCourseResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new userCourse, or with status {@code 400 (Bad Request)} if the userCourse has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/user-courses")
+    @PostMapping("")
     public ResponseEntity<UserCourse> createUserCourse(@Valid @RequestBody UserCourse userCourse) throws URISyntaxException {
         log.debug("REST request to save UserCourse : {}", userCourse);
         if (userCourse.getId() != null) {
@@ -86,7 +86,7 @@ public class UserCourseResource {
      * or with status {@code 500 (Internal Server Error)} if the userCourse couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/user-courses/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserCourse> updateUserCourse(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody UserCourse userCourse
@@ -121,7 +121,7 @@ public class UserCourseResource {
      * or with status {@code 500 (Internal Server Error)} if the userCourse couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/user-courses/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<UserCourse> partialUpdateUserCourse(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody UserCourse userCourse
@@ -153,12 +153,13 @@ public class UserCourseResource {
      * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of userCourses in body.
      */
-    @GetMapping("/user-courses")
+    @GetMapping("")
     public ResponseEntity<List<UserCourse>> getAllUserCourses(
         UserCourseCriteria criteria,
         @org.springdoc.api.annotations.ParameterObject Pageable pageable
     ) {
         log.debug("REST request to get UserCourses by criteria: {}", criteria);
+
         Page<UserCourse> page = userCourseQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -170,7 +171,7 @@ public class UserCourseResource {
      * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
      */
-    @GetMapping("/user-courses/count")
+    @GetMapping("/count")
     public ResponseEntity<Long> countUserCourses(UserCourseCriteria criteria) {
         log.debug("REST request to count UserCourses by criteria: {}", criteria);
         return ResponseEntity.ok().body(userCourseQueryService.countByCriteria(criteria));
@@ -182,7 +183,7 @@ public class UserCourseResource {
      * @param id the id of the userCourse to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the userCourse, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/user-courses/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserCourse> getUserCourse(@PathVariable Long id) {
         log.debug("REST request to get UserCourse : {}", id);
         Optional<UserCourse> userCourse = userCourseService.findOne(id);
@@ -195,7 +196,7 @@ public class UserCourseResource {
      * @param id the id of the userCourse to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/user-courses/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserCourse(@PathVariable Long id) {
         log.debug("REST request to delete UserCourse : {}", id);
         userCourseService.delete(id);
