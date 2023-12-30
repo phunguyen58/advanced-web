@@ -1,10 +1,11 @@
 {
   "userManagement": {
     "home": {
-      "title": "Tài khoản",
+      "title": "Quản lý tài khoản",
       "refreshListLabel": "Refresh list",
       "createLabel": "Tạo tài khoản mới",
-      "createOrEditLabel": "Tạo hoặc sửa tài khoản"
+      "createOrEditLabel": "Tạo hoặc sửa tài khoản",
+      "editLabel": "Sửa tài khoản"
     },
     "created": "Một tài khoản mới đã được tạo với định danh {{ param }}",
     "updated": "Một tài khoản đã được cập nhật với định danh {{ param }}",
@@ -26,6 +27,7 @@
     "createdBy": "Người tạo",
     "createdDate": "Ngày tạo",
     "lastModifiedBy": "Người sửa",
-    "lastModifiedDate": "Ngày sửa"
+    "lastModifiedDate": "Ngày sửa",
+    "studentId": "Mã số sinh viên"
   }
 }
