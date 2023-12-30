@@ -77,14 +77,17 @@ export const UserManagementUpdate = () => {
   };
 
   const saveUser = values => {
-    values.authorities = userAuthorities;
-    values.activated = userActivated;
-    values.langKey = userLangKey ? userLangKey : 'en';
+    const submitedValues = {
+      ...values,
+      authorities: userAuthorities,
+      activated: userActivated,
+      langKey: userLangKey ? userLangKey : 'en',
+    };
 
     if (isNew) {
-      dispatch(createUser(values));
+      dispatch(createUser(submitedValues));
     } else {
-      dispatch(updateUser(values));
+      dispatch(updateUser(submitedValues));
     }
     handleClose();
   };
