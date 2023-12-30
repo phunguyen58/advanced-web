@@ -3,8 +3,14 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import './create-class-modal.scss';
+import { boolean } from 'yup';
 
-const CreateClassModal = ({ visible, setVisible, onCreateClass }) => {
+export interface ICreateClassModalProp {
+  visible: boolean;
+  setVisible: any;
+  onCreateClass: any;
+}
+const CreateClassModal = (prop: ICreateClassModalProp) => {
   const [className, setClassName] = useState('');
 
   const handleCreateClass = () => {
@@ -26,7 +32,7 @@ const CreateClassModal = ({ visible, setVisible, onCreateClass }) => {
     const invitationCode = 'invitationCode';
 
     // Call the onCreateClass function with the class name and generated properties
-    onCreateClass({
+    prop.onCreateClass({
       code,
       createdBy,
       createdDate,
@@ -41,7 +47,7 @@ const CreateClassModal = ({ visible, setVisible, onCreateClass }) => {
 
     // Clear the input and close the modal
     setClassName('');
-    setVisible(false);
+    prop.setVisible(false);
   };
 
   // Helper function to generate a random date within a reasonable range
@@ -59,13 +65,13 @@ const CreateClassModal = ({ visible, setVisible, onCreateClass }) => {
 
   const footerContent = (
     <div className="aw-footer-container">
-      <Button label="Cancel" icon="pi pi-times" onClick={() => setVisible(false)} className="aw-cancel-btn p-button-text" />
+      <Button label="Cancel" icon="pi pi-times" onClick={() => prop.setVisible(false)} className="aw-cancel-btn p-button-text" />
       <Button
         className="aw-create-btn"
         label="Create"
         icon="pi pi-check"
         onClick={() => {
-          setVisible(false);
+          prop.setVisible(false);
           handleCreateClass();
         }}
         autoFocus
@@ -77,9 +83,9 @@ const CreateClassModal = ({ visible, setVisible, onCreateClass }) => {
     <>
       <Dialog
         header="Create a New Class"
-        visible={visible}
+        visible={prop.visible}
         style={{ width: '50vw' }}
-        onHide={() => setVisible(false)}
+        onHide={() => prop.setVisible(false)}
         footer={footerContent}
         contentClassName="aw-dialog"
         className="aw-create-class-dialog-container"

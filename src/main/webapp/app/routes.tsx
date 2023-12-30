@@ -31,6 +31,11 @@ const Admin = Loadable({
   loading: () => loading,
 });
 
+const Teacher = Loadable({
+  loader: () => import(/* webpackChunkName: "teacher" */ 'app/modules/teacher'),
+  loading: () => loading,
+});
+
 const AppRoutes = () => {
   const location = useLocation();
   React.useEffect(() => {
@@ -63,6 +68,14 @@ const AppRoutes = () => {
           element={
             <PrivateRoute hasAnyAuthorities={[AUTHORITIES.ADMIN]}>
               <Admin />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="teacher/*"
+          element={
+            <PrivateRoute hasAnyAuthorities={[AUTHORITIES.TEACHER]}>
+              <Teacher />
             </PrivateRoute>
           }
         />
