@@ -9,18 +9,23 @@ import Metrics from './metrics/metrics';
 import Configuration from './configuration/configuration';
 import Docs from './docs/docs';
 import Tracker from './tracker/tracker';
+import { AdminSidebar } from 'app/shared/components/admin-sidebar/AdminSidebar';
+import './index.scss';
 
 const AdministrationRoutes = () => (
   <div>
-    <ErrorBoundaryRoutes>
-      <Route path="user-management/*" element={<UserManagement />} />
-      <Route path="tracker" element={<Tracker />} />
-      <Route path="health" element={<Health />} />
-      <Route path="metrics" element={<Metrics />} />
-      <Route path="configuration" element={<Configuration />} />
-      <Route path="logs" element={<Logs />} />
-      <Route path="docs" element={<Docs />} />
-    </ErrorBoundaryRoutes>
+    <AdminSidebar />
+    <div className="admin-content">
+      <ErrorBoundaryRoutes>
+        <Route path="user-management/*" element={<UserManagement />} />
+        <Route path="tracker" element={<Tracker />} />
+        <Route path="health" element={<Health />} />
+        <Route path="metrics" element={<Metrics />} />
+        <Route path="configuration" element={<Configuration />} />
+        <Route path="logs" element={<Logs />} />
+        <Route path="docs" element={<Docs />} />
+      </ErrorBoundaryRoutes>
+    </div>
   </div>
 );
 

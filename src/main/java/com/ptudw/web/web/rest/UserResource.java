@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.Collections;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -117,6 +118,10 @@ public class UserResource {
             throw new LoginAlreadyUsedException();
         } else if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
             throw new EmailAlreadyUsedException();
+        } else if (
+            StringUtils.isNotBlank(userDTO.getStudentId()) && userRepository.findOneByStudentId(userDTO.getStudentId()).isPresent()
+        ) {
+            throw new BadRequestAlertException("Student ID already existed", applicationName, "studentIdExisted");
         } else {
             User newUser = userService.createUser(userDTO);
             mailService.sendCreationEmail(newUser);
@@ -146,6 +151,13 @@ public class UserResource {
         existingUser = userRepository.findOneByLogin(userDTO.getLogin().toLowerCase());
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
             throw new LoginAlreadyUsedException();
+        }
+
+        if (StringUtils.isNotBlank(userDTO.getStudentId())) {
+            existingUser = userRepository.findOneByStudentId(userDTO.getStudentId());
+            if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
+                throw new BadRequestAlertException("Student ID already existed", applicationName, "studentIdExisted");
+            }
         }
         Optional<AdminUserDTO> updatedUser = userService.updateUser(userDTO);
 

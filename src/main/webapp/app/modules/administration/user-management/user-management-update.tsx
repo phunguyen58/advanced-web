@@ -1,20 +1,64 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Translate, ValidatedField, translate } from 'react-jhipster';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Button, Row, Col, FormText } from 'reactstrap';
-import { Translate, translate, ValidatedField, ValidatedForm, isEmail } from 'react-jhipster';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button, Col, FormText, Label, Row } from 'reactstrap';
 
-import { locales, languages } from 'app/config/translation';
-import { getUser, getRoles, updateUser, createUser, reset } from './user-management.reducer';
+import { AUTHORITIES } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
+import { languages, locales } from 'app/config/translation';
+import { hasAnyAuthority } from 'app/shared/auth/private-route';
+import { Field, Form, Formik } from 'formik';
+import { MultiSelect } from 'primereact/multiselect';
+import { Skeleton } from 'primereact/skeleton';
+import * as Yup from 'yup';
+import { createUser, getRoles, getUser, reset, updateUser } from './user-management.reducer';
 
 export const UserManagementUpdate = () => {
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
 
+  const [userAuthorities, setUserAuthorities] = useState([]);
+  const [userActivated, setUserActivated] = useState(false);
+  const [userLangKey, setUserLangKey] = useState('en');
+
   const { login } = useParams<'login'>();
   const isNew = login === undefined;
+
+  const validationSchema = Yup.object().shape({
+    login: Yup.string()
+      .required(translate('register.messages.validate.login.required'))
+      .matches(
+        /^[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$|^[_.@A-Za-z0-9-]+$/,
+        translate('register.messages.validate.login.pattern')
+      )
+      .min(1, translate('register.messages.validate.login.minlength'))
+      .max(50, translate('register.messages.validate.login.maxlength')),
+    firstName: Yup.string()
+      .required(translate('entity.validation.required'))
+      .max(50, translate('entity.validation.maxlength', { max: 50 })),
+    lastName: Yup.string()
+      .required(translate('entity.validation.required'))
+      .max(50, translate('entity.validation.maxlength', { max: 50 })),
+    email: Yup.string()
+      .required(translate('global.messages.validate.email.required'))
+      .min(5, translate('global.messages.validate.email.minlength'))
+      .max(254, translate('global.messages.validate.email.maxlength'))
+      .matches(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, translate('global.messages.validate.email.invalid')),
+    studentId: Yup.string().max(10, translate('entity.validation.maxlength', { max: 10 })),
+  });
+
+  const initialValues = {
+    id: null,
+    login: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    studentId: '',
+    authorities: [AUTHORITIES.USER],
+    activated: false,
+    langKey: 'en',
+  };
 
   useEffect(() => {
     if (isNew) {
@@ -33,6 +77,10 @@ export const UserManagementUpdate = () => {
   };
 
   const saveUser = values => {
+    values.authorities = userAuthorities;
+    values.activated = userActivated;
+    values.langKey = userLangKey ? userLangKey : 'en';
+
     if (isNew) {
       dispatch(createUser(values));
     } else {
@@ -47,137 +95,176 @@ export const UserManagementUpdate = () => {
   const updating = useAppSelector(state => state.userManagement.updating);
   const authorities = useAppSelector(state => state.userManagement.authorities);
 
+  useEffect(() => {
+    setUserAuthorities(user.authorities);
+    setUserActivated(user.activated);
+    setUserLangKey(user.langKey);
+  }, [user.authorities, user.activated, user.langKey]);
+
   return (
-    <div>
+    <div className="p-2">
       <Row className="justify-content-center">
-        <Col md="8">
+        <Col md="12">
           <h1>
-            <Translate contentKey="userManagement.home.createOrEditLabel">Create or edit a User</Translate>
+            {isNew ? (
+              <Translate contentKey="userManagement.home.createLabel">Create a User</Translate>
+            ) : (
+              <Translate contentKey="userManagement.home.editLabel">Edit a User</Translate>
+            )}
           </h1>
         </Col>
       </Row>
-      <Row className="justify-content-center">
-        <Col md="8">
-          {loading ? (
-            <p>Loading...</p>
-          ) : (
-            <ValidatedForm onSubmit={saveUser} defaultValues={user}>
-              {user.id ? (
-                <ValidatedField
-                  type="text"
-                  name="id"
-                  required
-                  readOnly
-                  label={translate('global.field.id')}
-                  validate={{ required: true }}
-                />
-              ) : null}
-              <ValidatedField
-                type="text"
-                name="login"
-                label={translate('userManagement.login')}
-                validate={{
-                  required: {
-                    value: true,
-                    message: translate('register.messages.validate.login.required'),
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$|^[_.@A-Za-z0-9-]+$/,
-                    message: translate('register.messages.validate.login.pattern'),
-                  },
-                  minLength: {
-                    value: 1,
-                    message: translate('register.messages.validate.login.minlength'),
-                  },
-                  maxLength: {
-                    value: 50,
-                    message: translate('register.messages.validate.login.maxlength'),
-                  },
-                }}
-              />
-              <ValidatedField
-                type="text"
-                name="firstName"
-                label={translate('userManagement.firstName')}
-                validate={{
-                  maxLength: {
-                    value: 50,
-                    message: translate('entity.validation.maxlength', { max: 50 }),
-                  },
-                }}
-              />
-              <ValidatedField
-                type="text"
-                name="lastName"
-                label={translate('userManagement.lastName')}
-                validate={{
-                  maxLength: {
-                    value: 50,
-                    message: translate('entity.validation.maxlength', { max: 50 }),
-                  },
-                }}
-              />
-              <FormText>This field cannot be longer than 50 characters.</FormText>
-              <ValidatedField
-                name="email"
-                label={translate('global.form.email.label')}
-                placeholder={translate('global.form.email.placeholder')}
-                type="email"
-                validate={{
-                  required: {
-                    value: true,
-                    message: translate('global.messages.validate.email.required'),
-                  },
-                  minLength: {
-                    value: 5,
-                    message: translate('global.messages.validate.email.minlength'),
-                  },
-                  maxLength: {
-                    value: 254,
-                    message: translate('global.messages.validate.email.maxlength'),
-                  },
-                  validate: v => isEmail(v) || translate('global.messages.validate.email.invalid'),
-                }}
-              />
-              <ValidatedField
-                type="checkbox"
-                name="activated"
-                check
-                value={true}
-                disabled={!user.id}
-                label={translate('userManagement.activated')}
-              />
-              <ValidatedField type="select" name="langKey" label={translate('userManagement.langKey')}>
-                {locales.map(locale => (
-                  <option value={locale} key={locale}>
-                    {languages[locale].name}
-                  </option>
-                ))}
-              </ValidatedField>
-              <ValidatedField type="select" name="authorities" multiple label={translate('userManagement.profiles')}>
-                {authorities.map(role => (
-                  <option value={role} key={role}>
-                    {role}
-                  </option>
-                ))}
-              </ValidatedField>
-              <Button tag={Link} to="/admin/user-management" replace color="info">
-                <FontAwesomeIcon icon="arrow-left" />
-                &nbsp;
-                <span className="d-none d-md-inline">
-                  <Translate contentKey="entity.action.back">Back</Translate>
-                </span>
-              </Button>
-              &nbsp;
-              <Button color="primary" type="submit" disabled={isInvalid || updating}>
-                <FontAwesomeIcon icon="save" />
-                &nbsp;
-                <Translate contentKey="entity.action.save">Save</Translate>
-              </Button>
-            </ValidatedForm>
-          )}
-        </Col>
-      </Row>
+
+      <div>
+        {loading ? (
+          <div>
+            <Skeleton className="mb-2"></Skeleton>
+            <Skeleton width="10rem" className="mb-2"></Skeleton>
+            <Skeleton width="5rem" className="mb-2"></Skeleton>
+            <Skeleton height="2rem" className="mb-2"></Skeleton>
+            <Skeleton width="10rem" height="4rem"></Skeleton>
+          </div>
+        ) : (
+          <div>
+            <Formik initialValues={isNew ? initialValues : user} validationSchema={validationSchema} onSubmit={saveUser}>
+              {({ touched, errors, values, handleChange, handleSubmit }) => (
+                <Form>
+                  <Row>
+                    {user.id ? (
+                      <Col md="6">
+                        <Label>{translate('global.field.id')}</Label>
+
+                        <Field className="field" type="text" name="id" required readOnly value={user.id} validate={{ required: true }} />
+                      </Col>
+                    ) : null}
+                    <Col md="6" className="mb-3">
+                      <Label>{translate('userManagement.login')}</Label>
+                      <Field
+                        className="field"
+                        type="text"
+                        name="login"
+                        value={values.login}
+                        readOnly={Boolean(user.login)}
+                        onChange={handleChange('login')}
+                      />
+                      {touched.login && errors.login && (
+                        <FormText color="danger">
+                          <span className="error-message">{errors.login as string}</span>
+                        </FormText>
+                      )}
+                    </Col>
+                    <Col md="6" className="mb-3">
+                      <Label>{translate('userManagement.firstName')}</Label>
+
+                      <Field className="field" type="text" name="firstName" value={values.firstName} onChange={handleChange('firstName')} />
+                      {touched.firstName && errors.firstName && (
+                        <FormText color="danger">
+                          <span className="error-message">{errors.firstName as string}</span>
+                        </FormText>
+                      )}
+                    </Col>
+                    <Col md="6" className="mb-3">
+                      <Label>{translate('userManagement.lastName')}</Label>
+
+                      <Field className="field" type="text" name="lastName" value={values.lastName} onChange={handleChange('lastName')} />
+                      {touched.lastName && errors.lastName && (
+                        <FormText color="danger">
+                          <span className="error-message">{errors.lastName as string}</span>
+                        </FormText>
+                      )}
+                    </Col>
+                    <Col md="6" className="mb-3">
+                      <Label>{translate('global.form.email.label')}</Label>
+                      <Field
+                        className="field"
+                        name="email"
+                        value={values.email}
+                        placeholder={translate('global.form.email.placeholder')}
+                        type="email"
+                        onChange={handleChange('email')}
+                      />
+                      {touched.email && errors.email && (
+                        <FormText color="danger">
+                          <span className="error-message">{errors.email as string}</span>
+                        </FormText>
+                      )}
+                    </Col>
+                    <Col md="6" className="mb-3">
+                      <ValidatedField
+                        type="select"
+                        name="langKey"
+                        label={translate('userManagement.langKey')}
+                        onChange={e => {
+                          setUserLangKey(e.target.value);
+                        }}
+                      >
+                        {locales.map(locale => (
+                          <option value={locale} key={locale}>
+                            {languages[locale].name}
+                          </option>
+                        ))}
+                      </ValidatedField>
+                    </Col>
+                    <Col md="6" className="mb-3">
+                      <div className="d-flex flex-column gap-2">
+                        <label>{translate('userManagement.profiles')}</label>
+                        <MultiSelect
+                          name="authorities"
+                          options={authorities}
+                          value={userAuthorities}
+                          onChange={e => {
+                            setUserAuthorities(e.value);
+                          }}
+                        />
+                      </div>
+                    </Col>
+                    {hasAnyAuthority(userAuthorities, [AUTHORITIES.STUDENT]) ? (
+                      <Col md="6" className="mb-3">
+                        <Label>{translate('userManagement.studentId')}</Label>
+                        <Field
+                          className="field"
+                          type="text"
+                          name="studentId"
+                          value={values.studentId}
+                          onChange={handleChange('studentId')}
+                        />
+                        {touched.studentId && errors.studentId && (
+                          <FormText color="danger">
+                            <span className="error-message">{errors.studentId as string}</span>
+                          </FormText>
+                        )}
+                      </Col>
+                    ) : null}
+                    {user.id ? (
+                      <Col md="6" className="mb-3">
+                        <Label>{translate('userManagement.activated')}</Label>
+                        <ValidatedField
+                          type="checkbox"
+                          name="activated"
+                          checked={userActivated}
+                          value={userActivated}
+                          onChange={e => setUserActivated(e.target.checked)}
+                        />
+                      </Col>
+                    ) : null}
+                  </Row>
+                  <div className="d-flex justify-content-end">
+                    <Button tag={Link} to="/admin/user-management" replace color="outline-dark">
+                      <span className="d-none d-md-inline">
+                        <Translate contentKey="entity.action.back">Back</Translate>
+                      </span>
+                    </Button>
+                    &nbsp;
+                    <Button color="success" type="submit" disabled={isInvalid || updating}>
+                      <Translate contentKey="entity.action.save">Save</Translate>
+                    </Button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
