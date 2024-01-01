@@ -28,6 +28,7 @@
     "createdDate": "Created date",
     "lastModifiedBy": "Modified by",
     "lastModifiedDate": "Modified date",
-    "studentId": "Student ID"
+    "studentId": "Student ID",
+    "importExcel": "Import Excel"
   }
 }

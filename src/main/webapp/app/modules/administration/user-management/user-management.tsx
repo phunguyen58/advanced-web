@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Table, Badge } from 'reactstrap';
 import { Translate, TextFormat, JhiPagination, JhiItemCount, getSortState, translate } from 'react-jhipster';
@@ -10,8 +10,11 @@ import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-u
 import { getUsersAsAdmin, updateUser } from './user-management.reducer';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import './index.scss';
+import axios from 'axios';
 
 export const UserManagement = () => {
+  const excelFileInputRef = useRef(null);
+
   const dispatch = useAppDispatch();
 
   const location = useLocation();
@@ -80,6 +83,33 @@ export const UserManagement = () => {
     );
   };
 
+  const onFileChange = event => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Replace 'YOUR_BACKEND_API_ENDPOINT' with the actual API endpoint to handle file uploads
+      axios
+        .post(`/api/upload/student-ids-mapping`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          console.log(response.data);
+          // Handle successful response from the backend
+          getUsersFromProps();
+          excelFileInputRef.current.value = '';
+        })
+        .catch(error => {
+          console.error('Error uploading file:', error);
+          // Handle error
+        });
+    }
+  };
+
   const account = useAppSelector(state => state.authentication.account);
   const users = useAppSelector(state => state.userManagement.users);
   const totalItems = useAppSelector(state => state.userManagement.totalItems);
@@ -91,9 +121,12 @@ export const UserManagement = () => {
         <Translate contentKey="userManagement.home.title">Users</Translate>
         <div className="d-flex justify-content-end">
           <Button className="me-2 btn-action" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            {/* <Translate contentKey="userManagement.home.refreshListLabel">Refresh List</Translate> */}
+            <FontAwesomeIcon icon="sync" spin={loading} />
           </Button>
+          <label htmlFor="fileInput" className="custom-file-upload">
+            {translate('userManagement.importExcel')}
+          </label>
+          <input id="fileInput" type="file" onChange={onFileChange} style={{ display: 'none' }} ref={excelFileInputRef} />
           <Link to="new" className="btn btn-success">
             <Translate contentKey="userManagement.home.createLabel">Create a new user</Translate>
           </Link>

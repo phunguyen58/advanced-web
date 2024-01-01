@@ -365,4 +365,31 @@ public class UserService {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
     }
+
+    public void mapStudentIdsByExcel(List<List<String>> data) {
+        Authority studentAuthority = new Authority();
+        studentAuthority.setName(AuthoritiesConstants.STUDENT);
+
+        List<User> usersToUpdate = new ArrayList<>();
+
+        Optional
+            .ofNullable(data)
+            .orElse(Collections.emptyList())
+            .stream()
+            .filter(Objects::nonNull)
+            .forEach(row -> {
+                if (row.size() == 2) {
+                    userRepository
+                        .findOneByLogin(row.get(0))
+                        .ifPresent(user -> {
+                            if (user.getAuthorities().contains(studentAuthority)) {
+                                user.setStudentId(row.get(1));
+                                usersToUpdate.add(user);
+                            }
+                        });
+                }
+            });
+
+        userRepository.saveAll(usersToUpdate);
+    }
 }
