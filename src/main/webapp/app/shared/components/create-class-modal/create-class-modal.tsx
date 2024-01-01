@@ -4,6 +4,9 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import './create-class-modal.scss';
 import { boolean } from 'yup';
+import { useAppDispatch, useAppSelector } from 'app/config/store';
+import { useNavigate } from 'react-router-dom';
+import { displayDefaultDateTime } from 'app/shared/util/date-utils';
 
 export interface ICreateClassModalProp {
   visible: boolean;
@@ -11,6 +14,17 @@ export interface ICreateClassModalProp {
   onCreateClass: any;
 }
 const CreateClassModal = (prop: ICreateClassModalProp) => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const account = useAppSelector(state => state.authentication.account);
+  const assignments = useAppSelector(state => state.assignment.entities);
+  const courseEntity = useAppSelector(state => state.course.entity);
+  const loading = useAppSelector(state => state.course.loading);
+  //TODO: handle loading and updating
+  const updating = useAppSelector(state => state.course.updating);
+  const updateSuccess = useAppSelector(state => state.course.updateSuccess);
+
   const [className, setClassName] = useState('');
 
   const handleCreateClass = () => {
@@ -21,10 +35,10 @@ const CreateClassModal = (prop: ICreateClassModalProp) => {
     }
 
     // Generate random values for other properties
-    const expirationDate = generateRandomDate();
-    const createdDate = new Date().toISOString();
-    const lastModifiedDate = new Date().toISOString();
-    const lastModifiedBy = 'admin';
+    const expirationDate = displayDefaultDateTime();
+    const createdDate = displayDefaultDateTime();
+    const lastModifiedDate = displayDefaultDateTime();
+    const lastModifiedBy = account.id;
     const gradeStructureId = generateRandomGradeStructureId();
     const isDeleted = false; // or generate randomly if needed
     const createdBy = 'admin'; // or get from authentication if available

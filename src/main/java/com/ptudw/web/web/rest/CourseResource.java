@@ -186,6 +186,20 @@ public class CourseResource {
     }
 
     /**
+     * {@code GET  /courses/:id} : get the "id" course.
+     *
+     * @param id the id of the course to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the course, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/courses/joined-course/{userId}")
+    //TODO: get all joined courses by userId
+    public ResponseEntity<Course> getJoinedCoursesByUserId(@PathVariable Long userId) {
+        log.debug("REST request to get all joined courses by userId : {}", userId);
+        Optional<Course> course = courseService.findOne(userId);
+        return ResponseUtil.wrapOrNotFound(course);
+    }
+
+    /**
      * {@code DELETE  /courses/:id} : delete the "id" course.
      *
      * @param id the id of the course to delete.
