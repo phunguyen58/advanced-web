@@ -15,6 +15,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
+import { joinAClass } from 'app/entities/course/course.reducer';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -52,9 +53,7 @@ const Header = (props: IHeaderProps) => {
   const [codeToJoinClass, setCodeToJoinClass] = useState('');
 
   const handleCodeEntry = () => {
-    // Perform the action you want when the code is entered
-    console.log('Code entered:', codeToJoinClass);
-    // You can trigger an API call, validation, or any other action here
+    dispatch(joinAClass(codeToJoinClass));
   };
   /* jhipster-needle-add-element-to-menu - JHipster will add new menu items here */
 

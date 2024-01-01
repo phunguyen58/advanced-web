@@ -28,7 +28,10 @@
       "createdDate": "Created Date",
       "lastModifiedBy": "Last Modified By",
       "lastModifiedDate": "Last Modified Date",
-      "assignments": "Assignments"
+      "assignments": "Assignments",
+      "coursejoinedsuccessfully": "Course joined successfully",
+      "coursejoinedsuccessfullyLink": "Successfully joined the course. Now you can access your couse by this link: ",
+      "coursejoinedfailure": "Course join failure. Please check the invitation code and try again."
     }
   }
 }

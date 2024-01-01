@@ -13,6 +13,7 @@ import com.ptudw.web.service.criteria.UserCourseCriteria;
 import com.ptudw.web.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -228,7 +229,7 @@ public class CourseResource {
             .build();
     }
 
-    @PostMapping("/invitation/{ivitationcode}")
+    @PostMapping("/courses/invitation/{invitationCode}")
     public ResponseEntity<Course> joinCourseByInvitationCode(@PathVariable String invitationCode) throws URISyntaxException {
         log.debug("REST request to join Course by invitation code: {}", invitationCode);
         CourseCriteria criteria = new CourseCriteria();
@@ -241,7 +242,12 @@ public class CourseResource {
             throw new BadRequestAlertException("Invalid user", ENTITY_NAME, "userinvalid");
         }
 
-        Course course = courseQueryService.findByCriteria(criteria).get(0);
+        Course course = Optional
+            .ofNullable(courseQueryService.findByCriteria(criteria))
+            .orElse(Collections.emptyList())
+            .stream()
+            .findFirst()
+            .orElse(null);
         if (course == null) {
             throw new BadRequestAlertException("Invalid invitation code", ENTITY_NAME, "invitationcodeinvalid");
         }
@@ -262,8 +268,8 @@ public class CourseResource {
         this.courseService.joinCourseByInvitationCode(course, user.get());
 
         return ResponseEntity
-            .created(new URI("/api/courses/" + course.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, course.getId().toString()))
+            .ok()
+            .headers(HeaderUtil.createAlert(applicationName, "webApp.course.coursejoinedsuccessfully", course.getId().toString()))
             .body(course);
     }
 }
