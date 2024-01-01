@@ -11,6 +11,7 @@ import { getUsersAsAdmin, updateUser } from './user-management.reducer';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import './index.scss';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 export const UserManagement = () => {
   const excelFileInputRef = useRef(null);
@@ -102,6 +103,9 @@ export const UserManagement = () => {
           // Handle successful response from the backend
           getUsersFromProps();
           excelFileInputRef.current.value = '';
+          toast.success(translate('userManagement.updateStudentIds'), {
+            position: toast.POSITION.TOP_LEFT,
+          });
         })
         .catch(error => {
           console.error('Error uploading file:', error);

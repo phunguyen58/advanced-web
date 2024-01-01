@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -40,6 +41,8 @@ public class UserService {
     private final AuthorityRepository authorityRepository;
 
     private final CacheManager cacheManager;
+
+    private static final int MAX_COL_EACH_ROW_STUDENT_ID_EXCEL = 2;
 
     public UserService(
         UserRepository userRepository,
@@ -370,6 +373,17 @@ public class UserService {
         Authority studentAuthority = new Authority();
         studentAuthority.setName(AuthoritiesConstants.STUDENT);
 
+        List<String> logins = Optional
+            .ofNullable(data)
+            .orElse(Collections.emptyList())
+            .stream()
+            .filter(Objects::nonNull)
+            .filter(row -> row.size() == MAX_COL_EACH_ROW_STUDENT_ID_EXCEL) // max column number in each row of Student Id excel template is 2
+            .map(row -> row.get(0))
+            .filter(StringUtils::isNotBlank)
+            .collect(Collectors.toList());
+
+        List<User> users = userRepository.findByLoginIn(logins);
         List<User> usersToUpdate = new ArrayList<>();
 
         Optional
@@ -378,15 +392,20 @@ public class UserService {
             .stream()
             .filter(Objects::nonNull)
             .forEach(row -> {
-                if (row.size() == 2) {
-                    userRepository
-                        .findOneByLogin(row.get(0))
-                        .ifPresent(user -> {
-                            if (user.getAuthorities().contains(studentAuthority)) {
-                                user.setStudentId(row.get(1));
-                                usersToUpdate.add(user);
-                            }
-                        });
+                User user = Optional
+                    .ofNullable(users)
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .filter(u -> StringUtils.equals(row.get(0), u.getLogin()))
+                    .findFirst()
+                    .orElse(null);
+
+                if (Objects.nonNull(user)) {
+                    if (user.getAuthorities().contains(studentAuthority)) {
+                        user.setStudentId(row.get(1));
+                        usersToUpdate.add(user);
+                    }
                 }
             });
 

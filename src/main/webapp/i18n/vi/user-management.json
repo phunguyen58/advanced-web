@@ -29,6 +29,7 @@
     "lastModifiedBy": "Người sửa",
     "lastModifiedDate": "Ngày sửa",
     "studentId": "Mã số sinh viên",
-    "importExcel": "Nhập file Excel"
+    "importExcel": "Nhập file Excel",
+    "updateStudentIds": "Đã cập nhật các mã số sinh viên"
   }
 }

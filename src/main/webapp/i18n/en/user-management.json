@@ -29,6 +29,7 @@
     "lastModifiedBy": "Modified by",
     "lastModifiedDate": "Modified date",
     "studentId": "Student ID",
-    "importExcel": "Import Excel"
+    "importExcel": "Import Excel",
+    "updateStudentIds": "Updated student IDs"
   }
 }
