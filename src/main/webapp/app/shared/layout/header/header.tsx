@@ -1,7 +1,7 @@
 import './header.scss';
 
 import React, { useState } from 'react';
-import { Translate, Storage } from 'react-jhipster';
+import { Translate, Storage, translate } from 'react-jhipster';
 import { Navbar, Nav, NavbarToggler, Collapse, NavItem, NavLink } from 'reactstrap';
 import LoadingBar from 'react-redux-loading-bar';
 
@@ -67,7 +67,7 @@ const Header = (props: IHeaderProps) => {
   return (
     <div id="app-header">
       <Dialog
-        header="Join a course"
+        header={translate('webApp.course.joinacourse')}
         draggable={false}
         resizable={false}
         visible={isDisplayedJoinClass}
@@ -75,7 +75,9 @@ const Header = (props: IHeaderProps) => {
         onHide={() => toggleJoinClassPanel(false)}
       >
         <div className="d-flex flex-column">
-          <span className="align-self-center">Enter code to join course</span>
+          <span className="align-self-center">
+            <Translate contentKey="webApp.course.enterinvitationcode" />
+          </span>
           <p className="d-flex flex-column m-0 gap-2 align-items-center">
             <InputText
               className="w-100"
@@ -83,7 +85,13 @@ const Header = (props: IHeaderProps) => {
               onChange={e => setCodeToJoinClass(e.target.value)}
               onKeyDown={handleKeyDown}
             />
-            <Button disabled={!codeToJoinClass} className="w-50" label="Join" icon="pi pi-external-link" onClick={handleCodeEntry} />
+            <Button
+              disabled={!codeToJoinClass}
+              className="w-50"
+              label={translate('webApp.course.join')}
+              icon="pi pi-external-link"
+              onClick={handleCodeEntry}
+            />
           </p>
         </div>
       </Dialog>
@@ -94,7 +102,13 @@ const Header = (props: IHeaderProps) => {
         <NavbarToggler style={{ background: '#000' }} aria-label="Menu" onClick={toggleMenu} />
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ms-auto" navbar>
-            {props.isAuthenticated && <Button label="Join course" icon="pi pi-external-link" onClick={() => toggleJoinClassPanel(true)} />}
+            {props.isAuthenticated && (
+              <Button
+                label={translate('webApp.course.joinacourse')}
+                icon="pi pi-external-link"
+                onClick={() => toggleJoinClassPanel(true)}
+              />
+            )}
             <Home />
             {!props.isAuthenticated && (
               <NavItem active={true}>
