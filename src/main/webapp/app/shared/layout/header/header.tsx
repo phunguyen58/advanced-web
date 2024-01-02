@@ -71,8 +71,8 @@ const Header = (props: IHeaderProps) => {
       {/* {renderDevRibbon()} */}
       <LoadingBar className="loading-bar" />
       <Navbar data-cy="navbar" dark expand="md" fixed="top" className="jh-navbar">
-        <NavbarToggler aria-label="Menu" onClick={toggleMenu} />
         <Brand />
+        <NavbarToggler style={{ background: '#000' }} aria-label="Menu" onClick={toggleMenu} />
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ms-auto" navbar>
             <Button label="Join course" icon="pi pi-external-link" onClick={() => toggleJoinClassPanel(true)} />
@@ -84,10 +84,10 @@ const Header = (props: IHeaderProps) => {
                 </NavLink>
               </NavItem>
             )}
-            {props.isAuthenticated && <EntitiesMenu />}
+            {/* {props.isAuthenticated && <EntitiesMenu />}
             {props.isAuthenticated && props.isAdmin && (
               <AdminMenu showOpenAPI={props.isOpenAPIEnabled} showDatabase={!props.isInProduction} />
-            )}
+            )} */}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />
             <AccountMenu isAuthenticated={props.isAuthenticated} />
           </Nav>

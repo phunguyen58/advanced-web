@@ -1,0 +1,44 @@
+.aw-card-container {
+  display: flex;
+  flex-direction: column;
+  width: 290px;
+  height: 329px;
+  border-radius: 10px;
+  justify-content: space-between;
+  .aw-card-header-image {
+    border-radius: 10px 10px 0 0;
+  }
+
+  .aw-content-container {
+    top: 0;
+    padding-top: 8px;
+    padding-left: 8px;
+    justify-content: space-between;
+    .aw-card-title {
+      color: whitesmoke;
+      text-align: left;
+      font-family: 'Metropolis';
+      font-size: 25px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+    }
+    .aw-card-description {
+      color: whitesmoke;
+      text-align: left;
+      font-family: 'Metropolis';
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 30px; /* 187.5% */
+    }
+  }
+  .aw-detail-btn {
+    border-radius: 5px;
+    background: #9c4df4;
+  }
+}
+
+.p-card-body {
+  border-top: 1px solid silver;
+}

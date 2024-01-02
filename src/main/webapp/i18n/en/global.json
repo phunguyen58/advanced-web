@@ -148,7 +148,9 @@
     },
     "invitationcodeinvalid": "Invalid invitation code",
     "userinvalid": "Invalid user",
-    "useralreadyjoined": "User already joined"
+    "useralreadyjoined": "User already joined",
+    "studentIdExisted": "Student ID already existed"
+
   },
   "footer": "This is your footer"
 }

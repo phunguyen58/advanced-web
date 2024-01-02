@@ -16,8 +16,10 @@ import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
 import { sendActivity } from 'app/config/websocket-middleware';
 import Landing from './modules/landing/landing';
+import { AdminSidebar } from './shared/components/admin-sidebar/AdminSidebar';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
-const loading = <div>loading ...</div>;
+const loading = <ProgressSpinner className="d-flex justify-content-center align-items-center" />;
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -26,6 +28,11 @@ const Account = Loadable({
 
 const Admin = Loadable({
   loader: () => import(/* webpackChunkName: "administration" */ 'app/modules/administration'),
+  loading: () => loading,
+});
+
+const Teacher = Loadable({
+  loader: () => import(/* webpackChunkName: "teacher" */ 'app/modules/teacher'),
   loading: () => loading,
 });
 
@@ -61,6 +68,14 @@ const AppRoutes = () => {
           element={
             <PrivateRoute hasAnyAuthorities={[AUTHORITIES.ADMIN]}>
               <Admin />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="teacher/*"
+          element={
+            <PrivateRoute hasAnyAuthorities={[AUTHORITIES.TEACHER]}>
+              <Teacher />
             </PrivateRoute>
           }
         />

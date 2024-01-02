@@ -22,7 +22,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity
 @Table(name = "jhi_user")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User extends AbstractAuditingEntity<Long> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -81,6 +80,9 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
 
     @Column(name = "reset_date")
     private Instant resetDate = null;
+
+    @Column(name = "student_id", unique = true)
+    private String studentId;
 
     @JsonIgnore
     @ManyToMany
@@ -198,6 +200,14 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
         this.authorities = authorities;
     }
 
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -227,6 +237,7 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
             ", activated='" + activated + '\'' +
             ", langKey='" + langKey + '\'' +
             ", activationKey='" + activationKey + '\'' +
+            ", studentId='" + studentId + '\'' +
             "}";
     }
 }

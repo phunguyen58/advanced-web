@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -40,6 +41,8 @@ public class UserService {
     private final AuthorityRepository authorityRepository;
 
     private final CacheManager cacheManager;
+
+    private static final int MAX_COL_EACH_ROW_STUDENT_ID_EXCEL = 2;
 
     public UserService(
         UserRepository userRepository,
@@ -205,6 +208,7 @@ public class UserService {
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
+        user.setStudentId(userDTO.getStudentId());
         if (userDTO.getAuthorities() != null) {
             Set<Authority> authorities = userDTO
                 .getAuthorities()
@@ -243,6 +247,7 @@ public class UserService {
                 user.setImageUrl(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());
                 user.setLangKey(userDTO.getLangKey());
+                user.setStudentId(userDTO.getStudentId());
                 Set<Authority> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();
                 userDTO
@@ -362,5 +367,48 @@ public class UserService {
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
+    }
+
+    public void mapStudentIdsByExcel(List<List<String>> data) {
+        Authority studentAuthority = new Authority();
+        studentAuthority.setName(AuthoritiesConstants.STUDENT);
+
+        List<String> logins = Optional
+            .ofNullable(data)
+            .orElse(Collections.emptyList())
+            .stream()
+            .filter(Objects::nonNull)
+            .filter(row -> row.size() == MAX_COL_EACH_ROW_STUDENT_ID_EXCEL) // max column number in each row of Student Id excel template is 2
+            .map(row -> row.get(0))
+            .filter(StringUtils::isNotBlank)
+            .collect(Collectors.toList());
+
+        List<User> users = userRepository.findByLoginIn(logins);
+        List<User> usersToUpdate = new ArrayList<>();
+
+        Optional
+            .ofNullable(data)
+            .orElse(Collections.emptyList())
+            .stream()
+            .filter(Objects::nonNull)
+            .forEach(row -> {
+                User user = Optional
+                    .ofNullable(users)
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .filter(u -> StringUtils.equals(row.get(0), u.getLogin()))
+                    .findFirst()
+                    .orElse(null);
+
+                if (Objects.nonNull(user)) {
+                    if (user.getAuthorities().contains(studentAuthority)) {
+                        user.setStudentId(row.get(1));
+                        usersToUpdate.add(user);
+                    }
+                }
+            });
+
+        userRepository.saveAll(usersToUpdate);
     }
 }
