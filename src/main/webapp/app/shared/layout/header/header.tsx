@@ -12,6 +12,10 @@ import { setLocale } from 'app/shared/reducers/locale';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { joinAClass } from 'app/entities/course/course.reducer';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -44,10 +48,45 @@ const Header = (props: IHeaderProps) => {
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
+  const [isDisplayedJoinClass, toggleJoinClassPanel] = useState(false);
+
+  const [codeToJoinClass, setCodeToJoinClass] = useState('');
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent default behavior (e.g., form submission)
+      handleCodeEntry();
+    }
+  };
+
+  const handleCodeEntry = () => {
+    dispatch(joinAClass(codeToJoinClass));
+  };
   /* jhipster-needle-add-element-to-menu - JHipster will add new menu items here */
 
   return (
     <div id="app-header">
+      <Dialog
+        header="Join a course"
+        draggable={false}
+        resizable={false}
+        visible={isDisplayedJoinClass}
+        style={{ width: '30vw' }}
+        onHide={() => toggleJoinClassPanel(false)}
+      >
+        <div className="d-flex flex-column">
+          <span className="align-self-center">Enter code to join course</span>
+          <p className="d-flex flex-column m-0 gap-2 align-items-center">
+            <InputText
+              className="w-100"
+              value={codeToJoinClass}
+              onChange={e => setCodeToJoinClass(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            <Button disabled={!codeToJoinClass} className="w-50" label="Join" icon="pi pi-external-link" onClick={handleCodeEntry} />
+          </p>
+        </div>
+      </Dialog>
       {/* {renderDevRibbon()} */}
       <LoadingBar className="loading-bar" />
       <Navbar data-cy="navbar" dark expand="md" fixed="top" className="jh-navbar">
@@ -55,6 +94,7 @@ const Header = (props: IHeaderProps) => {
         <NavbarToggler style={{ background: '#000' }} aria-label="Menu" onClick={toggleMenu} />
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ms-auto" navbar>
+            {props.isAuthenticated && <Button label="Join course" icon="pi pi-external-link" onClick={() => toggleJoinClassPanel(true)} />}
             <Home />
             {!props.isAuthenticated && (
               <NavItem active={true}>
@@ -63,10 +103,6 @@ const Header = (props: IHeaderProps) => {
                 </NavLink>
               </NavItem>
             )}
-            {/* {props.isAuthenticated && <EntitiesMenu />}
-            {props.isAuthenticated && props.isAdmin && (
-              <AdminMenu showOpenAPI={props.isOpenAPIEnabled} showDatabase={!props.isInProduction} />
-            )} */}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />
             <AccountMenu isAuthenticated={props.isAuthenticated} />
           </Nav>

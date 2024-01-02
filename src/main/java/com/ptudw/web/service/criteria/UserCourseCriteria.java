@@ -25,7 +25,7 @@ public class UserCourseCriteria implements Serializable, Criteria {
 
     private LongFilter courseId;
 
-    private StringFilter userId;
+    private LongFilter userId;
 
     private Boolean distinct;
 
@@ -73,18 +73,18 @@ public class UserCourseCriteria implements Serializable, Criteria {
         this.courseId = courseId;
     }
 
-    public StringFilter getUserId() {
+    public LongFilter getUserId() {
         return userId;
     }
 
-    public StringFilter userId() {
+    public LongFilter userId() {
         if (userId == null) {
-            userId = new StringFilter();
+            userId = new LongFilter();
         }
         return userId;
     }
 
-    public void setUserId(StringFilter userId) {
+    public void setUserId(LongFilter userId) {
         this.userId = userId;
     }
 

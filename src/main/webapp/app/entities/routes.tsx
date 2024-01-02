@@ -12,6 +12,7 @@ import Assignment from './assignment';
 import AssignmentGrade from './assignment-grade';
 import CourseGrade from './course-grade';
 import UserCourse from './user-course';
+import InvitationLink from './invitation-link/invitation-link';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 export default () => {
@@ -28,6 +29,7 @@ export default () => {
         <Route path="assignment-grade/*" element={<AssignmentGrade />} />
         <Route path="course-grade/*" element={<CourseGrade />} />
         <Route path="user-course/*" element={<UserCourse />} />
+        <Route path="invitation/:invitationCode" element={<InvitationLink />} />
         {/* jhipster-needle-add-route-path - JHipster will add routes here */}
       </ErrorBoundaryRoutes>
     </div>
