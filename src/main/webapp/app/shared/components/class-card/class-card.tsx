@@ -16,8 +16,7 @@ export default function ClassCard(prop: IClassCardProp) {
   };
   const header = (
     <div className="position-relative">
-      {/* <img alt="Card" src="https://primefaces.org/cdn/primereact/images/usercard.png" /> */}
-      <img className="aw-card-header-image" src="../../../../content/images/title-area-left-background-holiday.jpg" alt="" />
+      <img className="aw-card-header-image" src="content/images/title-area-left-background-holiday.jpg" alt="" />
       <div className="d-flex flex-column position-absolute aw-content-container">
         <span className="aw-card-title">{prop.course.name}</span>
         <span className="aw-card-description">{prop.course.name}</span>
