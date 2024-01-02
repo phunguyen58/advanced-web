@@ -14,9 +14,9 @@ export const InvitationLink = () => {
     if (invitationCode) {
       dispatch(joinAClass(invitationCode))
         .then(response => {
-          const payload = response.payload as { data: { id: string } };
-          idCourse = payload.data.id;
-          window.location.href = `/course/${idCourse}`;
+          // const payload = response.payload as { data: { id: string } };
+          // idCourse = payload.data.id;
+          // window.location.href = `/course/${idCourse}`;
           isSuccessful = true;
         })
         .catch(err => {
@@ -26,10 +26,9 @@ export const InvitationLink = () => {
   }, [dispatch, invitationCode]);
   return (
     <div className="p-4">
-      <h2>Joining Course with invitation code: {invitationCode}</h2>
-      <span>isSuccessful: {isSuccessful}</span>
-      <span>isFailure: {isFailure}</span>
-      {isSuccessful && (
+      <h2>Joining Course by invitation code: {invitationCode}</h2>
+
+      {/* {isSuccessful && (
         <span>
           <Translate contentKey="webApp.course.coursejoinedsuccessfullyLink"></Translate>
         </span>
@@ -38,7 +37,7 @@ export const InvitationLink = () => {
         <span>
           <Translate contentKey="webApp.course.coursejoinedfailure"></Translate>
         </span>
-      )}
+      )} */}
     </div>
   );
 };

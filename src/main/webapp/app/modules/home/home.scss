@@ -1,0 +1,60 @@
+/* ==========================================================================
+Main page styles
+========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+.home {
+  height: 100vh;
+  background: url('../../../content/images/Background-2.png');
+  background-size: 100% 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .title {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+
+    .logo-container {
+      padding: 10px;
+      border-radius: 5px;
+      background: #63a2ed;
+
+      .logo {
+        width: 84px;
+        height: 84px;
+        background: #63a2ed;
+      }
+    }
+
+    .title-text-container {
+      .title-text {
+        color: #0a033c;
+        text-align: center;
+        font-size: 84px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+        font-family: 'Roboto', sans-serif;
+      }
+    }
+  }
+
+  .introduction {
+    margin-top: 70px;
+    display: flex;
+    justify-content: center;
+
+    .introduction-text {
+      color: #0a033c;
+      font-family: 'Roboto', sans-serif;
+      font-size: 40px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 50px; /* 125% */
+    }
+  }
+}
