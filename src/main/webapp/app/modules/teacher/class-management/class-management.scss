@@ -1,0 +1,28 @@
+// Override Boostrap variables
+// Import Bootstrap source files from node_modules
+@import '~bootstrap/scss/bootstrap';
+@import '/src/main/webapp/content/scss/typography';
+
+.aw-class-management-container {
+  background-color: #efebf5;
+  .aw-dialog {
+    display: flex;
+    //   height: 400px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-top: 20px;
+  }
+  .aw-create-class-btn {
+    background-color: #9c4df4;
+    border-radius: 5px;
+  }
+
+  .aw-footer-container {
+    display: flex;
+    justify-content: flex-end;
+  }
+  button {
+    box-shadow: none;
+    border: none;
+  }
+}
