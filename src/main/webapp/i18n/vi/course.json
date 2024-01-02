@@ -31,7 +31,10 @@
       "assignments": "Assignments",
       "coursejoinedsuccessfully": "Tham gia khóa học thành công",
       "coursejoinedsuccessfullyLink": "Tham gia khóa học thành công. Bấm vào đường dẫn bên dưới để xem chi tiết khóa học",
-      "coursejoinedfailure": "Tham gia khóa học thất bại. Xin vui lòng kiểm tra lại mã thư mời"
+      "coursejoinedfailure": "Tham gia khóa học thất bại. Xin vui lòng kiểm tra lại mã thư mời",
+      "joinacourse": "Tham gia khóa học",
+      "enterinvitationcode": "Nhập mã thư mời",
+      "join": "Tham gia"
     }
   }
 }
