@@ -13,6 +13,7 @@ import com.ptudw.web.service.criteria.UserCourseCriteria;
 import com.ptudw.web.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -264,6 +265,11 @@ public class CourseResource {
             .orElse(null);
         if (course == null) {
             throw new BadRequestAlertException("Invalid invitation code", ENTITY_NAME, "invitationcodeinvalid");
+        }
+
+        boolean isExpiredInvitation = course.getExpirationDate().isBefore(ZonedDateTime.now());
+        if (isExpiredInvitation) {
+            throw new BadRequestAlertException("Invitation code is expired", ENTITY_NAME, "invitationcodeexpired");
         }
 
         UserCourseCriteria userCourseCriteria = new UserCourseCriteria();
