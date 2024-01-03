@@ -3,8 +3,6 @@ package com.ptudw.web.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
@@ -54,10 +52,9 @@ public class AssignmentGrade implements Serializable {
     @Column(name = "last_modified_date", nullable = false)
     private ZonedDateTime lastModifiedDate;
 
-    @OneToMany(mappedBy = "assignmentGrades")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "courses", "assignmentGrades" }, allowSetters = true)
-    private Set<Assignment> assignments = new HashSet<>();
+    @ManyToOne
+    @JsonIgnoreProperties(value = { "assignmentGrades", "course", "gradeComposition" }, allowSetters = true)
+    private Assignment assignment;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -165,34 +162,16 @@ public class AssignmentGrade implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public Set<Assignment> getAssignments() {
-        return this.assignments;
+    public Assignment getAssignment() {
+        return this.assignment;
     }
 
-    public void setAssignments(Set<Assignment> assignments) {
-        if (this.assignments != null) {
-            this.assignments.forEach(i -> i.setAssignmentGrades(null));
-        }
-        if (assignments != null) {
-            assignments.forEach(i -> i.setAssignmentGrades(this));
-        }
-        this.assignments = assignments;
+    public void setAssignment(Assignment assignment) {
+        this.assignment = assignment;
     }
 
-    public AssignmentGrade assignments(Set<Assignment> assignments) {
-        this.setAssignments(assignments);
-        return this;
-    }
-
-    public AssignmentGrade addAssignment(Assignment assignment) {
-        this.assignments.add(assignment);
-        assignment.setAssignmentGrades(this);
-        return this;
-    }
-
-    public AssignmentGrade removeAssignment(Assignment assignment) {
-        this.assignments.remove(assignment);
-        assignment.setAssignmentGrades(null);
+    public AssignmentGrade assignment(Assignment assignment) {
+        this.setAssignment(assignment);
         return this;
     }
 

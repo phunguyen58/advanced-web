@@ -82,7 +82,7 @@ public class UserCourse implements Serializable {
         if (!(o instanceof UserCourse)) {
             return false;
         }
-        return getId() != null && getId().equals(((UserCourse) o).getId());
+        return id != null && id.equals(((UserCourse) o).id);
     }
 
     @Override

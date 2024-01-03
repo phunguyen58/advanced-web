@@ -26,7 +26,9 @@
       "lastModifiedBy": "Last Modified By",
       "lastModifiedDate": "Last Modified Date",
       "type": "Type",
-      "gradeStructure": "Grade Structure"
+      "isPublic": "Is Public",
+      "assignments": "Assignments",
+      "course": "Course"
     }
   }
 }

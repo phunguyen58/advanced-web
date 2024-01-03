@@ -3,15 +3,9 @@ package com.ptudw.web.service.criteria;
 import com.ptudw.web.domain.enumeration.GradeType;
 import java.io.Serializable;
 import java.util.Objects;
+import org.springdoc.api.annotations.ParameterObject;
 import tech.jhipster.service.Criteria;
-import tech.jhipster.service.filter.BooleanFilter;
-import tech.jhipster.service.filter.DoubleFilter;
-import tech.jhipster.service.filter.Filter;
-import tech.jhipster.service.filter.FloatFilter;
-import tech.jhipster.service.filter.IntegerFilter;
-import tech.jhipster.service.filter.LongFilter;
-import tech.jhipster.service.filter.StringFilter;
-import tech.jhipster.service.filter.ZonedDateTimeFilter;
+import tech.jhipster.service.filter.*;
 
 /**
  * Criteria class for the {@link com.ptudw.web.domain.GradeComposition} entity. This class is used
@@ -22,6 +16,8 @@ import tech.jhipster.service.filter.ZonedDateTimeFilter;
  * As Spring is unable to properly convert the types, unless specific {@link Filter} class are used, we need to use
  * fix type specific filters.
  */
+@ParameterObject
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class GradeCompositionCriteria implements Serializable, Criteria {
 
     /**
@@ -61,7 +57,11 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
 
     private GradeTypeFilter type;
 
-    private LongFilter gradeStructureId;
+    private BooleanFilter isPublic;
+
+    private LongFilter assignmentsId;
+
+    private LongFilter courseId;
 
     private Boolean distinct;
 
@@ -77,7 +77,9 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         this.lastModifiedBy = other.lastModifiedBy == null ? null : other.lastModifiedBy.copy();
         this.lastModifiedDate = other.lastModifiedDate == null ? null : other.lastModifiedDate.copy();
         this.type = other.type == null ? null : other.type.copy();
-        this.gradeStructureId = other.gradeStructureId == null ? null : other.gradeStructureId.copy();
+        this.isPublic = other.isPublic == null ? null : other.isPublic.copy();
+        this.assignmentsId = other.assignmentsId == null ? null : other.assignmentsId.copy();
+        this.courseId = other.courseId == null ? null : other.courseId.copy();
         this.distinct = other.distinct;
     }
 
@@ -221,19 +223,49 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         this.type = type;
     }
 
-    public LongFilter getGradeStructureId() {
-        return gradeStructureId;
+    public BooleanFilter getIsPublic() {
+        return isPublic;
     }
 
-    public LongFilter gradeStructureId() {
-        if (gradeStructureId == null) {
-            gradeStructureId = new LongFilter();
+    public BooleanFilter isPublic() {
+        if (isPublic == null) {
+            isPublic = new BooleanFilter();
         }
-        return gradeStructureId;
+        return isPublic;
     }
 
-    public void setGradeStructureId(LongFilter gradeStructureId) {
-        this.gradeStructureId = gradeStructureId;
+    public void setIsPublic(BooleanFilter isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public LongFilter getAssignmentsId() {
+        return assignmentsId;
+    }
+
+    public LongFilter assignmentsId() {
+        if (assignmentsId == null) {
+            assignmentsId = new LongFilter();
+        }
+        return assignmentsId;
+    }
+
+    public void setAssignmentsId(LongFilter assignmentsId) {
+        this.assignmentsId = assignmentsId;
+    }
+
+    public LongFilter getCourseId() {
+        return courseId;
+    }
+
+    public LongFilter courseId() {
+        if (courseId == null) {
+            courseId = new LongFilter();
+        }
+        return courseId;
+    }
+
+    public void setCourseId(LongFilter courseId) {
+        this.courseId = courseId;
     }
 
     public Boolean getDistinct() {
@@ -263,7 +295,9 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
             Objects.equals(lastModifiedBy, that.lastModifiedBy) &&
             Objects.equals(lastModifiedDate, that.lastModifiedDate) &&
             Objects.equals(type, that.type) &&
-            Objects.equals(gradeStructureId, that.gradeStructureId) &&
+            Objects.equals(isPublic, that.isPublic) &&
+            Objects.equals(assignmentsId, that.assignmentsId) &&
+            Objects.equals(courseId, that.courseId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -280,7 +314,9 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
             lastModifiedBy,
             lastModifiedDate,
             type,
-            gradeStructureId,
+            isPublic,
+            assignmentsId,
+            courseId,
             distinct
         );
     }
@@ -298,7 +334,9 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
             (lastModifiedBy != null ? "lastModifiedBy=" + lastModifiedBy + ", " : "") +
             (lastModifiedDate != null ? "lastModifiedDate=" + lastModifiedDate + ", " : "") +
             (type != null ? "type=" + type + ", " : "") +
-            (gradeStructureId != null ? "gradeStructureId=" + gradeStructureId + ", " : "") +
+            (isPublic != null ? "isPublic=" + isPublic + ", " : "") +
+            (assignmentsId != null ? "assignmentsId=" + assignmentsId + ", " : "") +
+            (courseId != null ? "courseId=" + courseId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

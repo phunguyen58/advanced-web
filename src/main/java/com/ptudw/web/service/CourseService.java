@@ -74,14 +74,17 @@ public class CourseService {
                 if (course.getName() != null) {
                     existingCourse.setName(course.getName());
                 }
+                if (course.getOwnerId() != null) {
+                    existingCourse.setOwnerId(course.getOwnerId());
+                }
+                if (course.getDescription() != null) {
+                    existingCourse.setDescription(course.getDescription());
+                }
                 if (course.getInvitationCode() != null) {
                     existingCourse.setInvitationCode(course.getInvitationCode());
                 }
                 if (course.getExpirationDate() != null) {
                     existingCourse.setExpirationDate(course.getExpirationDate());
-                }
-                if (course.getGradeStructureId() != null) {
-                    existingCourse.setGradeStructureId(course.getGradeStructureId());
                 }
                 if (course.getIsDeleted() != null) {
                     existingCourse.setIsDeleted(course.getIsDeleted());

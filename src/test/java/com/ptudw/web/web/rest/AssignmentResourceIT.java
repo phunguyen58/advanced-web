@@ -10,6 +10,7 @@ import com.ptudw.web.IntegrationTest;
 import com.ptudw.web.domain.Assignment;
 import com.ptudw.web.domain.AssignmentGrade;
 import com.ptudw.web.domain.Course;
+import com.ptudw.web.domain.GradeComposition;
 import com.ptudw.web.repository.AssignmentRepository;
 import com.ptudw.web.service.criteria.AssignmentCriteria;
 import java.time.Instant;
@@ -39,6 +40,9 @@ class AssignmentResourceIT {
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
+
+    private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
+    private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
     private static final Long DEFAULT_WEIGHT = 1L;
     private static final Long UPDATED_WEIGHT = 2L;
@@ -87,6 +91,7 @@ class AssignmentResourceIT {
     public static Assignment createEntity(EntityManager em) {
         Assignment assignment = new Assignment()
             .name(DEFAULT_NAME)
+            .description(DEFAULT_DESCRIPTION)
             .weight(DEFAULT_WEIGHT)
             .isDeleted(DEFAULT_IS_DELETED)
             .createdBy(DEFAULT_CREATED_BY)
@@ -105,6 +110,7 @@ class AssignmentResourceIT {
     public static Assignment createUpdatedEntity(EntityManager em) {
         Assignment assignment = new Assignment()
             .name(UPDATED_NAME)
+            .description(UPDATED_DESCRIPTION)
             .weight(UPDATED_WEIGHT)
             .isDeleted(UPDATED_IS_DELETED)
             .createdBy(UPDATED_CREATED_BY)
@@ -133,6 +139,7 @@ class AssignmentResourceIT {
         assertThat(assignmentList).hasSize(databaseSizeBeforeCreate + 1);
         Assignment testAssignment = assignmentList.get(assignmentList.size() - 1);
         assertThat(testAssignment.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testAssignment.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testAssignment.getWeight()).isEqualTo(DEFAULT_WEIGHT);
         assertThat(testAssignment.getIsDeleted()).isEqualTo(DEFAULT_IS_DELETED);
         assertThat(testAssignment.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
@@ -257,6 +264,7 @@ class AssignmentResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(assignment.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].weight").value(hasItem(DEFAULT_WEIGHT.intValue())))
             .andExpect(jsonPath("$.[*].isDeleted").value(hasItem(DEFAULT_IS_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
@@ -278,6 +286,7 @@ class AssignmentResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(assignment.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
             .andExpect(jsonPath("$.weight").value(DEFAULT_WEIGHT.intValue()))
             .andExpect(jsonPath("$.isDeleted").value(DEFAULT_IS_DELETED.booleanValue()))
             .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
@@ -367,6 +376,71 @@ class AssignmentResourceIT {
 
         // Get all the assignmentList where name does not contain UPDATED_NAME
         defaultAssignmentShouldBeFound("name.doesNotContain=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllAssignmentsByDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        assignmentRepository.saveAndFlush(assignment);
+
+        // Get all the assignmentList where description equals to DEFAULT_DESCRIPTION
+        defaultAssignmentShouldBeFound("description.equals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the assignmentList where description equals to UPDATED_DESCRIPTION
+        defaultAssignmentShouldNotBeFound("description.equals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllAssignmentsByDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        assignmentRepository.saveAndFlush(assignment);
+
+        // Get all the assignmentList where description in DEFAULT_DESCRIPTION or UPDATED_DESCRIPTION
+        defaultAssignmentShouldBeFound("description.in=" + DEFAULT_DESCRIPTION + "," + UPDATED_DESCRIPTION);
+
+        // Get all the assignmentList where description equals to UPDATED_DESCRIPTION
+        defaultAssignmentShouldNotBeFound("description.in=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllAssignmentsByDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        assignmentRepository.saveAndFlush(assignment);
+
+        // Get all the assignmentList where description is not null
+        defaultAssignmentShouldBeFound("description.specified=true");
+
+        // Get all the assignmentList where description is null
+        defaultAssignmentShouldNotBeFound("description.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllAssignmentsByDescriptionContainsSomething() throws Exception {
+        // Initialize the database
+        assignmentRepository.saveAndFlush(assignment);
+
+        // Get all the assignmentList where description contains DEFAULT_DESCRIPTION
+        defaultAssignmentShouldBeFound("description.contains=" + DEFAULT_DESCRIPTION);
+
+        // Get all the assignmentList where description contains UPDATED_DESCRIPTION
+        defaultAssignmentShouldNotBeFound("description.contains=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllAssignmentsByDescriptionNotContainsSomething() throws Exception {
+        // Initialize the database
+        assignmentRepository.saveAndFlush(assignment);
+
+        // Get all the assignmentList where description does not contain DEFAULT_DESCRIPTION
+        defaultAssignmentShouldNotBeFound("description.doesNotContain=" + DEFAULT_DESCRIPTION);
+
+        // Get all the assignmentList where description does not contain UPDATED_DESCRIPTION
+        defaultAssignmentShouldBeFound("description.doesNotContain=" + UPDATED_DESCRIPTION);
     }
 
     @Test
@@ -813,6 +887,29 @@ class AssignmentResourceIT {
 
     @Test
     @Transactional
+    void getAllAssignmentsByAssignmentGradesIsEqualToSomething() throws Exception {
+        AssignmentGrade assignmentGrades;
+        if (TestUtil.findAll(em, AssignmentGrade.class).isEmpty()) {
+            assignmentRepository.saveAndFlush(assignment);
+            assignmentGrades = AssignmentGradeResourceIT.createEntity(em);
+        } else {
+            assignmentGrades = TestUtil.findAll(em, AssignmentGrade.class).get(0);
+        }
+        em.persist(assignmentGrades);
+        em.flush();
+        assignment.addAssignmentGrades(assignmentGrades);
+        assignmentRepository.saveAndFlush(assignment);
+        Long assignmentGradesId = assignmentGrades.getId();
+
+        // Get all the assignmentList where assignmentGrades equals to assignmentGradesId
+        defaultAssignmentShouldBeFound("assignmentGradesId.equals=" + assignmentGradesId);
+
+        // Get all the assignmentList where assignmentGrades equals to (assignmentGradesId + 1)
+        defaultAssignmentShouldNotBeFound("assignmentGradesId.equals=" + (assignmentGradesId + 1));
+    }
+
+    @Test
+    @Transactional
     void getAllAssignmentsByCourseIsEqualToSomething() throws Exception {
         Course course;
         if (TestUtil.findAll(em, Course.class).isEmpty()) {
@@ -823,7 +920,7 @@ class AssignmentResourceIT {
         }
         em.persist(course);
         em.flush();
-        assignment.addCourse(course);
+        assignment.setCourse(course);
         assignmentRepository.saveAndFlush(assignment);
         Long courseId = course.getId();
 
@@ -836,25 +933,25 @@ class AssignmentResourceIT {
 
     @Test
     @Transactional
-    void getAllAssignmentsByAssignmentGradesIsEqualToSomething() throws Exception {
-        AssignmentGrade assignmentGrades;
-        if (TestUtil.findAll(em, AssignmentGrade.class).isEmpty()) {
+    void getAllAssignmentsByGradeCompositionIsEqualToSomething() throws Exception {
+        GradeComposition gradeComposition;
+        if (TestUtil.findAll(em, GradeComposition.class).isEmpty()) {
             assignmentRepository.saveAndFlush(assignment);
-            assignmentGrades = AssignmentGradeResourceIT.createEntity(em);
+            gradeComposition = GradeCompositionResourceIT.createEntity(em);
         } else {
-            assignmentGrades = TestUtil.findAll(em, AssignmentGrade.class).get(0);
+            gradeComposition = TestUtil.findAll(em, GradeComposition.class).get(0);
         }
-        em.persist(assignmentGrades);
+        em.persist(gradeComposition);
         em.flush();
-        assignment.setAssignmentGrades(assignmentGrades);
+        assignment.setGradeComposition(gradeComposition);
         assignmentRepository.saveAndFlush(assignment);
-        Long assignmentGradesId = assignmentGrades.getId();
+        Long gradeCompositionId = gradeComposition.getId();
 
-        // Get all the assignmentList where assignmentGrades equals to assignmentGradesId
-        defaultAssignmentShouldBeFound("assignmentGradesId.equals=" + assignmentGradesId);
+        // Get all the assignmentList where gradeComposition equals to gradeCompositionId
+        defaultAssignmentShouldBeFound("gradeCompositionId.equals=" + gradeCompositionId);
 
-        // Get all the assignmentList where assignmentGrades equals to (assignmentGradesId + 1)
-        defaultAssignmentShouldNotBeFound("assignmentGradesId.equals=" + (assignmentGradesId + 1));
+        // Get all the assignmentList where gradeComposition equals to (gradeCompositionId + 1)
+        defaultAssignmentShouldNotBeFound("gradeCompositionId.equals=" + (gradeCompositionId + 1));
     }
 
     /**
@@ -867,6 +964,7 @@ class AssignmentResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(assignment.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].weight").value(hasItem(DEFAULT_WEIGHT.intValue())))
             .andExpect(jsonPath("$.[*].isDeleted").value(hasItem(DEFAULT_IS_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
@@ -922,6 +1020,7 @@ class AssignmentResourceIT {
         em.detach(updatedAssignment);
         updatedAssignment
             .name(UPDATED_NAME)
+            .description(UPDATED_DESCRIPTION)
             .weight(UPDATED_WEIGHT)
             .isDeleted(UPDATED_IS_DELETED)
             .createdBy(UPDATED_CREATED_BY)
@@ -942,6 +1041,7 @@ class AssignmentResourceIT {
         assertThat(assignmentList).hasSize(databaseSizeBeforeUpdate);
         Assignment testAssignment = assignmentList.get(assignmentList.size() - 1);
         assertThat(testAssignment.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testAssignment.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testAssignment.getWeight()).isEqualTo(UPDATED_WEIGHT);
         assertThat(testAssignment.getIsDeleted()).isEqualTo(UPDATED_IS_DELETED);
         assertThat(testAssignment.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
@@ -1020,7 +1120,8 @@ class AssignmentResourceIT {
 
         partialUpdatedAssignment
             .name(UPDATED_NAME)
-            .weight(UPDATED_WEIGHT)
+            .description(UPDATED_DESCRIPTION)
+            .createdBy(UPDATED_CREATED_BY)
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
             .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
@@ -1038,9 +1139,10 @@ class AssignmentResourceIT {
         assertThat(assignmentList).hasSize(databaseSizeBeforeUpdate);
         Assignment testAssignment = assignmentList.get(assignmentList.size() - 1);
         assertThat(testAssignment.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testAssignment.getWeight()).isEqualTo(UPDATED_WEIGHT);
+        assertThat(testAssignment.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testAssignment.getWeight()).isEqualTo(DEFAULT_WEIGHT);
         assertThat(testAssignment.getIsDeleted()).isEqualTo(DEFAULT_IS_DELETED);
-        assertThat(testAssignment.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
+        assertThat(testAssignment.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
         assertThat(testAssignment.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
         assertThat(testAssignment.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
         assertThat(testAssignment.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
@@ -1060,6 +1162,7 @@ class AssignmentResourceIT {
 
         partialUpdatedAssignment
             .name(UPDATED_NAME)
+            .description(UPDATED_DESCRIPTION)
             .weight(UPDATED_WEIGHT)
             .isDeleted(UPDATED_IS_DELETED)
             .createdBy(UPDATED_CREATED_BY)
@@ -1080,6 +1183,7 @@ class AssignmentResourceIT {
         assertThat(assignmentList).hasSize(databaseSizeBeforeUpdate);
         Assignment testAssignment = assignmentList.get(assignmentList.size() - 1);
         assertThat(testAssignment.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testAssignment.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testAssignment.getWeight()).isEqualTo(UPDATED_WEIGHT);
         assertThat(testAssignment.getIsDeleted()).isEqualTo(UPDATED_IS_DELETED);
         assertThat(testAssignment.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);

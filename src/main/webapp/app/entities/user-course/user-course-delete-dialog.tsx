@@ -10,7 +10,7 @@ import { getEntity, deleteEntity } from './user-course.reducer';
 export const UserCourseDeleteDialog = () => {
   const dispatch = useAppDispatch();
 
-  const pageLocation = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams<'id'>();
 
@@ -25,7 +25,7 @@ export const UserCourseDeleteDialog = () => {
   const updateSuccess = useAppSelector(state => state.userCourse.updateSuccess);
 
   const handleClose = () => {
-    navigate('/user-course' + pageLocation.search);
+    navigate('/user-course' + location.search);
   };
 
   useEffect(() => {

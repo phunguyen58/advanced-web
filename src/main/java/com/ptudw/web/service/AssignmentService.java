@@ -62,6 +62,9 @@ public class AssignmentService {
                 if (assignment.getName() != null) {
                     existingAssignment.setName(assignment.getName());
                 }
+                if (assignment.getDescription() != null) {
+                    existingAssignment.setDescription(assignment.getDescription());
+                }
                 if (assignment.getWeight() != null) {
                     existingAssignment.setWeight(assignment.getWeight());
                 }

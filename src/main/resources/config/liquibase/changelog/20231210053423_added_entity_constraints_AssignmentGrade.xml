@@ -4,14 +4,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <!--
-        Added the constraints for entity GradeComposition.
+        Added the constraints for entity AssignmentGrade.
     -->
-    <changeSet id="20231210053421-2" author="jhipster">
+    <changeSet id="20231210053423-2" author="jhipster">
 
-        <addForeignKeyConstraint baseColumnNames="course_id"
-                                 baseTableName="grade_composition"
-                                 constraintName="fk_grade_composition__course_id"
+        <addForeignKeyConstraint baseColumnNames="assignment_id"
+                                 baseTableName="assignment_grade"
+                                 constraintName="fk_assignment_grade__assignment_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="course"/>
+                                 referencedTableName="assignment"/>
     </changeSet>
 </databaseChangeLog>

@@ -82,6 +82,10 @@ export const AssignmentGradeDetail = () => {
               <TextFormat value={assignmentGradeEntity.lastModifiedDate} type="date" format={APP_DATE_FORMAT} />
             ) : null}
           </dd>
+          <dt>
+            <Translate contentKey="webApp.assignmentGrade.assignment">Assignment</Translate>
+          </dt>
+          <dd>{assignmentGradeEntity.assignment ? assignmentGradeEntity.assignment.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/assignment-grade" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

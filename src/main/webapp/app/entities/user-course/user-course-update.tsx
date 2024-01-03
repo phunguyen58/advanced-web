@@ -42,18 +42,7 @@ export const UserCourseUpdate = () => {
     }
   }, [updateSuccess]);
 
-  // eslint-disable-next-line complexity
   const saveEntity = values => {
-    if (values.id !== undefined && typeof values.id !== 'number') {
-      values.id = Number(values.id);
-    }
-    if (values.courseId !== undefined && typeof values.courseId !== 'number') {
-      values.courseId = Number(values.courseId);
-    }
-    if (values.userId !== undefined && typeof values.userId !== 'number') {
-      values.userId = Number(values.userId);
-    }
-
     const entity = {
       ...userCourseEntity,
       ...values,

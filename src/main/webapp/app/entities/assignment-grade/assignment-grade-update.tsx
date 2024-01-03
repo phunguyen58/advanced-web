@@ -8,6 +8,8 @@ import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateT
 import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
+import { IAssignment } from 'app/shared/model/assignment.model';
+import { getEntities as getAssignments } from 'app/entities/assignment/assignment.reducer';
 import { IAssignmentGrade } from 'app/shared/model/assignment-grade.model';
 import { getEntity, updateEntity, createEntity, reset } from './assignment-grade.reducer';
 
@@ -19,6 +21,7 @@ export const AssignmentGradeUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
+  const assignments = useAppSelector(state => state.assignment.entities);
   const assignmentGradeEntity = useAppSelector(state => state.assignmentGrade.entity);
   const loading = useAppSelector(state => state.assignmentGrade.loading);
   const updating = useAppSelector(state => state.assignmentGrade.updating);
@@ -34,6 +37,8 @@ export const AssignmentGradeUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
+
+    dispatch(getAssignments({}));
   }, []);
 
   useEffect(() => {
@@ -49,6 +54,7 @@ export const AssignmentGradeUpdate = () => {
     const entity = {
       ...assignmentGradeEntity,
       ...values,
+      assignment: assignments.find(it => it.id.toString() === values.assignment.toString()),
     };
 
     if (isNew) {
@@ -68,6 +74,7 @@ export const AssignmentGradeUpdate = () => {
           ...assignmentGradeEntity,
           createdDate: convertDateTimeFromServer(assignmentGradeEntity.createdDate),
           lastModifiedDate: convertDateTimeFromServer(assignmentGradeEntity.lastModifiedDate),
+          assignment: assignmentGradeEntity?.assignment?.id,
         };
 
   return (
@@ -166,6 +173,22 @@ export const AssignmentGradeUpdate = () => {
                   required: { value: true, message: translate('entity.validation.required') },
                 }}
               />
+              <ValidatedField
+                id="assignment-grade-assignment"
+                name="assignment"
+                data-cy="assignment"
+                label={translate('webApp.assignmentGrade.assignment')}
+                type="select"
+              >
+                <option value="" key="0" />
+                {assignments
+                  ? assignments.map(otherEntity => (
+                      <option value={otherEntity.id} key={otherEntity.id}>
+                        {otherEntity.id}
+                      </option>
+                    ))
+                  : null}
+              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/assignment-grade" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

@@ -91,14 +91,17 @@ public class CourseQueryService extends QueryService<Course> {
             if (criteria.getName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getName(), Course_.name));
             }
+            if (criteria.getOwnerId() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getOwnerId(), Course_.ownerId));
+            }
+            if (criteria.getDescription() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getDescription(), Course_.description));
+            }
             if (criteria.getInvitationCode() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getInvitationCode(), Course_.invitationCode));
             }
             if (criteria.getExpirationDate() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getExpirationDate(), Course_.expirationDate));
-            }
-            if (criteria.getGradeStructureId() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getGradeStructureId(), Course_.gradeStructureId));
             }
             if (criteria.getIsDeleted() != null) {
                 specification = specification.and(buildSpecification(criteria.getIsDeleted(), Course_.isDeleted));
@@ -121,6 +124,15 @@ public class CourseQueryService extends QueryService<Course> {
                         buildSpecification(
                             criteria.getAssignmentsId(),
                             root -> root.join(Course_.assignments, JoinType.LEFT).get(Assignment_.id)
+                        )
+                    );
+            }
+            if (criteria.getGradeCompositionsId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(
+                            criteria.getGradeCompositionsId(),
+                            root -> root.join(Course_.gradeCompositions, JoinType.LEFT).get(GradeComposition_.id)
                         )
                     );
             }

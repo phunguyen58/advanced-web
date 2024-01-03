@@ -39,6 +39,12 @@ export const AssignmentDetail = () => {
           </dt>
           <dd>{assignmentEntity.name}</dd>
           <dt>
+            <span id="description">
+              <Translate contentKey="webApp.assignment.description">Description</Translate>
+            </span>
+          </dt>
+          <dd>{assignmentEntity.description}</dd>
+          <dt>
             <span id="weight">
               <Translate contentKey="webApp.assignment.weight">Weight</Translate>
             </span>
@@ -81,9 +87,13 @@ export const AssignmentDetail = () => {
             ) : null}
           </dd>
           <dt>
-            <Translate contentKey="webApp.assignment.assignmentGrades">Assignment Grades</Translate>
+            <Translate contentKey="webApp.assignment.course">Course</Translate>
           </dt>
-          <dd>{assignmentEntity.assignmentGrades ? assignmentEntity.assignmentGrades.id : ''}</dd>
+          <dd>{assignmentEntity.course ? assignmentEntity.course.id : ''}</dd>
+          <dt>
+            <Translate contentKey="webApp.assignment.gradeComposition">Grade Composition</Translate>
+          </dt>
+          <dd>{assignmentEntity.gradeComposition ? assignmentEntity.gradeComposition.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/assignment" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

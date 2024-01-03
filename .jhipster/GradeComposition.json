@@ -41,8 +41,12 @@
     {
       "fieldName": "type",
       "fieldType": "GradeType",
-      "fieldValues": "PERCENTAGE,POINT,NONE",
-      "fieldValidateRules": ["required"]
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PERCENTAGE,POINT,NONE"
+    },
+    {
+      "fieldName": "isPublic",
+      "fieldType": "Boolean"
     }
   ],
   "fluentMethods": true,
@@ -52,10 +56,16 @@
   "readOnly": false,
   "relationships": [
     {
-      "relationshipType": "many-to-one",
-      "otherEntityName": "gradeStructure",
+      "otherEntityName": "assignment",
+      "otherEntityRelationshipName": "gradeComposition",
+      "relationshipName": "assignments",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "course",
       "otherEntityRelationshipName": "gradeCompositions",
-      "relationshipName": "gradeStructure"
+      "relationshipName": "course",
+      "relationshipType": "many-to-one"
     }
   ],
   "service": "serviceClass"

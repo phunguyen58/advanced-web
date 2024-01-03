@@ -37,8 +37,8 @@
     {
       "fieldName": "type",
       "fieldType": "GradeType",
-      "fieldValues": "PERCENTAGE,POINT,NONE",
-      "fieldValidateRules": ["required"]
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PERCENTAGE,POINT,NONE"
     }
   ],
   "fluentMethods": true,
@@ -46,13 +46,6 @@
   "name": "GradeStructure",
   "pagination": "pagination",
   "readOnly": false,
-  "relationships": [
-    {
-      "relationshipType": "one-to-many",
-      "otherEntityName": "gradeComposition",
-      "otherEntityRelationshipName": "gradeStructure",
-      "relationshipName": "gradeCompositions"
-    }
-  ],
+  "relationships": [],
   "service": "serviceClass"
 }

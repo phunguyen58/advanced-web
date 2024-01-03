@@ -4,9 +4,10 @@ import { Button, Row, Col } from 'reactstrap';
 import { Translate, TextFormat } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { getEntity } from './grade-composition.reducer';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
+
+import { getEntity } from './grade-composition.reducer';
 
 export const GradeCompositionDetail = () => {
   const dispatch = useAppDispatch();
@@ -88,9 +89,15 @@ export const GradeCompositionDetail = () => {
           </dt>
           <dd>{gradeCompositionEntity.type}</dd>
           <dt>
-            <Translate contentKey="webApp.gradeComposition.gradeStructure">Grade Structure</Translate>
+            <span id="isPublic">
+              <Translate contentKey="webApp.gradeComposition.isPublic">Is Public</Translate>
+            </span>
           </dt>
-          <dd>{gradeCompositionEntity.gradeStructure ? gradeCompositionEntity.gradeStructure.id : ''}</dd>
+          <dd>{gradeCompositionEntity.isPublic ? 'true' : 'false'}</dd>
+          <dt>
+            <Translate contentKey="webApp.gradeComposition.course">Course</Translate>
+          </dt>
+          <dd>{gradeCompositionEntity.course ? gradeCompositionEntity.course.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/grade-composition" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

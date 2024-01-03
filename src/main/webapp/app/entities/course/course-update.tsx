@@ -8,8 +8,6 @@ import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateT
 import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { IAssignment } from 'app/shared/model/assignment.model';
-import { getEntities as getAssignments } from 'app/entities/assignment/assignment.reducer';
 import { ICourse } from 'app/shared/model/course.model';
 import { getEntity, updateEntity, createEntity, reset } from './course.reducer';
 
@@ -21,7 +19,6 @@ export const CourseUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const assignments = useAppSelector(state => state.assignment.entities);
   const courseEntity = useAppSelector(state => state.course.entity);
   const loading = useAppSelector(state => state.course.loading);
   const updating = useAppSelector(state => state.course.updating);
@@ -37,8 +34,6 @@ export const CourseUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getAssignments({}));
   }, []);
 
   useEffect(() => {
@@ -55,7 +50,6 @@ export const CourseUpdate = () => {
     const entity = {
       ...courseEntity,
       ...values,
-      assignments: assignments.find(it => it.id.toString() === values.assignments.toString()),
     };
 
     if (isNew) {
@@ -77,7 +71,6 @@ export const CourseUpdate = () => {
           expirationDate: convertDateTimeFromServer(courseEntity.expirationDate),
           createdDate: convertDateTimeFromServer(courseEntity.createdDate),
           lastModifiedDate: convertDateTimeFromServer(courseEntity.lastModifiedDate),
-          assignments: courseEntity?.assignments?.id,
         };
 
   return (
@@ -126,6 +119,24 @@ export const CourseUpdate = () => {
                 }}
               />
               <ValidatedField
+                label={translate('webApp.course.ownerId')}
+                id="course-ownerId"
+                name="ownerId"
+                data-cy="ownerId"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
+              <ValidatedField
+                label={translate('webApp.course.description')}
+                id="course-description"
+                name="description"
+                data-cy="description"
+                type="text"
+              />
+              <ValidatedField
                 label={translate('webApp.course.invitationCode')}
                 id="course-invitationCode"
                 name="invitationCode"
@@ -142,17 +153,6 @@ export const CourseUpdate = () => {
                 data-cy="expirationDate"
                 type="datetime-local"
                 placeholder="YYYY-MM-DD HH:mm"
-              />
-              <ValidatedField
-                label={translate('webApp.course.gradeStructureId')}
-                id="course-gradeStructureId"
-                name="gradeStructureId"
-                data-cy="gradeStructureId"
-                type="text"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                  validate: v => isNumber(v) || translate('entity.validation.number'),
-                }}
               />
               <ValidatedField
                 label={translate('webApp.course.isDeleted')}
@@ -204,22 +204,6 @@ export const CourseUpdate = () => {
                   required: { value: true, message: translate('entity.validation.required') },
                 }}
               />
-              <ValidatedField
-                id="course-assignments"
-                name="assignments"
-                data-cy="assignments"
-                label={translate('webApp.course.assignments')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {assignments
-                  ? assignments.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.id}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/course" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

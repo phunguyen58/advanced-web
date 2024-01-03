@@ -19,14 +19,16 @@
       },
       "id": "ID",
       "name": "Name",
+      "description": "Description",
       "weight": "Weight",
       "isDeleted": "Is Deleted",
       "createdBy": "Created By",
       "createdDate": "Created Date",
       "lastModifiedBy": "Last Modified By",
       "lastModifiedDate": "Last Modified Date",
+      "assignmentGrades": "Assignment Grades",
       "course": "Course",
-      "assignmentGrades": "Assignment Grades"
+      "gradeComposition": "Grade Composition"
     }
   }
 }

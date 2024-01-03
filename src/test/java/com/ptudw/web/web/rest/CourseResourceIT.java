@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.ptudw.web.IntegrationTest;
 import com.ptudw.web.domain.Assignment;
 import com.ptudw.web.domain.Course;
+import com.ptudw.web.domain.GradeComposition;
 import com.ptudw.web.repository.CourseRepository;
 import com.ptudw.web.service.criteria.CourseCriteria;
 import java.time.Instant;
@@ -42,16 +43,19 @@ class CourseResourceIT {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
+    private static final Long DEFAULT_OWNER_ID = 1L;
+    private static final Long UPDATED_OWNER_ID = 2L;
+    private static final Long SMALLER_OWNER_ID = 1L - 1L;
+
+    private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
+    private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
+
     private static final String DEFAULT_INVITATION_CODE = "AAAAAAAAAA";
     private static final String UPDATED_INVITATION_CODE = "BBBBBBBBBB";
 
     private static final ZonedDateTime DEFAULT_EXPIRATION_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_EXPIRATION_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
     private static final ZonedDateTime SMALLER_EXPIRATION_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
-
-    private static final Long DEFAULT_GRADE_STRUCTURE_ID = 1L;
-    private static final Long UPDATED_GRADE_STRUCTURE_ID = 2L;
-    private static final Long SMALLER_GRADE_STRUCTURE_ID = 1L - 1L;
 
     private static final Boolean DEFAULT_IS_DELETED = false;
     private static final Boolean UPDATED_IS_DELETED = true;
@@ -97,9 +101,10 @@ class CourseResourceIT {
         Course course = new Course()
             .code(DEFAULT_CODE)
             .name(DEFAULT_NAME)
+            .ownerId(DEFAULT_OWNER_ID)
+            .description(DEFAULT_DESCRIPTION)
             .invitationCode(DEFAULT_INVITATION_CODE)
             .expirationDate(DEFAULT_EXPIRATION_DATE)
-            .gradeStructureId(DEFAULT_GRADE_STRUCTURE_ID)
             .isDeleted(DEFAULT_IS_DELETED)
             .createdBy(DEFAULT_CREATED_BY)
             .createdDate(DEFAULT_CREATED_DATE)
@@ -118,9 +123,10 @@ class CourseResourceIT {
         Course course = new Course()
             .code(UPDATED_CODE)
             .name(UPDATED_NAME)
+            .ownerId(UPDATED_OWNER_ID)
+            .description(UPDATED_DESCRIPTION)
             .invitationCode(UPDATED_INVITATION_CODE)
             .expirationDate(UPDATED_EXPIRATION_DATE)
-            .gradeStructureId(UPDATED_GRADE_STRUCTURE_ID)
             .isDeleted(UPDATED_IS_DELETED)
             .createdBy(UPDATED_CREATED_BY)
             .createdDate(UPDATED_CREATED_DATE)
@@ -149,9 +155,10 @@ class CourseResourceIT {
         Course testCourse = courseList.get(courseList.size() - 1);
         assertThat(testCourse.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testCourse.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testCourse.getOwnerId()).isEqualTo(DEFAULT_OWNER_ID);
+        assertThat(testCourse.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testCourse.getInvitationCode()).isEqualTo(DEFAULT_INVITATION_CODE);
         assertThat(testCourse.getExpirationDate()).isEqualTo(DEFAULT_EXPIRATION_DATE);
-        assertThat(testCourse.getGradeStructureId()).isEqualTo(DEFAULT_GRADE_STRUCTURE_ID);
         assertThat(testCourse.getIsDeleted()).isEqualTo(DEFAULT_IS_DELETED);
         assertThat(testCourse.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
         assertThat(testCourse.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
@@ -213,10 +220,10 @@ class CourseResourceIT {
 
     @Test
     @Transactional
-    void checkInvitationCodeIsRequired() throws Exception {
+    void checkOwnerIdIsRequired() throws Exception {
         int databaseSizeBeforeTest = courseRepository.findAll().size();
         // set the field null
-        course.setInvitationCode(null);
+        course.setOwnerId(null);
 
         // Create the Course, which fails.
 
@@ -230,10 +237,10 @@ class CourseResourceIT {
 
     @Test
     @Transactional
-    void checkGradeStructureIdIsRequired() throws Exception {
+    void checkInvitationCodeIsRequired() throws Exception {
         int databaseSizeBeforeTest = courseRepository.findAll().size();
         // set the field null
-        course.setGradeStructureId(null);
+        course.setInvitationCode(null);
 
         // Create the Course, which fails.
 
@@ -327,9 +334,10 @@ class CourseResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(course.getId().intValue())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].ownerId").value(hasItem(DEFAULT_OWNER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].invitationCode").value(hasItem(DEFAULT_INVITATION_CODE)))
             .andExpect(jsonPath("$.[*].expirationDate").value(hasItem(sameInstant(DEFAULT_EXPIRATION_DATE))))
-            .andExpect(jsonPath("$.[*].gradeStructureId").value(hasItem(DEFAULT_GRADE_STRUCTURE_ID.intValue())))
             .andExpect(jsonPath("$.[*].isDeleted").value(hasItem(DEFAULT_IS_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
@@ -351,9 +359,10 @@ class CourseResourceIT {
             .andExpect(jsonPath("$.id").value(course.getId().intValue()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+            .andExpect(jsonPath("$.ownerId").value(DEFAULT_OWNER_ID.intValue()))
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
             .andExpect(jsonPath("$.invitationCode").value(DEFAULT_INVITATION_CODE))
             .andExpect(jsonPath("$.expirationDate").value(sameInstant(DEFAULT_EXPIRATION_DATE)))
-            .andExpect(jsonPath("$.gradeStructureId").value(DEFAULT_GRADE_STRUCTURE_ID.intValue()))
             .andExpect(jsonPath("$.isDeleted").value(DEFAULT_IS_DELETED.booleanValue()))
             .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
@@ -511,6 +520,162 @@ class CourseResourceIT {
 
     @Test
     @Transactional
+    void getAllCoursesByOwnerIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList where ownerId equals to DEFAULT_OWNER_ID
+        defaultCourseShouldBeFound("ownerId.equals=" + DEFAULT_OWNER_ID);
+
+        // Get all the courseList where ownerId equals to UPDATED_OWNER_ID
+        defaultCourseShouldNotBeFound("ownerId.equals=" + UPDATED_OWNER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllCoursesByOwnerIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList where ownerId in DEFAULT_OWNER_ID or UPDATED_OWNER_ID
+        defaultCourseShouldBeFound("ownerId.in=" + DEFAULT_OWNER_ID + "," + UPDATED_OWNER_ID);
+
+        // Get all the courseList where ownerId equals to UPDATED_OWNER_ID
+        defaultCourseShouldNotBeFound("ownerId.in=" + UPDATED_OWNER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllCoursesByOwnerIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList where ownerId is not null
+        defaultCourseShouldBeFound("ownerId.specified=true");
+
+        // Get all the courseList where ownerId is null
+        defaultCourseShouldNotBeFound("ownerId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllCoursesByOwnerIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList where ownerId is greater than or equal to DEFAULT_OWNER_ID
+        defaultCourseShouldBeFound("ownerId.greaterThanOrEqual=" + DEFAULT_OWNER_ID);
+
+        // Get all the courseList where ownerId is greater than or equal to UPDATED_OWNER_ID
+        defaultCourseShouldNotBeFound("ownerId.greaterThanOrEqual=" + UPDATED_OWNER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllCoursesByOwnerIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList where ownerId is less than or equal to DEFAULT_OWNER_ID
+        defaultCourseShouldBeFound("ownerId.lessThanOrEqual=" + DEFAULT_OWNER_ID);
+
+        // Get all the courseList where ownerId is less than or equal to SMALLER_OWNER_ID
+        defaultCourseShouldNotBeFound("ownerId.lessThanOrEqual=" + SMALLER_OWNER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllCoursesByOwnerIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList where ownerId is less than DEFAULT_OWNER_ID
+        defaultCourseShouldNotBeFound("ownerId.lessThan=" + DEFAULT_OWNER_ID);
+
+        // Get all the courseList where ownerId is less than UPDATED_OWNER_ID
+        defaultCourseShouldBeFound("ownerId.lessThan=" + UPDATED_OWNER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllCoursesByOwnerIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList where ownerId is greater than DEFAULT_OWNER_ID
+        defaultCourseShouldNotBeFound("ownerId.greaterThan=" + DEFAULT_OWNER_ID);
+
+        // Get all the courseList where ownerId is greater than SMALLER_OWNER_ID
+        defaultCourseShouldBeFound("ownerId.greaterThan=" + SMALLER_OWNER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllCoursesByDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList where description equals to DEFAULT_DESCRIPTION
+        defaultCourseShouldBeFound("description.equals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the courseList where description equals to UPDATED_DESCRIPTION
+        defaultCourseShouldNotBeFound("description.equals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllCoursesByDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList where description in DEFAULT_DESCRIPTION or UPDATED_DESCRIPTION
+        defaultCourseShouldBeFound("description.in=" + DEFAULT_DESCRIPTION + "," + UPDATED_DESCRIPTION);
+
+        // Get all the courseList where description equals to UPDATED_DESCRIPTION
+        defaultCourseShouldNotBeFound("description.in=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllCoursesByDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList where description is not null
+        defaultCourseShouldBeFound("description.specified=true");
+
+        // Get all the courseList where description is null
+        defaultCourseShouldNotBeFound("description.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllCoursesByDescriptionContainsSomething() throws Exception {
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList where description contains DEFAULT_DESCRIPTION
+        defaultCourseShouldBeFound("description.contains=" + DEFAULT_DESCRIPTION);
+
+        // Get all the courseList where description contains UPDATED_DESCRIPTION
+        defaultCourseShouldNotBeFound("description.contains=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllCoursesByDescriptionNotContainsSomething() throws Exception {
+        // Initialize the database
+        courseRepository.saveAndFlush(course);
+
+        // Get all the courseList where description does not contain DEFAULT_DESCRIPTION
+        defaultCourseShouldNotBeFound("description.doesNotContain=" + DEFAULT_DESCRIPTION);
+
+        // Get all the courseList where description does not contain UPDATED_DESCRIPTION
+        defaultCourseShouldBeFound("description.doesNotContain=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
     void getAllCoursesByInvitationCodeIsEqualToSomething() throws Exception {
         // Initialize the database
         courseRepository.saveAndFlush(course);
@@ -663,97 +828,6 @@ class CourseResourceIT {
 
         // Get all the courseList where expirationDate is greater than SMALLER_EXPIRATION_DATE
         defaultCourseShouldBeFound("expirationDate.greaterThan=" + SMALLER_EXPIRATION_DATE);
-    }
-
-    @Test
-    @Transactional
-    void getAllCoursesByGradeStructureIdIsEqualToSomething() throws Exception {
-        // Initialize the database
-        courseRepository.saveAndFlush(course);
-
-        // Get all the courseList where gradeStructureId equals to DEFAULT_GRADE_STRUCTURE_ID
-        defaultCourseShouldBeFound("gradeStructureId.equals=" + DEFAULT_GRADE_STRUCTURE_ID);
-
-        // Get all the courseList where gradeStructureId equals to UPDATED_GRADE_STRUCTURE_ID
-        defaultCourseShouldNotBeFound("gradeStructureId.equals=" + UPDATED_GRADE_STRUCTURE_ID);
-    }
-
-    @Test
-    @Transactional
-    void getAllCoursesByGradeStructureIdIsInShouldWork() throws Exception {
-        // Initialize the database
-        courseRepository.saveAndFlush(course);
-
-        // Get all the courseList where gradeStructureId in DEFAULT_GRADE_STRUCTURE_ID or UPDATED_GRADE_STRUCTURE_ID
-        defaultCourseShouldBeFound("gradeStructureId.in=" + DEFAULT_GRADE_STRUCTURE_ID + "," + UPDATED_GRADE_STRUCTURE_ID);
-
-        // Get all the courseList where gradeStructureId equals to UPDATED_GRADE_STRUCTURE_ID
-        defaultCourseShouldNotBeFound("gradeStructureId.in=" + UPDATED_GRADE_STRUCTURE_ID);
-    }
-
-    @Test
-    @Transactional
-    void getAllCoursesByGradeStructureIdIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        courseRepository.saveAndFlush(course);
-
-        // Get all the courseList where gradeStructureId is not null
-        defaultCourseShouldBeFound("gradeStructureId.specified=true");
-
-        // Get all the courseList where gradeStructureId is null
-        defaultCourseShouldNotBeFound("gradeStructureId.specified=false");
-    }
-
-    @Test
-    @Transactional
-    void getAllCoursesByGradeStructureIdIsGreaterThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        courseRepository.saveAndFlush(course);
-
-        // Get all the courseList where gradeStructureId is greater than or equal to DEFAULT_GRADE_STRUCTURE_ID
-        defaultCourseShouldBeFound("gradeStructureId.greaterThanOrEqual=" + DEFAULT_GRADE_STRUCTURE_ID);
-
-        // Get all the courseList where gradeStructureId is greater than or equal to UPDATED_GRADE_STRUCTURE_ID
-        defaultCourseShouldNotBeFound("gradeStructureId.greaterThanOrEqual=" + UPDATED_GRADE_STRUCTURE_ID);
-    }
-
-    @Test
-    @Transactional
-    void getAllCoursesByGradeStructureIdIsLessThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        courseRepository.saveAndFlush(course);
-
-        // Get all the courseList where gradeStructureId is less than or equal to DEFAULT_GRADE_STRUCTURE_ID
-        defaultCourseShouldBeFound("gradeStructureId.lessThanOrEqual=" + DEFAULT_GRADE_STRUCTURE_ID);
-
-        // Get all the courseList where gradeStructureId is less than or equal to SMALLER_GRADE_STRUCTURE_ID
-        defaultCourseShouldNotBeFound("gradeStructureId.lessThanOrEqual=" + SMALLER_GRADE_STRUCTURE_ID);
-    }
-
-    @Test
-    @Transactional
-    void getAllCoursesByGradeStructureIdIsLessThanSomething() throws Exception {
-        // Initialize the database
-        courseRepository.saveAndFlush(course);
-
-        // Get all the courseList where gradeStructureId is less than DEFAULT_GRADE_STRUCTURE_ID
-        defaultCourseShouldNotBeFound("gradeStructureId.lessThan=" + DEFAULT_GRADE_STRUCTURE_ID);
-
-        // Get all the courseList where gradeStructureId is less than UPDATED_GRADE_STRUCTURE_ID
-        defaultCourseShouldBeFound("gradeStructureId.lessThan=" + UPDATED_GRADE_STRUCTURE_ID);
-    }
-
-    @Test
-    @Transactional
-    void getAllCoursesByGradeStructureIdIsGreaterThanSomething() throws Exception {
-        // Initialize the database
-        courseRepository.saveAndFlush(course);
-
-        // Get all the courseList where gradeStructureId is greater than DEFAULT_GRADE_STRUCTURE_ID
-        defaultCourseShouldNotBeFound("gradeStructureId.greaterThan=" + DEFAULT_GRADE_STRUCTURE_ID);
-
-        // Get all the courseList where gradeStructureId is greater than SMALLER_GRADE_STRUCTURE_ID
-        defaultCourseShouldBeFound("gradeStructureId.greaterThan=" + SMALLER_GRADE_STRUCTURE_ID);
     }
 
     @Test
@@ -1119,7 +1193,7 @@ class CourseResourceIT {
         }
         em.persist(assignments);
         em.flush();
-        course.setAssignments(assignments);
+        course.addAssignments(assignments);
         courseRepository.saveAndFlush(course);
         Long assignmentsId = assignments.getId();
 
@@ -1128,6 +1202,29 @@ class CourseResourceIT {
 
         // Get all the courseList where assignments equals to (assignmentsId + 1)
         defaultCourseShouldNotBeFound("assignmentsId.equals=" + (assignmentsId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllCoursesByGradeCompositionsIsEqualToSomething() throws Exception {
+        GradeComposition gradeCompositions;
+        if (TestUtil.findAll(em, GradeComposition.class).isEmpty()) {
+            courseRepository.saveAndFlush(course);
+            gradeCompositions = GradeCompositionResourceIT.createEntity(em);
+        } else {
+            gradeCompositions = TestUtil.findAll(em, GradeComposition.class).get(0);
+        }
+        em.persist(gradeCompositions);
+        em.flush();
+        course.addGradeCompositions(gradeCompositions);
+        courseRepository.saveAndFlush(course);
+        Long gradeCompositionsId = gradeCompositions.getId();
+
+        // Get all the courseList where gradeCompositions equals to gradeCompositionsId
+        defaultCourseShouldBeFound("gradeCompositionsId.equals=" + gradeCompositionsId);
+
+        // Get all the courseList where gradeCompositions equals to (gradeCompositionsId + 1)
+        defaultCourseShouldNotBeFound("gradeCompositionsId.equals=" + (gradeCompositionsId + 1));
     }
 
     /**
@@ -1141,9 +1238,10 @@ class CourseResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(course.getId().intValue())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].ownerId").value(hasItem(DEFAULT_OWNER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].invitationCode").value(hasItem(DEFAULT_INVITATION_CODE)))
             .andExpect(jsonPath("$.[*].expirationDate").value(hasItem(sameInstant(DEFAULT_EXPIRATION_DATE))))
-            .andExpect(jsonPath("$.[*].gradeStructureId").value(hasItem(DEFAULT_GRADE_STRUCTURE_ID.intValue())))
             .andExpect(jsonPath("$.[*].isDeleted").value(hasItem(DEFAULT_IS_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
@@ -1199,9 +1297,10 @@ class CourseResourceIT {
         updatedCourse
             .code(UPDATED_CODE)
             .name(UPDATED_NAME)
+            .ownerId(UPDATED_OWNER_ID)
+            .description(UPDATED_DESCRIPTION)
             .invitationCode(UPDATED_INVITATION_CODE)
             .expirationDate(UPDATED_EXPIRATION_DATE)
-            .gradeStructureId(UPDATED_GRADE_STRUCTURE_ID)
             .isDeleted(UPDATED_IS_DELETED)
             .createdBy(UPDATED_CREATED_BY)
             .createdDate(UPDATED_CREATED_DATE)
@@ -1222,9 +1321,10 @@ class CourseResourceIT {
         Course testCourse = courseList.get(courseList.size() - 1);
         assertThat(testCourse.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testCourse.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testCourse.getOwnerId()).isEqualTo(UPDATED_OWNER_ID);
+        assertThat(testCourse.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testCourse.getInvitationCode()).isEqualTo(UPDATED_INVITATION_CODE);
         assertThat(testCourse.getExpirationDate()).isEqualTo(UPDATED_EXPIRATION_DATE);
-        assertThat(testCourse.getGradeStructureId()).isEqualTo(UPDATED_GRADE_STRUCTURE_ID);
         assertThat(testCourse.getIsDeleted()).isEqualTo(UPDATED_IS_DELETED);
         assertThat(testCourse.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
         assertThat(testCourse.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
@@ -1301,10 +1401,11 @@ class CourseResourceIT {
         partialUpdatedCourse.setId(course.getId());
 
         partialUpdatedCourse
+            .ownerId(UPDATED_OWNER_ID)
             .invitationCode(UPDATED_INVITATION_CODE)
-            .gradeStructureId(UPDATED_GRADE_STRUCTURE_ID)
-            .isDeleted(UPDATED_IS_DELETED)
-            .createdDate(UPDATED_CREATED_DATE);
+            .expirationDate(UPDATED_EXPIRATION_DATE)
+            .createdBy(UPDATED_CREATED_BY)
+            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
 
         restCourseMockMvc
             .perform(
@@ -1320,14 +1421,15 @@ class CourseResourceIT {
         Course testCourse = courseList.get(courseList.size() - 1);
         assertThat(testCourse.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testCourse.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testCourse.getOwnerId()).isEqualTo(UPDATED_OWNER_ID);
+        assertThat(testCourse.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testCourse.getInvitationCode()).isEqualTo(UPDATED_INVITATION_CODE);
-        assertThat(testCourse.getExpirationDate()).isEqualTo(DEFAULT_EXPIRATION_DATE);
-        assertThat(testCourse.getGradeStructureId()).isEqualTo(UPDATED_GRADE_STRUCTURE_ID);
-        assertThat(testCourse.getIsDeleted()).isEqualTo(UPDATED_IS_DELETED);
-        assertThat(testCourse.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testCourse.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
+        assertThat(testCourse.getExpirationDate()).isEqualTo(UPDATED_EXPIRATION_DATE);
+        assertThat(testCourse.getIsDeleted()).isEqualTo(DEFAULT_IS_DELETED);
+        assertThat(testCourse.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
+        assertThat(testCourse.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
         assertThat(testCourse.getLastModifiedBy()).isEqualTo(DEFAULT_LAST_MODIFIED_BY);
-        assertThat(testCourse.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
+        assertThat(testCourse.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
     }
 
     @Test
@@ -1345,9 +1447,10 @@ class CourseResourceIT {
         partialUpdatedCourse
             .code(UPDATED_CODE)
             .name(UPDATED_NAME)
+            .ownerId(UPDATED_OWNER_ID)
+            .description(UPDATED_DESCRIPTION)
             .invitationCode(UPDATED_INVITATION_CODE)
             .expirationDate(UPDATED_EXPIRATION_DATE)
-            .gradeStructureId(UPDATED_GRADE_STRUCTURE_ID)
             .isDeleted(UPDATED_IS_DELETED)
             .createdBy(UPDATED_CREATED_BY)
             .createdDate(UPDATED_CREATED_DATE)
@@ -1368,9 +1471,10 @@ class CourseResourceIT {
         Course testCourse = courseList.get(courseList.size() - 1);
         assertThat(testCourse.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testCourse.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testCourse.getOwnerId()).isEqualTo(UPDATED_OWNER_ID);
+        assertThat(testCourse.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testCourse.getInvitationCode()).isEqualTo(UPDATED_INVITATION_CODE);
         assertThat(testCourse.getExpirationDate()).isEqualTo(UPDATED_EXPIRATION_DATE);
-        assertThat(testCourse.getGradeStructureId()).isEqualTo(UPDATED_GRADE_STRUCTURE_ID);
         assertThat(testCourse.getIsDeleted()).isEqualTo(UPDATED_IS_DELETED);
         assertThat(testCourse.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
         assertThat(testCourse.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);

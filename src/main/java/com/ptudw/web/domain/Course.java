@@ -3,6 +3,8 @@ package com.ptudw.web.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
@@ -34,15 +36,18 @@ public class Course implements Serializable {
     private String name;
 
     @NotNull
+    @Column(name = "owner_id", nullable = false)
+    private Long ownerId;
+
+    @Column(name = "description")
+    private String description;
+
+    @NotNull
     @Column(name = "invitation_code", nullable = false)
     private String invitationCode;
 
     @Column(name = "expiration_date")
     private ZonedDateTime expirationDate;
-
-    @NotNull
-    @Column(name = "grade_structure_id", nullable = false)
-    private Long gradeStructureId;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
@@ -63,9 +68,15 @@ public class Course implements Serializable {
     @Column(name = "last_modified_date", nullable = false)
     private ZonedDateTime lastModifiedDate;
 
-    @ManyToOne
-    @JsonIgnoreProperties(value = { "courses", "assignmentGrades" }, allowSetters = true)
-    private Assignment assignments;
+    @OneToMany(mappedBy = "course")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "assignmentGrades", "course", "gradeComposition" }, allowSetters = true)
+    private Set<Assignment> assignments = new HashSet<>();
+
+    @OneToMany(mappedBy = "course")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "assignments", "course" }, allowSetters = true)
+    private Set<GradeComposition> gradeCompositions = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -108,6 +119,32 @@ public class Course implements Serializable {
         this.name = name;
     }
 
+    public Long getOwnerId() {
+        return this.ownerId;
+    }
+
+    public Course ownerId(Long ownerId) {
+        this.setOwnerId(ownerId);
+        return this;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public Course description(String description) {
+        this.setDescription(description);
+        return this;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getInvitationCode() {
         return this.invitationCode;
     }
@@ -132,19 +169,6 @@ public class Course implements Serializable {
 
     public void setExpirationDate(ZonedDateTime expirationDate) {
         this.expirationDate = expirationDate;
-    }
-
-    public Long getGradeStructureId() {
-        return this.gradeStructureId;
-    }
-
-    public Course gradeStructureId(Long gradeStructureId) {
-        this.setGradeStructureId(gradeStructureId);
-        return this;
-    }
-
-    public void setGradeStructureId(Long gradeStructureId) {
-        this.gradeStructureId = gradeStructureId;
     }
 
     public Boolean getIsDeleted() {
@@ -212,16 +236,65 @@ public class Course implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public Assignment getAssignments() {
+    public Set<Assignment> getAssignments() {
         return this.assignments;
     }
 
-    public void setAssignments(Assignment assignment) {
-        this.assignments = assignment;
+    public void setAssignments(Set<Assignment> assignments) {
+        if (this.assignments != null) {
+            this.assignments.forEach(i -> i.setCourse(null));
+        }
+        if (assignments != null) {
+            assignments.forEach(i -> i.setCourse(this));
+        }
+        this.assignments = assignments;
     }
 
-    public Course assignments(Assignment assignment) {
-        this.setAssignments(assignment);
+    public Course assignments(Set<Assignment> assignments) {
+        this.setAssignments(assignments);
+        return this;
+    }
+
+    public Course addAssignments(Assignment assignment) {
+        this.assignments.add(assignment);
+        assignment.setCourse(this);
+        return this;
+    }
+
+    public Course removeAssignments(Assignment assignment) {
+        this.assignments.remove(assignment);
+        assignment.setCourse(null);
+        return this;
+    }
+
+    public Set<GradeComposition> getGradeCompositions() {
+        return this.gradeCompositions;
+    }
+
+    public void setGradeCompositions(Set<GradeComposition> gradeCompositions) {
+        if (this.gradeCompositions != null) {
+            this.gradeCompositions.forEach(i -> i.setCourse(null));
+        }
+        if (gradeCompositions != null) {
+            gradeCompositions.forEach(i -> i.setCourse(this));
+        }
+        this.gradeCompositions = gradeCompositions;
+    }
+
+    public Course gradeCompositions(Set<GradeComposition> gradeCompositions) {
+        this.setGradeCompositions(gradeCompositions);
+        return this;
+    }
+
+    public Course addGradeCompositions(GradeComposition gradeComposition) {
+        this.gradeCompositions.add(gradeComposition);
+        gradeComposition.setCourse(this);
+        return this;
+    }
+
+    public Course removeGradeCompositions(GradeComposition gradeComposition) {
+        this.gradeCompositions.remove(gradeComposition);
+        gradeComposition.setCourse(null);
         return this;
     }
 
@@ -251,9 +324,10 @@ public class Course implements Serializable {
             "id=" + getId() +
             ", code='" + getCode() + "'" +
             ", name='" + getName() + "'" +
+            ", ownerId=" + getOwnerId() +
+            ", description='" + getDescription() + "'" +
             ", invitationCode='" + getInvitationCode() + "'" +
             ", expirationDate='" + getExpirationDate() + "'" +
-            ", gradeStructureId=" + getGradeStructureId() +
             ", isDeleted='" + getIsDeleted() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +

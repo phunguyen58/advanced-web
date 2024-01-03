@@ -45,6 +45,18 @@ export const CourseDetail = () => {
           </dt>
           <dd>{courseEntity.name}</dd>
           <dt>
+            <span id="ownerId">
+              <Translate contentKey="webApp.course.ownerId">Owner Id</Translate>
+            </span>
+          </dt>
+          <dd>{courseEntity.ownerId}</dd>
+          <dt>
+            <span id="description">
+              <Translate contentKey="webApp.course.description">Description</Translate>
+            </span>
+          </dt>
+          <dd>{courseEntity.description}</dd>
+          <dt>
             <span id="invitationCode">
               <Translate contentKey="webApp.course.invitationCode">Invitation Code</Translate>
             </span>
@@ -58,12 +70,6 @@ export const CourseDetail = () => {
           <dd>
             {courseEntity.expirationDate ? <TextFormat value={courseEntity.expirationDate} type="date" format={APP_DATE_FORMAT} /> : null}
           </dd>
-          <dt>
-            <span id="gradeStructureId">
-              <Translate contentKey="webApp.course.gradeStructureId">Grade Structure Id</Translate>
-            </span>
-          </dt>
-          <dd>{courseEntity.gradeStructureId}</dd>
           <dt>
             <span id="isDeleted">
               <Translate contentKey="webApp.course.isDeleted">Is Deleted</Translate>
@@ -98,10 +104,6 @@ export const CourseDetail = () => {
               <TextFormat value={courseEntity.lastModifiedDate} type="date" format={APP_DATE_FORMAT} />
             ) : null}
           </dd>
-          <dt>
-            <Translate contentKey="webApp.course.assignments">Assignments</Translate>
-          </dt>
-          <dd>{courseEntity.assignments ? courseEntity.assignments.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/course" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

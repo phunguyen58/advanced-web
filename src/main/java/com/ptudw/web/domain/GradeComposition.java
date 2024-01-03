@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ptudw.web.domain.enumeration.GradeType;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
@@ -15,6 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "grade_composition")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class GradeComposition implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -56,9 +59,17 @@ public class GradeComposition implements Serializable {
     @Column(name = "type", nullable = false)
     private GradeType type;
 
+    @Column(name = "is_public")
+    private Boolean isPublic;
+
+    @OneToMany(mappedBy = "gradeComposition")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "assignmentGrades", "course", "gradeComposition" }, allowSetters = true)
+    private Set<Assignment> assignments = new HashSet<>();
+
     @ManyToOne
-    @JsonIgnoreProperties(value = { "gradeCompositions" }, allowSetters = true)
-    private GradeStructure gradeStructure;
+    @JsonIgnoreProperties(value = { "assignments", "gradeCompositions" }, allowSetters = true)
+    private Course course;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -179,16 +190,60 @@ public class GradeComposition implements Serializable {
         this.type = type;
     }
 
-    public GradeStructure getGradeStructure() {
-        return this.gradeStructure;
+    public Boolean getIsPublic() {
+        return this.isPublic;
     }
 
-    public void setGradeStructure(GradeStructure gradeStructure) {
-        this.gradeStructure = gradeStructure;
+    public GradeComposition isPublic(Boolean isPublic) {
+        this.setIsPublic(isPublic);
+        return this;
     }
 
-    public GradeComposition gradeStructure(GradeStructure gradeStructure) {
-        this.setGradeStructure(gradeStructure);
+    public void setIsPublic(Boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public Set<Assignment> getAssignments() {
+        return this.assignments;
+    }
+
+    public void setAssignments(Set<Assignment> assignments) {
+        if (this.assignments != null) {
+            this.assignments.forEach(i -> i.setGradeComposition(null));
+        }
+        if (assignments != null) {
+            assignments.forEach(i -> i.setGradeComposition(this));
+        }
+        this.assignments = assignments;
+    }
+
+    public GradeComposition assignments(Set<Assignment> assignments) {
+        this.setAssignments(assignments);
+        return this;
+    }
+
+    public GradeComposition addAssignments(Assignment assignment) {
+        this.assignments.add(assignment);
+        assignment.setGradeComposition(this);
+        return this;
+    }
+
+    public GradeComposition removeAssignments(Assignment assignment) {
+        this.assignments.remove(assignment);
+        assignment.setGradeComposition(null);
+        return this;
+    }
+
+    public Course getCourse() {
+        return this.course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public GradeComposition course(Course course) {
+        this.setCourse(course);
         return this;
     }
 
@@ -224,6 +279,7 @@ public class GradeComposition implements Serializable {
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
             ", type='" + getType() + "'" +
+            ", isPublic='" + getIsPublic() + "'" +
             "}";
     }
 }

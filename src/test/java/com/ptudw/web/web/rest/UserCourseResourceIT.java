@@ -42,7 +42,7 @@ class UserCourseResourceIT {
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
     private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+    private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private UserCourseRepository userCourseRepository;
@@ -438,7 +438,7 @@ class UserCourseResourceIT {
         int databaseSizeBeforeUpdate = userCourseRepository.findAll().size();
 
         // Update the userCourse
-        UserCourse updatedUserCourse = userCourseRepository.findById(userCourse.getId()).orElseThrow();
+        UserCourse updatedUserCourse = userCourseRepository.findById(userCourse.getId()).get();
         // Disconnect from session so that the updates on updatedUserCourse are not directly saved in db
         em.detach(updatedUserCourse);
         updatedUserCourse.courseId(UPDATED_COURSE_ID).userId(UPDATED_USER_ID);
@@ -463,7 +463,7 @@ class UserCourseResourceIT {
     @Transactional
     void putNonExistingUserCourse() throws Exception {
         int databaseSizeBeforeUpdate = userCourseRepository.findAll().size();
-        userCourse.setId(longCount.incrementAndGet());
+        userCourse.setId(count.incrementAndGet());
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restUserCourseMockMvc
@@ -483,12 +483,12 @@ class UserCourseResourceIT {
     @Transactional
     void putWithIdMismatchUserCourse() throws Exception {
         int databaseSizeBeforeUpdate = userCourseRepository.findAll().size();
-        userCourse.setId(longCount.incrementAndGet());
+        userCourse.setId(count.incrementAndGet());
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restUserCourseMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(TestUtil.convertObjectToJsonBytes(userCourse))
             )
@@ -503,7 +503,7 @@ class UserCourseResourceIT {
     @Transactional
     void putWithMissingIdPathParamUserCourse() throws Exception {
         int databaseSizeBeforeUpdate = userCourseRepository.findAll().size();
-        userCourse.setId(longCount.incrementAndGet());
+        userCourse.setId(count.incrementAndGet());
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restUserCourseMockMvc
@@ -579,7 +579,7 @@ class UserCourseResourceIT {
     @Transactional
     void patchNonExistingUserCourse() throws Exception {
         int databaseSizeBeforeUpdate = userCourseRepository.findAll().size();
-        userCourse.setId(longCount.incrementAndGet());
+        userCourse.setId(count.incrementAndGet());
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restUserCourseMockMvc
@@ -599,12 +599,12 @@ class UserCourseResourceIT {
     @Transactional
     void patchWithIdMismatchUserCourse() throws Exception {
         int databaseSizeBeforeUpdate = userCourseRepository.findAll().size();
-        userCourse.setId(longCount.incrementAndGet());
+        userCourse.setId(count.incrementAndGet());
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restUserCourseMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
                     .content(TestUtil.convertObjectToJsonBytes(userCourse))
             )
@@ -619,7 +619,7 @@ class UserCourseResourceIT {
     @Transactional
     void patchWithMissingIdPathParamUserCourse() throws Exception {
         int databaseSizeBeforeUpdate = userCourseRepository.findAll().size();
-        userCourse.setId(longCount.incrementAndGet());
+        userCourse.setId(count.incrementAndGet());
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restUserCourseMockMvc

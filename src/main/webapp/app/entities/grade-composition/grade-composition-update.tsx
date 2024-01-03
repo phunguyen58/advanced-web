@@ -4,13 +4,14 @@ import { Button, Row, Col, FormText } from 'reactstrap';
 import { isNumber, Translate, translate, ValidatedField, ValidatedForm } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { IGradeStructure } from 'app/shared/model/grade-structure.model';
-import { getEntities as getGradeStructures } from 'app/entities/grade-structure/grade-structure.reducer';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
+import { ICourse } from 'app/shared/model/course.model';
+import { getEntities as getCourses } from 'app/entities/course/course.reducer';
 import { IGradeComposition } from 'app/shared/model/grade-composition.model';
+import { GradeType } from 'app/shared/model/enumerations/grade-type.model';
 import { getEntity, updateEntity, createEntity, reset } from './grade-composition.reducer';
 
 export const GradeCompositionUpdate = () => {
@@ -21,10 +22,12 @@ export const GradeCompositionUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
+  const courses = useAppSelector(state => state.course.entities);
   const gradeCompositionEntity = useAppSelector(state => state.gradeComposition.entity);
   const loading = useAppSelector(state => state.gradeComposition.loading);
   const updating = useAppSelector(state => state.gradeComposition.updating);
   const updateSuccess = useAppSelector(state => state.gradeComposition.updateSuccess);
+  const gradeTypeValues = Object.keys(GradeType);
 
   const handleClose = () => {
     navigate('/grade-composition' + location.search);
@@ -37,7 +40,7 @@ export const GradeCompositionUpdate = () => {
       dispatch(getEntity(id));
     }
 
-    dispatch(getGradeStructures({}));
+    dispatch(getCourses({}));
   }, []);
 
   useEffect(() => {
@@ -53,6 +56,7 @@ export const GradeCompositionUpdate = () => {
     const entity = {
       ...gradeCompositionEntity,
       ...values,
+      course: courses.find(it => it.id.toString() === values.course.toString()),
     };
 
     if (isNew) {
@@ -73,7 +77,7 @@ export const GradeCompositionUpdate = () => {
           ...gradeCompositionEntity,
           createdDate: convertDateTimeFromServer(gradeCompositionEntity.createdDate),
           lastModifiedDate: convertDateTimeFromServer(gradeCompositionEntity.lastModifiedDate),
-          gradeStructureId: gradeCompositionEntity?.gradeStructure?.id,
+          course: gradeCompositionEntity?.course?.id,
         };
 
   return (
@@ -175,9 +179,35 @@ export const GradeCompositionUpdate = () => {
                 data-cy="type"
                 type="select"
               >
-                <option value="PERCENTAGE">{translate('webApp.GradeType.PERCENTAGE')}</option>
-                <option value="POINT">{translate('webApp.GradeType.POINT')}</option>
-                <option value="NONE">{translate('webApp.GradeType.NONE')}</option>
+                {gradeTypeValues.map(gradeType => (
+                  <option value={gradeType} key={gradeType}>
+                    {translate('webApp.GradeType.' + gradeType)}
+                  </option>
+                ))}
+              </ValidatedField>
+              <ValidatedField
+                label={translate('webApp.gradeComposition.isPublic')}
+                id="grade-composition-isPublic"
+                name="isPublic"
+                data-cy="isPublic"
+                check
+                type="checkbox"
+              />
+              <ValidatedField
+                id="grade-composition-course"
+                name="course"
+                data-cy="course"
+                label={translate('webApp.gradeComposition.course')}
+                type="select"
+              >
+                <option value="" key="0" />
+                {courses
+                  ? courses.map(otherEntity => (
+                      <option value={otherEntity.id} key={otherEntity.id}>
+                        {otherEntity.id}
+                      </option>
+                    ))
+                  : null}
               </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/grade-composition" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />

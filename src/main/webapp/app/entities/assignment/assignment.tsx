@@ -108,6 +108,9 @@ export const Assignment = () => {
                 <th className="hand" onClick={sort('name')}>
                   <Translate contentKey="webApp.assignment.name">Name</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
+                <th className="hand" onClick={sort('description')}>
+                  <Translate contentKey="webApp.assignment.description">Description</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
                 <th className="hand" onClick={sort('weight')}>
                   <Translate contentKey="webApp.assignment.weight">Weight</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
@@ -127,7 +130,10 @@ export const Assignment = () => {
                   <Translate contentKey="webApp.assignment.lastModifiedDate">Last Modified Date</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th>
-                  <Translate contentKey="webApp.assignment.assignmentGrades">Assignment Grades</Translate> <FontAwesomeIcon icon="sort" />
+                  <Translate contentKey="webApp.assignment.course">Course</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th>
+                  <Translate contentKey="webApp.assignment.gradeComposition">Grade Composition</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th />
               </tr>
@@ -141,6 +147,7 @@ export const Assignment = () => {
                     </Button>
                   </td>
                   <td>{assignment.name}</td>
+                  <td>{assignment.description}</td>
                   <td>{assignment.weight}</td>
                   <td>{assignment.isDeleted ? 'true' : 'false'}</td>
                   <td>{assignment.createdBy}</td>
@@ -153,9 +160,10 @@ export const Assignment = () => {
                       <TextFormat type="date" value={assignment.lastModifiedDate} format={APP_DATE_FORMAT} />
                     ) : null}
                   </td>
+                  <td>{assignment.course ? <Link to={`/course/${assignment.course.id}`}>{assignment.course.id}</Link> : ''}</td>
                   <td>
-                    {assignment.assignmentGrades ? (
-                      <Link to={`/assignment-grade/${assignment.assignmentGrades.id}`}>{assignment.assignmentGrades.id}</Link>
+                    {assignment.gradeComposition ? (
+                      <Link to={`/grade-composition/${assignment.gradeComposition.id}`}>{assignment.gradeComposition.id}</Link>
                     ) : (
                       ''
                     )}
