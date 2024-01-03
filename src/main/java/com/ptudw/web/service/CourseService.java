@@ -1,7 +1,10 @@
 package com.ptudw.web.service;
 
 import com.ptudw.web.domain.Course;
+import com.ptudw.web.domain.User;
+import com.ptudw.web.domain.UserCourse;
 import com.ptudw.web.repository.CourseRepository;
+import com.ptudw.web.security.SecurityUtils;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +24,14 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
 
-    public CourseService(CourseRepository courseRepository) {
+    private final UserService userService;
+
+    private final UserCourseService userCourseService;
+
+    public CourseService(CourseRepository courseRepository, UserService userService, UserCourseService userCourseService) {
         this.courseRepository = courseRepository;
+        this.userService = userService;
+        this.userCourseService = userCourseService;
     }
 
     /**
@@ -65,14 +74,17 @@ public class CourseService {
                 if (course.getName() != null) {
                     existingCourse.setName(course.getName());
                 }
+                if (course.getOwnerId() != null) {
+                    existingCourse.setOwnerId(course.getOwnerId());
+                }
+                if (course.getDescription() != null) {
+                    existingCourse.setDescription(course.getDescription());
+                }
                 if (course.getInvitationCode() != null) {
                     existingCourse.setInvitationCode(course.getInvitationCode());
                 }
                 if (course.getExpirationDate() != null) {
                     existingCourse.setExpirationDate(course.getExpirationDate());
-                }
-                if (course.getGradeStructureId() != null) {
-                    existingCourse.setGradeStructureId(course.getGradeStructureId());
                 }
                 if (course.getIsDeleted() != null) {
                     existingCourse.setIsDeleted(course.getIsDeleted());
@@ -127,5 +139,14 @@ public class CourseService {
     public void delete(Long id) {
         log.debug("Request to delete Course : {}", id);
         courseRepository.deleteById(id);
+    }
+
+    public void joinCourseByInvitationCode(Course course, User user) {
+        log.debug("Request to join Course: {}", course);
+
+        UserCourse userCourse = new UserCourse();
+        userCourse.setCourseId(course.getId());
+        userCourse.setUserId(user.getId());
+        userCourseService.save(userCourse);
     }
 }

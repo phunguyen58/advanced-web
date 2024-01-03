@@ -23,7 +23,7 @@ application {
     languages [vi, en]
     messageBroker false
     nativeLanguage en
-    otherModules []
+    // otherModules []
     packageName com.ptudw.web
     prodDatabaseType postgresql
     reactive false
@@ -42,9 +42,10 @@ application {
 entity Course {
     code String required
     name String required
+    ownerId Long required
+    description String
     invitationCode String required
     expirationDate ZonedDateTime
-    gradeStructureId Long required
     isDeleted Boolean
     createdBy String required
     createdDate ZonedDateTime required
@@ -77,10 +78,12 @@ entity GradeComposition {
     lastModifiedBy String required
     lastModifiedDate ZonedDateTime required
     type GradeType required
+    isPublic Boolean
 }
 
 entity Assignment {
     name String required
+    description String
     weight Long
     isDeleted Boolean
     createdBy String required
@@ -112,13 +115,14 @@ entity CourseGrade {
 
 entity UserCourse {
     courseId Long required
-    userId String required
+    userId Long required
 }
 
 relationship OneToMany {
-    Assignment{course} to Course{assignments}
-    GradeStructure{gradeCompositions} to GradeComposition{gradeStructure} 
-    AssignmentGrade{assignment} to Assignment{assignmentGrades}
+    Course{assignments} to Assignment{course}
+    Course{gradeCompositions} to GradeComposition{course}
+    Assignment{assignmentGrades} to AssignmentGrade{assignment}
+    GradeComposition{assignments} to Assignment{gradeComposition}
 }
 
 filter *

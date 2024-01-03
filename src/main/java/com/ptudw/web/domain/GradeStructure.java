@@ -1,11 +1,8 @@
 package com.ptudw.web.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ptudw.web.domain.enumeration.GradeType;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
@@ -17,6 +14,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "grade_structure")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class GradeStructure implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,11 +52,6 @@ public class GradeStructure implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private GradeType type;
-
-    @OneToMany(mappedBy = "gradeStructure")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "gradeStructure" }, allowSetters = true)
-    private Set<GradeComposition> gradeCompositions = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -164,37 +157,6 @@ public class GradeStructure implements Serializable {
 
     public void setType(GradeType type) {
         this.type = type;
-    }
-
-    public Set<GradeComposition> getGradeCompositions() {
-        return this.gradeCompositions;
-    }
-
-    public void setGradeCompositions(Set<GradeComposition> gradeCompositions) {
-        if (this.gradeCompositions != null) {
-            this.gradeCompositions.forEach(i -> i.setGradeStructure(null));
-        }
-        if (gradeCompositions != null) {
-            gradeCompositions.forEach(i -> i.setGradeStructure(this));
-        }
-        this.gradeCompositions = gradeCompositions;
-    }
-
-    public GradeStructure gradeCompositions(Set<GradeComposition> gradeCompositions) {
-        this.setGradeCompositions(gradeCompositions);
-        return this;
-    }
-
-    public GradeStructure addGradeCompositions(GradeComposition gradeComposition) {
-        this.gradeCompositions.add(gradeComposition);
-        gradeComposition.setGradeStructure(this);
-        return this;
-    }
-
-    public GradeStructure removeGradeCompositions(GradeComposition gradeComposition) {
-        this.gradeCompositions.remove(gradeComposition);
-        gradeComposition.setGradeStructure(null);
-        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

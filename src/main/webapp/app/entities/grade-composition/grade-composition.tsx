@@ -86,7 +86,7 @@ export const GradeComposition = () => {
       <h2 id="grade-composition-heading" data-cy="GradeCompositionHeading">
         <Translate contentKey="webApp.gradeComposition.home.title">Grade Compositions</Translate>
         <div className="d-flex justify-content-end">
-          <Button className="mr-2" color="info" onClick={handleSyncList} disabled={loading}>
+          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
             <Translate contentKey="webApp.gradeComposition.home.refreshListLabel">Refresh List</Translate>
           </Button>
@@ -131,8 +131,11 @@ export const GradeComposition = () => {
                 <th className="hand" onClick={sort('type')}>
                   <Translate contentKey="webApp.gradeComposition.type">Type</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
+                <th className="hand" onClick={sort('isPublic')}>
+                  <Translate contentKey="webApp.gradeComposition.isPublic">Is Public</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
                 <th>
-                  <Translate contentKey="webApp.gradeComposition.gradeStructure">Grade Structure</Translate> <FontAwesomeIcon icon="sort" />
+                  <Translate contentKey="webApp.gradeComposition.course">Course</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th />
               </tr>
@@ -163,14 +166,11 @@ export const GradeComposition = () => {
                   <td>
                     <Translate contentKey={`webApp.GradeType.${gradeComposition.type}`} />
                   </td>
+                  <td>{gradeComposition.isPublic ? 'true' : 'false'}</td>
                   <td>
-                    {gradeComposition.gradeStructure ? (
-                      <Link to={`grade-structure/${gradeComposition.gradeStructure.id}`}>{gradeComposition.gradeStructure.id}</Link>
-                    ) : (
-                      ''
-                    )}
+                    {gradeComposition.course ? <Link to={`/course/${gradeComposition.course.id}`}>{gradeComposition.course.id}</Link> : ''}
                   </td>
-                  <td className="text-right">
+                  <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button
                         tag={Link}

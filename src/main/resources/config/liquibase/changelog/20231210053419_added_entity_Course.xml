@@ -3,7 +3,7 @@
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
@@ -20,14 +20,17 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
+            <column name="owner_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="invitation_code" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
             <column name="expiration_date" type="${datetimeType}">
                 <constraints nullable="true" />
-            </column>
-            <column name="grade_structure_id" type="bigint">
-                <constraints nullable="false" />
             </column>
             <column name="is_deleted" type="boolean">
                 <constraints nullable="true" />
@@ -43,9 +46,6 @@
             </column>
             <column name="last_modified_date" type="${datetimeType}">
                 <constraints nullable="false" />
-            </column>
-            <column name="assignments_id" type="bigint">
-                <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
@@ -73,9 +73,10 @@
             <column name="id" type="numeric"/>
             <column name="code" type="string"/>
             <column name="name" type="string"/>
+            <column name="owner_id" type="numeric"/>
+            <column name="description" type="string"/>
             <column name="invitation_code" type="string"/>
             <column name="expiration_date" type="date"/>
-            <column name="grade_structure_id" type="numeric"/>
             <column name="is_deleted" type="boolean"/>
             <column name="created_by" type="string"/>
             <column name="created_date" type="date"/>

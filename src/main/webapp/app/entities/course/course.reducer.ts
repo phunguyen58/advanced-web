@@ -43,6 +43,16 @@ export const createEntity = createAsyncThunk(
   { serializeError: serializeAxiosError }
 );
 
+export const joinAClass = createAsyncThunk(
+  'course/join_a_class',
+  async (invitationCode: string, thunkAPI) => {
+    const result = await axios.post<ICourse>(`${apiUrl}/invitation/${invitationCode}`);
+    thunkAPI.dispatch(getEntities({}));
+    return result; // Assuming result contains the course data
+  },
+  { serializeError: serializeAxiosError }
+);
+
 export const updateEntity = createAsyncThunk(
   'course/update_entity',
   async (entity: ICourse, thunkAPI) => {

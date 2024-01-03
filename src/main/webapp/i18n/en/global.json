@@ -146,7 +146,11 @@
       "could.not.extract": "Could not extract file",
       "not.image": "File was expected to be an image but was found to be \"{{ fileType }}\""
     },
-    "studentIdExisted": "Student ID already existed"
+    "invitationcodeinvalid": "Invalid invitation code",
+    "userinvalid": "Invalid user",
+    "useralreadyjoined": "User already joined",
+    "studentIdExisted": "Student ID already existed",
+    "invitationcodeexpired": "Invitation code expired"
 
   },
   "footer": "This is your footer"

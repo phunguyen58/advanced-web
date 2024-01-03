@@ -111,14 +111,17 @@ export const Course = () => {
                 <th className="hand" onClick={sort('name')}>
                   <Translate contentKey="webApp.course.name">Name</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
+                <th className="hand" onClick={sort('ownerId')}>
+                  <Translate contentKey="webApp.course.ownerId">Owner Id</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('description')}>
+                  <Translate contentKey="webApp.course.description">Description</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
                 <th className="hand" onClick={sort('invitationCode')}>
                   <Translate contentKey="webApp.course.invitationCode">Invitation Code</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('expirationDate')}>
                   <Translate contentKey="webApp.course.expirationDate">Expiration Date</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('gradeStructureId')}>
-                  <Translate contentKey="webApp.course.gradeStructureId">Grade Structure Id</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('isDeleted')}>
                   <Translate contentKey="webApp.course.isDeleted">Is Deleted</Translate> <FontAwesomeIcon icon="sort" />
@@ -135,9 +138,6 @@ export const Course = () => {
                 <th className="hand" onClick={sort('lastModifiedDate')}>
                   <Translate contentKey="webApp.course.lastModifiedDate">Last Modified Date</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th>
-                  <Translate contentKey="webApp.course.assignments">Assignments</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -151,11 +151,12 @@ export const Course = () => {
                   </td>
                   <td>{course.code}</td>
                   <td>{course.name}</td>
+                  <td>{course.ownerId}</td>
+                  <td>{course.description}</td>
                   <td>{course.invitationCode}</td>
                   <td>
                     {course.expirationDate ? <TextFormat type="date" value={course.expirationDate} format={APP_DATE_FORMAT} /> : null}
                   </td>
-                  <td>{course.gradeStructureId}</td>
                   <td>{course.isDeleted ? 'true' : 'false'}</td>
                   <td>{course.createdBy}</td>
                   <td>{course.createdDate ? <TextFormat type="date" value={course.createdDate} format={APP_DATE_FORMAT} /> : null}</td>
@@ -163,7 +164,6 @@ export const Course = () => {
                   <td>
                     {course.lastModifiedDate ? <TextFormat type="date" value={course.lastModifiedDate} format={APP_DATE_FORMAT} /> : null}
                   </td>
-                  <td>{course.assignments ? <Link to={`/assignment/${course.assignments.id}`}>{course.assignments.id}</Link> : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/course/${course.id}`} color="info" size="sm" data-cy="entityDetailsButton">

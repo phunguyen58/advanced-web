@@ -155,7 +155,7 @@ export const GradeStructure = () => {
                   <td>
                     <Translate contentKey={`webApp.GradeType.${gradeStructure.type}`} />
                   </td>
-                  <td className="text-right">
+                  <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/grade-structure/${gradeStructure.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" />{' '}

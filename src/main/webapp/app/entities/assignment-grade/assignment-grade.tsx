@@ -127,6 +127,9 @@ export const AssignmentGrade = () => {
                   <Translate contentKey="webApp.assignmentGrade.lastModifiedDate">Last Modified Date</Translate>{' '}
                   <FontAwesomeIcon icon="sort" />
                 </th>
+                <th>
+                  <Translate contentKey="webApp.assignmentGrade.assignment">Assignment</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
                 <th />
               </tr>
             </thead>
@@ -152,6 +155,13 @@ export const AssignmentGrade = () => {
                     {assignmentGrade.lastModifiedDate ? (
                       <TextFormat type="date" value={assignmentGrade.lastModifiedDate} format={APP_DATE_FORMAT} />
                     ) : null}
+                  </td>
+                  <td>
+                    {assignmentGrade.assignment ? (
+                      <Link to={`/assignment/${assignmentGrade.assignment.id}`}>{assignmentGrade.assignment.id}</Link>
+                    ) : (
+                      ''
+                    )}
                   </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">

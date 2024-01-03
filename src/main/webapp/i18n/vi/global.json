@@ -151,7 +151,11 @@
       "could.not.extract": "Could not extract file",
       "not.image": "File was expected to be an image but was found to be \"{{ fileType }}\""
     },
-    "studentIdExisted": "Mã số sinh viên đã tồn tại"
+    "invitationcodeinvalid": "Mã mời không hợp lệ",
+    "userinvalid": "Tài khoản không hợp lệ",
+    "useralreadyjoined": "Tài khoản đã tham gia khóa học này",
+    "studentIdExisted": "Mã số sinh viên đã tồn tại",
+    "invitationcodeexpired": "Mã mời đã hết hạn"
   },
   "footer": "Đây là chân trang của bạn"
 }

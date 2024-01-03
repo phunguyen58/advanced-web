@@ -52,13 +52,14 @@ public class CacheConfiguration {
             createCache(cm, com.ptudw.web.domain.Categories.class.getName() + ".products");
             createCache(cm, com.ptudw.web.domain.Product.class.getName());
             createCache(cm, com.ptudw.web.domain.Course.class.getName());
+            createCache(cm, com.ptudw.web.domain.Course.class.getName() + ".assignments");
+            createCache(cm, com.ptudw.web.domain.Course.class.getName() + ".gradeCompositions");
             createCache(cm, com.ptudw.web.domain.GradeStructure.class.getName());
-            createCache(cm, com.ptudw.web.domain.GradeStructure.class.getName() + ".gradeCompositions");
             createCache(cm, com.ptudw.web.domain.GradeComposition.class.getName());
+            createCache(cm, com.ptudw.web.domain.GradeComposition.class.getName() + ".assignments");
             createCache(cm, com.ptudw.web.domain.Assignment.class.getName());
-            createCache(cm, com.ptudw.web.domain.Assignment.class.getName() + ".courses");
+            createCache(cm, com.ptudw.web.domain.Assignment.class.getName() + ".assignmentGrades");
             createCache(cm, com.ptudw.web.domain.AssignmentGrade.class.getName());
-            createCache(cm, com.ptudw.web.domain.AssignmentGrade.class.getName() + ".assignments");
             createCache(cm, com.ptudw.web.domain.CourseGrade.class.getName());
             createCache(cm, com.ptudw.web.domain.UserCourse.class.getName());
             // jhipster-needle-ehcache-add-entry

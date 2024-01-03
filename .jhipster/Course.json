@@ -16,6 +16,15 @@
       "fieldValidateRules": ["required"]
     },
     {
+      "fieldName": "ownerId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
       "fieldName": "invitationCode",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
@@ -23,11 +32,6 @@
     {
       "fieldName": "expirationDate",
       "fieldType": "ZonedDateTime"
-    },
-    {
-      "fieldName": "gradeStructureId",
-      "fieldType": "Long",
-      "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "isDeleted",
@@ -64,7 +68,13 @@
       "otherEntityName": "assignment",
       "otherEntityRelationshipName": "course",
       "relationshipName": "assignments",
-      "relationshipType": "many-to-one"
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "gradeComposition",
+      "otherEntityRelationshipName": "course",
+      "relationshipName": "gradeCompositions",
+      "relationshipType": "one-to-many"
     }
   ],
   "service": "serviceClass"

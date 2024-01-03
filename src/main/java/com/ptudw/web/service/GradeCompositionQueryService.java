@@ -110,12 +110,24 @@ public class GradeCompositionQueryService extends QueryService<GradeComposition>
             if (criteria.getType() != null) {
                 specification = specification.and(buildSpecification(criteria.getType(), GradeComposition_.type));
             }
-            if (criteria.getGradeStructureId() != null) {
+            if (criteria.getIsPublic() != null) {
+                specification = specification.and(buildSpecification(criteria.getIsPublic(), GradeComposition_.isPublic));
+            }
+            if (criteria.getAssignmentsId() != null) {
                 specification =
                     specification.and(
                         buildSpecification(
-                            criteria.getGradeStructureId(),
-                            root -> root.join(GradeComposition_.gradeStructure, JoinType.LEFT).get(GradeStructure_.id)
+                            criteria.getAssignmentsId(),
+                            root -> root.join(GradeComposition_.assignments, JoinType.LEFT).get(Assignment_.id)
+                        )
+                    );
+            }
+            if (criteria.getCourseId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(
+                            criteria.getCourseId(),
+                            root -> root.join(GradeComposition_.course, JoinType.LEFT).get(Course_.id)
                         )
                     );
             }

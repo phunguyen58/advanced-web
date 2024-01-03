@@ -34,8 +34,9 @@ class UserCourseResourceIT {
     private static final Long UPDATED_COURSE_ID = 2L;
     private static final Long SMALLER_COURSE_ID = 1L - 1L;
 
-    private static final String DEFAULT_USER_ID = "AAAAAAAAAA";
-    private static final String UPDATED_USER_ID = "BBBBBBBBBB";
+    private static final Long DEFAULT_USER_ID = 1L;
+    private static final Long UPDATED_USER_ID = 2L;
+    private static final Long SMALLER_USER_ID = 1L - 1L;
 
     private static final String ENTITY_API_URL = "/api/user-courses";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -163,7 +164,7 @@ class UserCourseResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(userCourse.getId().intValue())))
             .andExpect(jsonPath("$.[*].courseId").value(hasItem(DEFAULT_COURSE_ID.intValue())))
-            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID)));
+            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID.intValue())));
     }
 
     @Test
@@ -179,7 +180,7 @@ class UserCourseResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(userCourse.getId().intValue()))
             .andExpect(jsonPath("$.courseId").value(DEFAULT_COURSE_ID.intValue()))
-            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID));
+            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID.intValue()));
     }
 
     @Test
@@ -332,28 +333,54 @@ class UserCourseResourceIT {
 
     @Test
     @Transactional
-    void getAllUserCoursesByUserIdContainsSomething() throws Exception {
+    void getAllUserCoursesByUserIdIsGreaterThanOrEqualToSomething() throws Exception {
         // Initialize the database
         userCourseRepository.saveAndFlush(userCourse);
 
-        // Get all the userCourseList where userId contains DEFAULT_USER_ID
-        defaultUserCourseShouldBeFound("userId.contains=" + DEFAULT_USER_ID);
+        // Get all the userCourseList where userId is greater than or equal to DEFAULT_USER_ID
+        defaultUserCourseShouldBeFound("userId.greaterThanOrEqual=" + DEFAULT_USER_ID);
 
-        // Get all the userCourseList where userId contains UPDATED_USER_ID
-        defaultUserCourseShouldNotBeFound("userId.contains=" + UPDATED_USER_ID);
+        // Get all the userCourseList where userId is greater than or equal to UPDATED_USER_ID
+        defaultUserCourseShouldNotBeFound("userId.greaterThanOrEqual=" + UPDATED_USER_ID);
     }
 
     @Test
     @Transactional
-    void getAllUserCoursesByUserIdNotContainsSomething() throws Exception {
+    void getAllUserCoursesByUserIdIsLessThanOrEqualToSomething() throws Exception {
         // Initialize the database
         userCourseRepository.saveAndFlush(userCourse);
 
-        // Get all the userCourseList where userId does not contain DEFAULT_USER_ID
-        defaultUserCourseShouldNotBeFound("userId.doesNotContain=" + DEFAULT_USER_ID);
+        // Get all the userCourseList where userId is less than or equal to DEFAULT_USER_ID
+        defaultUserCourseShouldBeFound("userId.lessThanOrEqual=" + DEFAULT_USER_ID);
 
-        // Get all the userCourseList where userId does not contain UPDATED_USER_ID
-        defaultUserCourseShouldBeFound("userId.doesNotContain=" + UPDATED_USER_ID);
+        // Get all the userCourseList where userId is less than or equal to SMALLER_USER_ID
+        defaultUserCourseShouldNotBeFound("userId.lessThanOrEqual=" + SMALLER_USER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllUserCoursesByUserIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        userCourseRepository.saveAndFlush(userCourse);
+
+        // Get all the userCourseList where userId is less than DEFAULT_USER_ID
+        defaultUserCourseShouldNotBeFound("userId.lessThan=" + DEFAULT_USER_ID);
+
+        // Get all the userCourseList where userId is less than UPDATED_USER_ID
+        defaultUserCourseShouldBeFound("userId.lessThan=" + UPDATED_USER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllUserCoursesByUserIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        userCourseRepository.saveAndFlush(userCourse);
+
+        // Get all the userCourseList where userId is greater than DEFAULT_USER_ID
+        defaultUserCourseShouldNotBeFound("userId.greaterThan=" + DEFAULT_USER_ID);
+
+        // Get all the userCourseList where userId is greater than SMALLER_USER_ID
+        defaultUserCourseShouldBeFound("userId.greaterThan=" + SMALLER_USER_ID);
     }
 
     /**
@@ -366,7 +393,7 @@ class UserCourseResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(userCourse.getId().intValue())))
             .andExpect(jsonPath("$.[*].courseId").value(hasItem(DEFAULT_COURSE_ID.intValue())))
-            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID)));
+            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID.intValue())));
 
         // Check, that the count call also returns 1
         restUserCourseMockMvc

@@ -112,7 +112,7 @@ public class AssignmentGradeQueryService extends QueryService<AssignmentGrade> {
                     specification.and(
                         buildSpecification(
                             criteria.getAssignmentId(),
-                            root -> root.join(AssignmentGrade_.assignments, JoinType.LEFT).get(Assignment_.id)
+                            root -> root.join(AssignmentGrade_.assignment, JoinType.LEFT).get(Assignment_.id)
                         )
                     );
             }

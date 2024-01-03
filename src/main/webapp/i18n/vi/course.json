@@ -20,15 +20,23 @@
       "id": "ID",
       "code": "Code",
       "name": "Name",
+      "ownerId": "Owner Id",
+      "description": "Description",
       "invitationCode": "Invitation Code",
       "expirationDate": "Expiration Date",
-      "gradeStructureId": "Grade Structure Id",
       "isDeleted": "Is Deleted",
       "createdBy": "Created By",
       "createdDate": "Created Date",
       "lastModifiedBy": "Last Modified By",
       "lastModifiedDate": "Last Modified Date",
-      "assignments": "Assignments"
+      "assignments": "Assignments",
+      "gradeCompositions": "Grade Compositions",
+      "coursejoinedsuccessfully": "Tham gia khóa học thành công",
+      "coursejoinedsuccessfullyLink": "Tham gia khóa học thành công. Bấm vào đường dẫn bên dưới để xem chi tiết khóa học",
+      "coursejoinedfailure": "Tham gia khóa học thất bại. Xin vui lòng kiểm tra lại mã thư mời",
+      "joinacourse": "Tham gia khóa học",
+      "enterinvitationcode": "Nhập mã thư mời",
+      "join": "Tham gia"
     }
   }
 }

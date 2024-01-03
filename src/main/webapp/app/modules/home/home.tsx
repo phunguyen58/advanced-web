@@ -6,6 +6,7 @@ import { Translate } from 'react-jhipster';
 import { Row, Col, Alert } from 'reactstrap';
 
 import { useAppSelector } from 'app/config/store';
+import ClassManagement from '../teacher/class-management/class-management';
 import { useNavigate } from 'react-router-dom';
 import { hasAnyAuthority } from 'app/shared/auth/private-route';
 import { AUTHORITIES } from 'app/config/constants';
@@ -13,11 +14,15 @@ import { AUTHORITIES } from 'app/config/constants';
 export const Home = () => {
   const account = useAppSelector(state => state.authentication.account);
   const isAdmin = useAppSelector(state => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN]));
+  const isTeacher = useAppSelector(state => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.TEACHER]));
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isAdmin) {
       navigate('/admin/user-management');
+    }
+    if (isTeacher) {
+      navigate('/teacher/class-management');
     }
   }, []);
 
@@ -28,7 +33,7 @@ export const Home = () => {
           <img className="logo" src="/content/images/open-book 1.svg" />
         </div>
         <div className="title-text-container">
-          <span className="title-text">Eduvi</span>
+          <span className="title-text">Eduvi - Education Online</span>
         </div>
       </div>
       <div className="introduction">

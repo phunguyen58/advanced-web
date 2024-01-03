@@ -8,8 +8,10 @@ import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateT
 import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { IAssignmentGrade } from 'app/shared/model/assignment-grade.model';
-import { getEntities as getAssignmentGrades } from 'app/entities/assignment-grade/assignment-grade.reducer';
+import { ICourse } from 'app/shared/model/course.model';
+import { getEntities as getCourses } from 'app/entities/course/course.reducer';
+import { IGradeComposition } from 'app/shared/model/grade-composition.model';
+import { getEntities as getGradeCompositions } from 'app/entities/grade-composition/grade-composition.reducer';
 import { IAssignment } from 'app/shared/model/assignment.model';
 import { getEntity, updateEntity, createEntity, reset } from './assignment.reducer';
 
@@ -21,7 +23,8 @@ export const AssignmentUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const assignmentGrades = useAppSelector(state => state.assignmentGrade.entities);
+  const courses = useAppSelector(state => state.course.entities);
+  const gradeCompositions = useAppSelector(state => state.gradeComposition.entities);
   const assignmentEntity = useAppSelector(state => state.assignment.entity);
   const loading = useAppSelector(state => state.assignment.loading);
   const updating = useAppSelector(state => state.assignment.updating);
@@ -38,7 +41,8 @@ export const AssignmentUpdate = () => {
       dispatch(getEntity(id));
     }
 
-    dispatch(getAssignmentGrades({}));
+    dispatch(getCourses({}));
+    dispatch(getGradeCompositions({}));
   }, []);
 
   useEffect(() => {
@@ -54,7 +58,8 @@ export const AssignmentUpdate = () => {
     const entity = {
       ...assignmentEntity,
       ...values,
-      assignmentGrades: assignmentGrades.find(it => it.id.toString() === values.assignmentGrades.toString()),
+      course: courses.find(it => it.id.toString() === values.course.toString()),
+      gradeComposition: gradeCompositions.find(it => it.id.toString() === values.gradeComposition.toString()),
     };
 
     if (isNew) {
@@ -74,7 +79,8 @@ export const AssignmentUpdate = () => {
           ...assignmentEntity,
           createdDate: convertDateTimeFromServer(assignmentEntity.createdDate),
           lastModifiedDate: convertDateTimeFromServer(assignmentEntity.lastModifiedDate),
-          assignmentGrades: assignmentEntity?.assignmentGrades?.id,
+          course: assignmentEntity?.course?.id,
+          gradeComposition: assignmentEntity?.gradeComposition?.id,
         };
 
   return (
@@ -111,6 +117,13 @@ export const AssignmentUpdate = () => {
                 validate={{
                   required: { value: true, message: translate('entity.validation.required') },
                 }}
+              />
+              <ValidatedField
+                label={translate('webApp.assignment.description')}
+                id="assignment-description"
+                name="description"
+                data-cy="description"
+                type="text"
               />
               <ValidatedField
                 label={translate('webApp.assignment.weight')}
@@ -170,15 +183,31 @@ export const AssignmentUpdate = () => {
                 }}
               />
               <ValidatedField
-                id="assignment-assignmentGrades"
-                name="assignmentGrades"
-                data-cy="assignmentGrades"
-                label={translate('webApp.assignment.assignmentGrades')}
+                id="assignment-course"
+                name="course"
+                data-cy="course"
+                label={translate('webApp.assignment.course')}
                 type="select"
               >
                 <option value="" key="0" />
-                {assignmentGrades
-                  ? assignmentGrades.map(otherEntity => (
+                {courses
+                  ? courses.map(otherEntity => (
+                      <option value={otherEntity.id} key={otherEntity.id}>
+                        {otherEntity.id}
+                      </option>
+                    ))
+                  : null}
+              </ValidatedField>
+              <ValidatedField
+                id="assignment-gradeComposition"
+                name="gradeComposition"
+                data-cy="gradeComposition"
+                label={translate('webApp.assignment.gradeComposition')}
+                type="select"
+              >
+                <option value="" key="0" />
+                {gradeCompositions
+                  ? gradeCompositions.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
                         {otherEntity.id}
                       </option>

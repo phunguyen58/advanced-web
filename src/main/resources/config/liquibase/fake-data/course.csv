@@ -1,11 +1,11 @@
-id;code;name;invitation_code;expiration_date;grade_structure_id;is_deleted;created_by;created_date;last_modified_by;last_modified_date
-1;Dollar Peru Innovative;infomediaries Specialist;Fantastic;2023-12-10T02:44:19;79009;false;protocol;2023-12-10T01:47:02;Group Facilitator transition;2023-12-10T02:55:58
-2;Tasty Ohio Awesome;Streamlined enable;JBOD;2023-12-10T00:49:58;42611;true;supply-chains access Function-based;2023-12-09T17:53:01;Legacy;2023-12-10T01:00:04
-3;Territory Steel Concrete;relationships;ROI;2023-12-09T13:36:48;10262;false;bandwidth Quality;2023-12-09T10:38:05;Soap;2023-12-09T15:07:16
-4;Burundi Account;invoice withdrawal;Bhutan Optimized payment;2023-12-09T22:04:32;88269;false;Home blue green;2023-12-09T22:36:11;architect withdrawal;2023-12-09T22:49:03
-5;reboot transmit;Rubber U.S. Credit;Pants;2023-12-10T05:15:40;74031;true;Texas;2023-12-09T12:37:18;Metal Fantastic;2023-12-10T00:23:58
-6;Keyboard 1080p;wireless Associate payment;Plastic Cliff;2023-12-09T16:26:50;29995;false;withdrawal Toys Account;2023-12-09T09:24:35;compressing e-business;2023-12-09T20:21:28
-7;Pre-emptive;Response hack upward-trending;Loan;2023-12-09T15:37:44;43986;false;Falls Hat;2023-12-09T20:27:33;Lodge;2023-12-10T01:33:28
-8;synergy full-range;Specialist;Cambridgeshire;2023-12-09T18:03:22;27553;false;Designer Maine Account;2023-12-09T08:41:46;Quality;2023-12-09T21:18:02
-9;challenge drive yellow;Georgia;Fresh feed Legacy;2023-12-10T05:20:32;26411;false;users;2023-12-09T12:44:35;Cambridgeshire Shoes;2023-12-09T17:43:19
-10;RSS;support;adapter;2023-12-09T23:58:32;79334;false;Table portals;2023-12-09T16:54:42;Tuna bypass Rubber;2023-12-10T01:06:40
+id;code;name;owner_id;description;invitation_code;expiration_date;is_deleted;created_by;created_date;last_modified_by;last_modified_date
+1;Dollar Peru Innovative;infomediaries Specialist;20270;embrace;Ergonomic Sausages niches;2023-12-09T09:16:23;true;FTP Executive;2023-12-09T09:17:25;Zloty Iraq;2023-12-10T00:08:30
+2;exuding Arizona Architect;reboot Harbors;1365;Function-based Bedfordshire;Mouse Territory Steel;2023-12-10T02:54:10;false;Table Gorgeous deposit;2023-12-09T20:25:01;Sleek Dinar Games;2023-12-10T04:50:33
+3;open-source Kids;Prairie moratorium Buckinghamshire;9975;Optimized payment;FTP;2023-12-09T14:58:42;true;blue;2023-12-10T01:05:24;virtual;2023-12-09T20:19:59
+4;THX;motivating Customer primary;12147;Granite Orchestrator;Metal;2023-12-09T13:07:59;false;copy programming leading-edge;2023-12-09T05:41:27;ubiquitous;2023-12-10T02:58:04
+5;strategic;1080p Data JBOD;48348;driver Plastic;Small functionalities;2023-12-09T13:49:15;false;Toys Account generating;2023-12-09T22:18:15;e-business;2023-12-09T20:21:28
+6;Pre-emptive;Response hack upward-trending;5882;Mexico web-readiness;orange Buckinghamshire;2023-12-10T04:21:31;false;Corporate synergy;2023-12-09T23:01:31;eco-centric adapter;2023-12-09T17:21:59
+7;Central Tasty Jan;orchid Facilitator;94135;Hollow challenge drive;Licensed;2023-12-09T16:11:48;false;bypassing Buckinghamshire;2023-12-09T19:43:06;copy asymmetric users;2023-12-09T12:44:35
+8;Cambridgeshire Shoes;Refined CSS;91075;Incredible primary Table;sticky back;2023-12-09T16:03:28;true;bypass Rubber tan;2023-12-09T20:35:24;even-keeled paradigm Diverse;2023-12-09T15:25:56
+9;Handmade copying Cape;Unbranded;92952;seamless;program Mississippi;2023-12-09T14:01:08;false;Marketing;2023-12-09T10:47:34;Islands Forward Cheese;2023-12-10T02:04:28
+10;Nigeria;parse Metal;34801;hard RSS Florida;Senior Central;2023-12-09T17:15:40;false;Outdoors Tokelau;2023-12-09T08:34:45;neural wireless;2023-12-09T08:13:45

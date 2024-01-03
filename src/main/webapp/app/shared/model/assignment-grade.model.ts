@@ -10,7 +10,7 @@ export interface IAssignmentGrade {
   createdDate?: string;
   lastModifiedBy?: string;
   lastModifiedDate?: string;
-  assignments?: IAssignment[] | null;
+  assignment?: IAssignment | null;
 }
 
 export const defaultValue: Readonly<IAssignmentGrade> = {

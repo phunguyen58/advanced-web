@@ -1,13 +1,20 @@
 package com.ptudw.web.web.rest;
 
 import com.ptudw.web.domain.Course;
+import com.ptudw.web.domain.User;
+import com.ptudw.web.domain.UserCourse;
 import com.ptudw.web.repository.CourseRepository;
 import com.ptudw.web.service.CourseQueryService;
 import com.ptudw.web.service.CourseService;
+import com.ptudw.web.service.UserCourseQueryService;
+import com.ptudw.web.service.UserService;
 import com.ptudw.web.service.criteria.CourseCriteria;
+import com.ptudw.web.service.criteria.UserCourseCriteria;
 import com.ptudw.web.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -20,8 +27,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import tech.jhipster.service.filter.LongFilter;
+import tech.jhipster.service.filter.StringFilter;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -46,10 +63,22 @@ public class CourseResource {
 
     private final CourseQueryService courseQueryService;
 
-    public CourseResource(CourseService courseService, CourseRepository courseRepository, CourseQueryService courseQueryService) {
+    private final UserService userService;
+
+    private final UserCourseQueryService userCourseQueryService;
+
+    public CourseResource(
+        CourseService courseService,
+        CourseRepository courseRepository,
+        CourseQueryService courseQueryService,
+        UserService userService,
+        UserCourseQueryService userCourseQueryService
+    ) {
         this.courseService = courseService;
         this.courseRepository = courseRepository;
         this.courseQueryService = courseQueryService;
+        this.userService = userService;
+        this.userCourseQueryService = userCourseQueryService;
     }
 
     /**
@@ -186,6 +215,20 @@ public class CourseResource {
     }
 
     /**
+     * {@code GET  /courses/:id} : get the "id" course.
+     *
+     * @param id the id of the course to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the course, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/courses/joined-course/{userId}")
+    //TODO: get all joined courses by userId
+    public ResponseEntity<Course> getJoinedCoursesByUserId(@PathVariable Long userId) {
+        log.debug("REST request to get all joined courses by userId : {}", userId);
+        Optional<Course> course = courseService.findOne(userId);
+        return ResponseUtil.wrapOrNotFound(course);
+    }
+
+    /**
      * {@code DELETE  /courses/:id} : delete the "id" course.
      *
      * @param id the id of the course to delete.
@@ -199,5 +242,54 @@ public class CourseResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PostMapping("/courses/invitation/{invitationCode}")
+    public ResponseEntity<Course> joinCourseByInvitationCode(@PathVariable String invitationCode) throws URISyntaxException {
+        log.debug("REST request to join Course by invitation code: {}", invitationCode);
+        CourseCriteria criteria = new CourseCriteria();
+        StringFilter invitationCodeFilter = new StringFilter();
+        invitationCodeFilter.setEquals(invitationCode);
+        criteria.setInvitationCode(invitationCodeFilter);
+
+        Optional<User> user = userService.getUserWithAuthorities();
+        if (!user.isPresent()) {
+            throw new BadRequestAlertException("Invalid user", ENTITY_NAME, "userinvalid");
+        }
+
+        Course course = Optional
+            .ofNullable(courseQueryService.findByCriteria(criteria))
+            .orElse(Collections.emptyList())
+            .stream()
+            .findFirst()
+            .orElse(null);
+        if (course == null) {
+            throw new BadRequestAlertException("Invalid invitation code", ENTITY_NAME, "invitationcodeinvalid");
+        }
+
+        boolean isExpiredInvitation = course.getExpirationDate().isBefore(ZonedDateTime.now());
+        if (isExpiredInvitation) {
+            throw new BadRequestAlertException("Invitation code is expired", ENTITY_NAME, "invitationcodeexpired");
+        }
+
+        UserCourseCriteria userCourseCriteria = new UserCourseCriteria();
+        LongFilter userIdFilter = new LongFilter();
+        userIdFilter.setEquals(user.get().getId());
+        userCourseCriteria.setUserId(userIdFilter);
+        LongFilter courseIdFilter = new LongFilter();
+        courseIdFilter.setEquals(course.getId());
+        userCourseCriteria.setCourseId(courseIdFilter);
+
+        Optional<UserCourse> userCourse = userCourseQueryService.findByCriteria(userCourseCriteria).stream().findFirst();
+        if (userCourse.isPresent()) {
+            throw new BadRequestAlertException("User already joined this course", ENTITY_NAME, "useralreadyjoined");
+        }
+
+        this.courseService.joinCourseByInvitationCode(course, user.get());
+
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createAlert(applicationName, "webApp.course.coursejoinedsuccessfully", course.getId().toString()))
+            .body(course);
     }
 }
