@@ -13,7 +13,8 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Link } from 'react-router-dom';
-import { AccountMenu, LocaleMenu } from '../menus';
+import AccountMenu from '../menus/account';
+import { LocaleMenu } from '../menus';
 import { Brand, Home } from './header-components';
 
 export interface IHeaderProps {
@@ -125,7 +126,6 @@ const Header = (props: IHeaderProps) => {
                 onClick={redirectToMyCourses}
               />
             )}
-            <Home />
             {!props.isAuthenticated && (
               <NavItem active={true}>
                 <NavLink tag={Link} to="/landing" className="d-flex align-items-center">
