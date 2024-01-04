@@ -8,6 +8,14 @@
     border-radius: 0 0 10px 10px;
   }
 
+  .aw-dialog {
+    padding-top: 20px;
+    .aw-dialog-content {
+      gap: 25px;
+      display: flex;
+      flex-direction: column;
+    }
+  }
   .aw-footer-container {
     button {
       border: none;
