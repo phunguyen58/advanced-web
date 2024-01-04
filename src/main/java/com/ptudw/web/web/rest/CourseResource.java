@@ -14,10 +14,12 @@ import com.ptudw.web.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -226,6 +228,33 @@ public class CourseResource {
         log.debug("REST request to get all joined courses by userId : {}", userId);
         Optional<Course> course = courseService.findOne(userId);
         return ResponseUtil.wrapOrNotFound(course);
+    }
+
+    @GetMapping("/courses/my-courses")
+    public ResponseEntity<List<Course>> getJoinedCoursesOfCurrentUser(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+        User user = userService
+            .getUserWithAuthorities()
+            .orElseThrow(() -> new BadRequestAlertException("Invalid user", ENTITY_NAME, "userinvalid"));
+
+        Long userId = user.getId();
+        log.debug("REST request to get all joined courses by userId : {}", userId);
+
+        UserCourseCriteria userCourseCriteria = new UserCourseCriteria();
+        LongFilter userIdFilter = new LongFilter();
+        userIdFilter.setEquals(userId);
+        userCourseCriteria.setUserId(userIdFilter);
+
+        List<UserCourse> userCourses = userCourseQueryService.findByCriteria(userCourseCriteria);
+
+        List<Long> joinedCourseIds = userCourses.stream().map(UserCourse::getCourseId).collect(Collectors.toList());
+
+        Page<Course> joinedCoursesPage = courseService.findAllByIds(joinedCourseIds, pageable);
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(
+            ServletUriComponentsBuilder.fromCurrentRequest(),
+            joinedCoursesPage
+        );
+        return ResponseEntity.ok().headers(headers).body(joinedCoursesPage.getContent());
     }
 
     /**
