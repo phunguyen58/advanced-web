@@ -141,7 +141,7 @@ export const UserManagementUpdate = () => {
                       </Col>
                     ) : null}
                     <Col md="6" className="mb-3">
-                      <Label>{translate('userManagement.login')}</Label>
+                      <Label className="mandatory">{translate('userManagement.login')}</Label>
                       <Field
                         className="field"
                         type="text"
@@ -157,7 +157,7 @@ export const UserManagementUpdate = () => {
                       )}
                     </Col>
                     <Col md="6" className="mb-3">
-                      <Label>{translate('userManagement.firstName')}</Label>
+                      <Label className="mandatory">{translate('userManagement.firstName')}</Label>
 
                       <Field className="field" type="text" name="firstName" value={values.firstName} onChange={handleChange('firstName')} />
                       {touched.firstName && errors.firstName && (
@@ -167,7 +167,7 @@ export const UserManagementUpdate = () => {
                       )}
                     </Col>
                     <Col md="6" className="mb-3">
-                      <Label>{translate('userManagement.lastName')}</Label>
+                      <Label className="mandatory">{translate('userManagement.lastName')}</Label>
 
                       <Field className="field" type="text" name="lastName" value={values.lastName} onChange={handleChange('lastName')} />
                       {touched.lastName && errors.lastName && (
@@ -177,7 +177,7 @@ export const UserManagementUpdate = () => {
                       )}
                     </Col>
                     <Col md="6" className="mb-3">
-                      <Label>{translate('global.form.email.label')}</Label>
+                      <Label className="mandatory">{translate('global.form.email.label')}</Label>
                       <Field
                         className="field"
                         name="email"
