@@ -2,10 +2,13 @@ package com.ptudw.web.web.rest;
 
 import com.ptudw.web.config.Constants;
 import com.ptudw.web.domain.User;
+import com.ptudw.web.domain.UserCourse;
 import com.ptudw.web.repository.UserRepository;
 import com.ptudw.web.security.AuthoritiesConstants;
 import com.ptudw.web.service.MailService;
+import com.ptudw.web.service.UserCourseQueryService;
 import com.ptudw.web.service.UserService;
+import com.ptudw.web.service.criteria.UserCourseCriteria;
 import com.ptudw.web.service.dto.AdminUserDTO;
 import com.ptudw.web.web.rest.errors.BadRequestAlertException;
 import com.ptudw.web.web.rest.errors.EmailAlreadyUsedException;
@@ -13,7 +16,7 @@ import com.ptudw.web.web.rest.errors.LoginAlreadyUsedException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.Collections;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +32,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import tech.jhipster.service.filter.LongFilter;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -88,10 +92,18 @@ public class UserResource {
 
     private final MailService mailService;
 
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
+    private final UserCourseQueryService userCourseQueryService;
+
+    public UserResource(
+        UserService userService,
+        UserRepository userRepository,
+        MailService mailService,
+        UserCourseQueryService userCourseQueryService
+    ) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.mailService = mailService;
+        this.userCourseQueryService = userCourseQueryService;
     }
 
     /**
@@ -215,5 +227,28 @@ public class UserResource {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "userManagement.deleted", login)).build();
+    }
+
+    @GetMapping("/users/course/{courseId}")
+    public ResponseEntity<List<AdminUserDTO>> getAllUsersByCourseId(
+        @PathVariable Long courseId,
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get all User in a course: {}", courseId);
+        if (!onlyContainsAllowedProperties(pageable)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        UserCourseCriteria userCourseCriteria = new UserCourseCriteria();
+        LongFilter courseIdFilter = new LongFilter();
+        courseIdFilter.setEquals(courseId);
+        userCourseCriteria.setCourseId(courseIdFilter);
+        List<UserCourse> userCourses = userCourseQueryService.findByCriteria(userCourseCriteria);
+
+        List<Long> userIds = userCourses.stream().map(UserCourse::getUserId).collect(Collectors.toList());
+
+        final Page<AdminUserDTO> page = userService.findAllByIds(userIds, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 }

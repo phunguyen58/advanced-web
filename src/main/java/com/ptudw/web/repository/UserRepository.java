@@ -25,6 +25,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findOneByLogin(String login);
     Optional<User> findOneByStudentId(String studentId);
     List<User> findByLoginIn(List<String> logins);
+    Page<User> findAllByIdIn(List<Long> ids, Pageable pageable);
 
     @EntityGraph(attributePaths = "authorities")
     @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)

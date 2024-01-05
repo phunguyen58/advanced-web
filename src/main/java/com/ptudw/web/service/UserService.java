@@ -412,4 +412,8 @@ public class UserService {
 
         userRepository.saveAll(usersToUpdate);
     }
+
+    public Page<AdminUserDTO> findAllByIds(List<Long> ids, Pageable pageable) {
+        return userRepository.findAllByIdIn(ids, pageable).map(AdminUserDTO::new);
+    }
 }
