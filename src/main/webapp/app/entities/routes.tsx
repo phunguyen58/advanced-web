@@ -33,7 +33,7 @@ export default () => {
         <Route path="course-grade/*" element={<CourseGrade />} />
         <Route path="user-course/*" element={<UserCourse />} />
         <Route path="invitation/:invitationCode" element={<InvitationLink />} />
-        <Route path="my-courses" element={<MyCourses />} />
+        <Route path="my-classes" element={<MyCourses />} />
         <Route path="grade-review/*" element={<GradeReview />} />
         <Route path="notification/*" element={<Notification />} />
         {/* jhipster-needle-add-route-path - JHipster will add routes here */}
