@@ -6,7 +6,7 @@ import LoadingBar from 'react-redux-loading-bar';
 import { Collapse, Nav, NavItem, NavLink, Navbar, NavbarToggler } from 'reactstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useAppDispatch } from 'app/config/store';
+import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { joinAClass } from 'app/entities/course/course.reducer';
 import { setLocale } from 'app/shared/reducers/locale';
 import { Button } from 'primereact/button';
@@ -17,6 +17,7 @@ import AccountMenu from '../menus/account';
 import { LocaleMenu } from '../menus';
 import { Brand, Home } from './header-components';
 import EntitiesMenu from 'app/entities/menu';
+import { AUTHORITIES } from 'app/config/constants';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -37,6 +38,9 @@ const Header = (props: IHeaderProps) => {
     Storage.session.set('locale', langKey);
     dispatch(setLocale(langKey));
   };
+
+  const account = useAppSelector(state => state.authentication.account);
+  console.log('currentUser', account);
 
   const renderDevRibbon = () =>
     props.isInProduction === false ? (
@@ -68,7 +72,7 @@ const Header = (props: IHeaderProps) => {
   };
 
   const redirectToMyCourses = () => {
-    window.location.href = '/my-courses';
+    window.location.href = '/my-classes';
   };
 
   const redirectoClassManagement = () => {
@@ -131,7 +135,7 @@ const Header = (props: IHeaderProps) => {
                 onClick={redirectToMyCourses}
               />
             )}
-            {props.isAuthenticated && (
+            {props.isAuthenticated && account.authorities.includes(AUTHORITIES.TEACHER) && (
               <Button
                 className="aw-btn-header"
                 label={translate('webApp.course.home.classManagement')}

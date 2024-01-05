@@ -7,7 +7,7 @@
         "createLabel": "Create a new Course",
         "createOrEditLabel": "Create or edit a Course",
         "notFound": "No Courses found",
-        "myCourses": "My Courses",
+        "myCourses": "My classes",
         "classManagement": "Class Management"
       },
       "created": "A new Course is created with identifier {{ param }}",
@@ -33,11 +33,11 @@
       "lastModifiedDate": "Last Modified Date",
       "assignments": "Assignments",
       "gradeCompositions": "Grade Compositions",
-      "coursejoinedsuccessfully": "Course joined successfully",
-      "coursejoinedsuccessfullyLink": "Successfully joined the course. Now you can access your couse by this link: ",
-      "coursejoinedfailure": "Course join failure. Please check the invitation code and try again.",
-      "joinacourse": "Join a course",
-      "enterinvitationcode": "Enter invitation code to join a course",
+      "coursejoinedsuccessfully": "Class joined successfully",
+      "coursejoinedsuccessfullyLink": "Successfully joined the class. Now you can access your couse by this link: ",
+      "coursejoinedfailure": "Class join failure. Please check the invitation code and try again.",
+      "joinacourse": "Join a class",
+      "enterinvitationcode": "Enter invitation code to join a class",
       "join": "Join",
       "details": "Details"
     }
