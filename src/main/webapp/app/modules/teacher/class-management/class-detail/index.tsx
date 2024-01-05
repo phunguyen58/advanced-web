@@ -10,15 +10,17 @@ import ClassGrade from './class-grade/class-grade';
 import ClassDetail from './class-detail';
 
 const ClassDetailRoutes = () => (
-  <div className="d-flex mt-5">
+  <div>
     <ClassDetailMenu></ClassDetailMenu>
-    <ErrorBoundaryRoutes>
-      <Route index element={<ClassDetail />} />
-      <Route path="stream" element={<ClassStream />} />
-      <Route path="class-work" element={<ClassWork />} />
-      <Route path="people" element={<ClassPeople />} />
-      <Route path="grade" element={<ClassGrade />} />
-    </ErrorBoundaryRoutes>
+    <div className="ms-5">
+      <ErrorBoundaryRoutes>
+        <Route index element={<ClassDetail />} />
+        <Route path="stream" element={<ClassStream />} />
+        <Route path="class-work" element={<ClassWork />} />
+        <Route path="people" element={<ClassPeople />} />
+        <Route path="grade" element={<ClassGrade />} />
+      </ErrorBoundaryRoutes>
+    </div>
   </div>
 );
 

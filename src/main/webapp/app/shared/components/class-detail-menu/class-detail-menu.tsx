@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import './AdminSidebar.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { MenuContext } from './class-detail-context';
 import { useNavigate } from 'react-router-dom';
