@@ -8,7 +8,7 @@ import ClassDetail from './class-detail/class-detail';
 const ClassManagementRoutes = () => (
   <div className="class-management-container">
     <ErrorBoundaryRoutes>
-      <Route index element={<ClassManagement />} />
+      <Route path="detail" element={<ClassDetail />} />
     </ErrorBoundaryRoutes>
   </div>
 );

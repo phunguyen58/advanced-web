@@ -7,7 +7,8 @@
         "createLabel": "Thêm mới một Lớp học",
         "createOrEditLabel": "Thêm mới hoặc cập nhật Lớp học",
         "notFound": "Không tìm thấy Lớp học nào",
-        "myCourses": "Lớp học của tôi"
+        "myCourses": "Lớp học của tôi",
+        "classManagement": "Quản lý lớp học"
       },
       "created": "Một Lớp học mới được tạo với định danh {{ param }}",
       "updated": "Một Lớp học cập nhật với định danh {{ param }}",
