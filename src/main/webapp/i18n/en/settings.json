@@ -11,7 +11,9 @@
       "lastname.placeholder": "Your last name",
       "language": "Language",
       "button": "Save",
-      "saveChanges": "Save change"
+      "saveChanges": "Save",
+      "login": "Username",
+      "studentId": "Student ID"
     },
     "messages": {
       "error": {
