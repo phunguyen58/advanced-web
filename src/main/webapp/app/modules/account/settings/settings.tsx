@@ -47,6 +47,22 @@ export const SettingsPage = () => {
           </h2> */}
           <ValidatedForm className="d-flex flex-column" id="settings-form" onSubmit={handleValidSubmit} defaultValues={account}>
             <ValidatedField
+              name="login"
+              label={translate('settings.form.login')}
+              labelClass="aw-label-input"
+              id="login"
+              data-cy="login"
+              disabled={true}
+            />
+            <ValidatedField
+              name="studentId"
+              label={translate('settings.form.studentId')}
+              labelClass="aw-label-input"
+              id="studentId"
+              data-cy="studentId"
+              disabled={true}
+            />
+            <ValidatedField
               name="firstName"
               label={translate('settings.form.firstname')}
               labelClass="aw-label-input"

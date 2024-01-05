@@ -1,21 +1,21 @@
 import './header.scss';
 
 import React, { useState } from 'react';
-import { Translate, Storage, translate } from 'react-jhipster';
-import { Navbar, Nav, NavbarToggler, Collapse, NavItem, NavLink } from 'reactstrap';
+import { Storage, Translate, translate } from 'react-jhipster';
 import LoadingBar from 'react-redux-loading-bar';
+import { Collapse, Nav, NavItem, NavLink, Navbar, NavbarToggler } from 'reactstrap';
 
-import { Home, Brand } from './header-components';
-import { AdminMenu, EntitiesMenu, AccountMenu, LocaleMenu } from '../menus';
-import { useAppDispatch } from 'app/config/store';
-import { setLocale } from 'app/shared/reducers/locale';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
+import { useAppDispatch } from 'app/config/store';
+import { joinAClass } from 'app/entities/course/course.reducer';
+import { setLocale } from 'app/shared/reducers/locale';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { joinAClass } from 'app/entities/course/course.reducer';
+import { Link } from 'react-router-dom';
+import AccountMenu from '../menus/account';
+import { LocaleMenu } from '../menus';
+import { Brand, Home } from './header-components';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -60,13 +60,21 @@ const Header = (props: IHeaderProps) => {
   };
 
   const handleCodeEntry = () => {
-    dispatch(joinAClass(codeToJoinClass));
+    dispatch(joinAClass(codeToJoinClass)).finally(() => {
+      toggleJoinClassPanel(false);
+      setCodeToJoinClass('');
+    });
+  };
+
+  const redirectToMyCourses = () => {
+    window.location.href = '/my-courses';
   };
   /* jhipster-needle-add-element-to-menu - JHipster will add new menu items here */
 
   return (
     <div id="app-header">
       <Dialog
+        className="join-a-course-dialog"
         header={translate('webApp.course.joinacourse')}
         draggable={false}
         resizable={false}
@@ -80,16 +88,16 @@ const Header = (props: IHeaderProps) => {
           </span>
           <p className="d-flex flex-column m-0 gap-2 align-items-center">
             <InputText
-              className="w-100"
+              className="aw-input w-100"
               value={codeToJoinClass}
               onChange={e => setCodeToJoinClass(e.target.value)}
               onKeyDown={handleKeyDown}
             />
             <Button
               disabled={!codeToJoinClass}
-              className="w-50"
+              className="aw-btn-join w-50"
               label={translate('webApp.course.join')}
-              icon="pi pi-external-link"
+              icon="pi pi-plus"
               onClick={handleCodeEntry}
             />
           </p>
@@ -104,12 +112,20 @@ const Header = (props: IHeaderProps) => {
           <Nav id="header-tabs" className="ms-auto" navbar>
             {props.isAuthenticated && (
               <Button
+                className="aw-btn-header mr-2"
                 label={translate('webApp.course.joinacourse')}
-                icon="pi pi-external-link"
+                icon="pi pi-plus"
                 onClick={() => toggleJoinClassPanel(true)}
               />
             )}
-            <Home />
+            {props.isAuthenticated && (
+              <Button
+                className="aw-btn-header"
+                label={translate('webApp.course.home.myCourses')}
+                icon="pi pi-bookmark"
+                onClick={redirectToMyCourses}
+              />
+            )}
             {!props.isAuthenticated && (
               <NavItem active={true}>
                 <NavLink tag={Link} to="/landing" className="d-flex align-items-center">

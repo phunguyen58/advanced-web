@@ -11,7 +11,9 @@
       "lastname.placeholder": "Nhập họ của bạn",
       "language": "Ngôn ngữ",
       "button": "Lưu",
-      "saveChanges": "Lưu thay đổi"
+      "saveChanges": "Lưu",
+      "login": "Tên đăng nhập",
+      "studentId": "Mã số sinh viên"
     },
     "messages": {
       "error": {

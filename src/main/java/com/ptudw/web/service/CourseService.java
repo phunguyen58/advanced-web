@@ -5,6 +5,7 @@ import com.ptudw.web.domain.User;
 import com.ptudw.web.domain.UserCourse;
 import com.ptudw.web.repository.CourseRepository;
 import com.ptudw.web.security.SecurityUtils;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,5 +161,9 @@ public class CourseService {
         userCourse.setCourseId(course.getId());
         userCourse.setUserId(user.getId());
         userCourseService.save(userCourse);
+    }
+
+    public Page<Course> findAllByIds(List<Long> courseIds, Pageable pageable) {
+        return courseRepository.findAllByIdIn(courseIds, pageable);
     }
 }

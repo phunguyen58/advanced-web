@@ -2,20 +2,21 @@
   "webApp": {
     "course": {
       "home": {
-        "title": "Courses",
+        "title": "Lớp học",
         "refreshListLabel": "Refresh list",
-        "createLabel": "Thêm mới một Course",
-        "createOrEditLabel": "Thêm mới hoặc cập nhật Course",
-        "notFound": "No Courses found"
+        "createLabel": "Thêm mới một Lớp học",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Lớp học",
+        "notFound": "Không tìm thấy Lớp học nào",
+        "myCourses": "Lớp học của tôi"
       },
-      "created": "Một Course mới được tạo với định danh {{ param }}",
-      "updated": "Một Course cập nhật với định danh {{ param }}",
-      "deleted": "Một Course đã xóa với định danh {{ param }}",
+      "created": "Một Lớp học mới được tạo với định danh {{ param }}",
+      "updated": "Một Lớp học cập nhật với định danh {{ param }}",
+      "deleted": "Một Lớp học đã xóa với định danh {{ param }}",
       "delete": {
-        "question": "Bạn có chắc là muốn xóa Course {{ id }}?"
+        "question": "Bạn có chắc là muốn xóa Lớp học {{ id }}?"
       },
       "detail": {
-        "title": "Course"
+        "title": "Lớp học"
       },
       "id": "ID",
       "code": "Code",
@@ -36,7 +37,8 @@
       "coursejoinedfailure": "Tham gia khóa học thất bại. Xin vui lòng kiểm tra lại mã thư mời",
       "joinacourse": "Tham gia khóa học",
       "enterinvitationcode": "Nhập mã thư mời",
-      "join": "Tham gia"
+      "join": "Tham gia",
+      "details": "Chi tiết"
     }
   }
 }
