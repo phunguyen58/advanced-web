@@ -13,7 +13,7 @@ export default function ClassCard(prop: IClassCardProp) {
   const navigate = useNavigate();
 
   const showDetail = () => {
-    navigate('/class/detail');
+    navigate(`/class/detail?id=${prop.course.id}&name=${prop.course.name}`);
   };
   const header = (
     <div className="position-relative">

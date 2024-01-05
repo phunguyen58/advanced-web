@@ -1,0 +1,18 @@
+.aw-class-detail-container {
+  .aw-menu-item {
+    a {
+      color: #ccced3;
+      text-decoration: solid;
+      &:hover {
+        color: #0a033c;
+      }
+      &:active {
+        color: #0a033c;
+      }
+    }
+  }
+  .p-tabmenu .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link {
+    border-color: #0a033c;
+    color: #0a033c;
+  }
+}
