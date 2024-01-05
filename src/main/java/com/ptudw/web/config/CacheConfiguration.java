@@ -62,6 +62,8 @@ public class CacheConfiguration {
             createCache(cm, com.ptudw.web.domain.AssignmentGrade.class.getName());
             createCache(cm, com.ptudw.web.domain.CourseGrade.class.getName());
             createCache(cm, com.ptudw.web.domain.UserCourse.class.getName());
+            createCache(cm, com.ptudw.web.domain.GradeReview.class.getName());
+            createCache(cm, com.ptudw.web.domain.Notification.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

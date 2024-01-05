@@ -1,0 +1,63 @@
+{
+  "applications": ["web"],
+  "changelogDate": "20240105163822",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "grade_review",
+  "fields": [
+    {
+      "fieldName": "gradeCompositionId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "studentId",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "courseId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "reviewerId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "assigmentId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "assimentGradeId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "currentGrade",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "expectationGrade",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "studentExplanation",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "teacherComment",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "isFinal",
+      "fieldType": "Boolean"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": true,
+  "name": "GradeReview",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [],
+  "service": "serviceClass"
+}

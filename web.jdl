@@ -53,15 +53,6 @@ entity Course {
     lastModifiedDate ZonedDateTime required
 }
 
-entity GradeStructure {
-    courseId Long required
-    isDeleted Boolean
-    createdBy String required
-    createdDate ZonedDateTime required
-    lastModifiedBy String required
-    lastModifiedDate ZonedDateTime required
-    type GradeType required
-}
 
 enum GradeType{
 	PERCENTAGE,
@@ -116,6 +107,30 @@ entity CourseGrade {
 entity UserCourse {
     courseId Long required
     userId Long required
+}
+
+entity GradeReview{
+	gradeCompositionId Long required
+    studentId String required
+    courseId Long required
+    reviewerId Long
+    assigmentId Long
+    assimentGradeId Long
+    currentGrade Long
+    expectationGrade Long
+    studentExplanation String
+    teacherComment String
+    isFinal Boolean
+}
+
+entity Notification{
+	message String
+    topic String
+    receivers String
+    sender String
+    role String
+    link String
+    gradeReviewId Long
 }
 
 relationship OneToMany {

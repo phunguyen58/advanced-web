@@ -16,6 +16,8 @@
         "assignmentGrade": "Assignment Grade",
         "courseGrade": "Course Grade",
         "userCourse": "User Course",
+        "gradeReview": "Grade Review",
+        "notification": "Notification",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {
