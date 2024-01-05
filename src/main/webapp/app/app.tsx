@@ -36,7 +36,7 @@ export const App = () => {
   const isInProduction = useAppSelector(state => state.applicationProfile.inProduction);
   const isOpenAPIEnabled = useAppSelector(state => state.applicationProfile.isOpenAPIEnabled);
 
-  const paddingTop = '72px';
+  const paddingTop = '62.39px';
   return (
     <PrimeReactProvider>
       <BrowserRouter basename={baseHref}>
