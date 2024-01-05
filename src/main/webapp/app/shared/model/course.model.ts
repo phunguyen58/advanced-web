@@ -9,12 +9,12 @@ export interface ICourse {
   ownerId?: number;
   description?: string | null;
   invitationCode?: string;
-  expirationDate?: string | null;
+  expirationDate?: Date | null;
   isDeleted?: boolean | null;
   createdBy?: string;
-  createdDate?: string;
+  createdDate?: Date | null;
   lastModifiedBy?: string;
-  lastModifiedDate?: string;
+  lastModifiedDate?: Date | null;
   assignments?: IAssignment[] | null;
   gradeCompositions?: IGradeComposition[] | null;
 }

@@ -1,0 +1,16 @@
+{
+    "webApp": {
+        "classManagement": {
+            "className": "Tên lớp",
+            "code": "Mã lớp",
+            "description": "Mô tả",
+            "createNewClass": "Tạo mới lớp học",
+            "createClassButton": "Tạo lớp",
+            "action": {
+                "confirm": "Xác nhận",
+                "cancel": "Hủy",
+                "create": "Tạo"
+            }
+        }
+    }
+}

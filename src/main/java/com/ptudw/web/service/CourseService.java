@@ -133,6 +133,18 @@ public class CourseService {
     }
 
     /**
+     * Get one course by code.
+     *
+     * @param code the code of the entity.
+     * @return the entity.
+     */
+    @Transactional(readOnly = true)
+    public Optional<Course> findOneByCode(String code) {
+        log.debug("Request to get Course by code : {}", code);
+        return courseRepository.findOneByCode(code);
+    }
+
+    /**
      * Delete the course by id.
      *
      * @param id the id of the entity.

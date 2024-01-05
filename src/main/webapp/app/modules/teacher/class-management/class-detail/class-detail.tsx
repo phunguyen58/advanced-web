@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import './class-detail.scss';
 import { TabMenu } from 'primereact/tabmenu';
 import { MenuItem } from 'primereact/menuitem';
-import ClassWork from './class-work/class-people';
-import ClassPeople from './class-people/class-people';
-import ClassGrade from './class-grade/class-grade';
-import ClassStream from './class-stream/class-stream';
+import ClassStream from '../class-stream/class-stream';
+import ClassWork from '../class-work/class-people';
+import ClassPeople from '../class-people/class-people';
+import ClassGrade from '../class-grade/class-grade';
 
 const ClassDetail = () => {
   const [activeIndex, setActiveIndex] = useState(0);

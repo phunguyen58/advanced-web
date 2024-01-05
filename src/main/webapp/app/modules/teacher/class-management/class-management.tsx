@@ -10,8 +10,9 @@ import { Button } from 'primereact/button';
 import ClassCard from '../../../shared/components/class-card/class-card';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
-import { getSortState } from 'react-jhipster';
+import { getSortState, translate } from 'react-jhipster';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { ICourse } from 'app/shared/model/course.model';
 
 export const ClassManagement = () => {
   const dispatch = useAppDispatch();
@@ -87,10 +88,9 @@ export const ClassManagement = () => {
     setVisible(!visible);
   };
 
-  const handleCreateClass = _class => {
+  const handleCreateClass = (_class: ICourse) => {
     // Perform actions to create the class (e.g., make an API call)
     console.log(`Creating class with name: ${JSON.stringify(_class)}`);
-    //
     _class.expirationDate = convertDateTimeToServer(_class.expirationDate);
     _class.createdDate = convertDateTimeToServer(_class.createdDate);
     _class.lastModifiedDate = convertDateTimeToServer(_class.lastModifiedDate);
@@ -104,7 +104,12 @@ export const ClassManagement = () => {
   return (
     <div className="d-flex min-vh-100 flex-column aw-class-management-container pt-1">
       <div className="d-flex justify-content-end">
-        <Button className="aw-create-class-btn" label="Create class" icon="pi pi-plus" onClick={() => setVisible(true)} />
+        <Button
+          className="aw-create-class-btn"
+          label={translate('webApp.classManagement.createClassButton')}
+          icon="pi pi-plus"
+          onClick={() => setVisible(true)}
+        />
       </div>
       <CreateClassModal visible={visible} setVisible={toggleModal} onCreateClass={handleCreateClass}></CreateClassModal>
       <div className="d-flex flex-wrap gap-3 p-3">

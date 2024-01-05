@@ -7,7 +7,8 @@
         "createLabel": "Create a new Course",
         "createOrEditLabel": "Create or edit a Course",
         "notFound": "No Courses found",
-        "myCourses": "My Courses"
+        "myCourses": "My Courses",
+        "classManagement": "Class Management"
       },
       "created": "A new Course is created with identifier {{ param }}",
       "updated": "A Course is updated with identifier {{ param }}",

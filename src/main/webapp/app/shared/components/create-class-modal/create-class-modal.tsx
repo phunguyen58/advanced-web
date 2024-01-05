@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import './create-class-modal.scss';
-import { boolean } from 'yup';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { useNavigate } from 'react-router-dom';
-import { displayDefaultDateTime } from 'app/shared/util/date-utils';
+import { ICourse } from 'app/shared/model/course.model';
+
+import { translate } from 'react-jhipster';
+import { useFormik } from 'formik';
+import { initCourse } from 'app/entities/course/courseUtil';
+import { classNames } from 'primereact/utils';
+
+import * as _ from 'lodash';
 
 export interface ICreateClassModalProp {
   visible: boolean;
   setVisible: any;
-  onCreateClass: any;
+  onCreateClass: (clazz: ICourse) => void;
 }
 const CreateClassModal = (prop: ICreateClassModalProp) => {
   const dispatch = useAppDispatch();
@@ -25,68 +31,52 @@ const CreateClassModal = (prop: ICreateClassModalProp) => {
   const updating = useAppSelector(state => state.course.updating);
   const updateSuccess = useAppSelector(state => state.course.updateSuccess);
 
-  const [className, setClassName] = useState('');
+  const formik = useFormik({
+    initialValues: initCourse(),
+    validate: (data: ICourse) => {
+      let errors: any = {};
 
-  const handleCreateClass = () => {
-    // Perform any necessary validation before creating the class
-    if (className.trim() === '') {
-      // Handle validation error (e.g., show an alert)
-      return;
-    }
+      if (_.isEmpty(data.name)) {
+        errors.name = 'Class name is required.';
+      }
 
-    // Generate random values for other properties
-    const expirationDate = displayDefaultDateTime();
-    const createdDate = displayDefaultDateTime();
-    const lastModifiedDate = displayDefaultDateTime();
-    const lastModifiedBy = account.id;
-    const gradeStructureId = generateRandomGradeStructureId();
-    const isDeleted = false; // or generate randomly if needed
-    const createdBy = 'admin'; // or get from authentication if available
-    const code = 'code';
-    const invitationCode = 'invitationCode';
+      if (_.isEmpty(data.code)) {
+        errors.code = 'code is required.';
+      }
 
-    // Call the onCreateClass function with the class name and generated properties
-    prop.onCreateClass({
-      code,
-      createdBy,
-      createdDate,
-      expirationDate,
-      gradeStructureId,
-      invitationCode,
-      isDeleted,
-      lastModifiedBy,
-      lastModifiedDate,
-      name: className,
-    });
+      return errors;
+    },
+    onSubmit: (data: ICourse) => {
+      prop.onCreateClass({
+        ownerId: account.id,
+        createdBy: account.id,
+        lastModifiedBy: account.id,
+        ...data,
+      });
+      formik.resetForm();
+    },
+  });
 
-    // Clear the input and close the modal
-    setClassName('');
-    prop.setVisible(false);
-  };
-
-  // Helper function to generate a random date within a reasonable range
-  const generateRandomDate = () => {
-    const currentDate = new Date();
-    const randomDays = Math.floor(Math.random() * 30); // Adjust the range as needed
-    currentDate.setDate(currentDate.getDate() + randomDays);
-    return currentDate.toISOString();
-  };
-
-  // Helper function to generate a random grade structure ID
-  const generateRandomGradeStructureId = () => {
-    return Math.floor(Math.random() * 1000); // Adjust the range as needed
+  const isFormFieldInvalid = name => !!(formik.touched?.[name] && formik.errors[name]);
+  const getFormErrorMessage = name => {
+    return isFormFieldInvalid(name) ? <small className="p-error">{formik.errors[name]}</small> : null;
   };
 
   const footerContent = (
     <div className="aw-footer-container">
-      <Button label="Cancel" icon="pi pi-times" onClick={() => prop.setVisible(false)} className="aw-cancel-btn p-button-text" />
+      <Button
+        label={translate('webApp.classManagement.action.cancel')}
+        icon="pi pi-times"
+        onClick={() => prop.setVisible(false)}
+        className="aw-cancel-btn p-button-text"
+      />
       <Button
         className="aw-create-btn"
-        label="Create"
+        label={translate('webApp.classManagement.action.create')}
         icon="pi pi-check"
         onClick={() => {
           prop.setVisible(false);
-          handleCreateClass();
+          formik.submitForm().then(value => console.warn(value));
         }}
         autoFocus
       />
@@ -94,9 +84,9 @@ const CreateClassModal = (prop: ICreateClassModalProp) => {
   );
 
   return (
-    <>
+    <div className="aw-create-class-modal-container">
       <Dialog
-        header="Create a New Class"
+        header={translate('webApp.classManagement.createNewClass')}
         visible={prop.visible}
         style={{ width: '50vw' }}
         onHide={() => prop.setVisible(false)}
@@ -105,15 +95,41 @@ const CreateClassModal = (prop: ICreateClassModalProp) => {
         className="aw-create-class-dialog-container"
       >
         <div className="d-flex w-100">
-          <div className="justify-content-center w-100">
+          <form onSubmit={formik.handleSubmit} className="justify-content-center w-100 aw-dialog-content">
             <span className="p-float-label">
-              <InputText className="w-100" id="className" value={className} onChange={e => setClassName(e.target.value)} />
-              <label htmlFor="className">Class name</label>
+              <InputText
+                className={classNames({ 'p-invalid': isFormFieldInvalid('name'), 'w-100': true })}
+                id="name"
+                value={formik.values.name}
+                onChange={e => formik.setFieldValue('name', e.target.value)}
+                onBlur={formik.handleBlur}
+              />
+              <label htmlFor="name">{translate('webApp.classManagement.className')}</label>
             </span>
-          </div>
+            <span className="p-float-label">
+              <InputText
+                className={classNames({ 'p-invalid': isFormFieldInvalid('code'), 'w-100': true })}
+                id="code"
+                value={formik.values.code}
+                onChange={e => formik.setFieldValue('code', e.target.value)}
+                onBlur={formik.handleBlur}
+              />
+              <label htmlFor="code">{translate('webApp.classManagement.code')}</label>
+            </span>
+            <span className="p-float-label">
+              <InputText
+                className={classNames({ 'p-invalid': isFormFieldInvalid('description'), 'w-100': true })}
+                id="description"
+                value={formik.values.description}
+                onChange={e => formik.setFieldValue('description', e.target.value)}
+                onBlur={formik.handleBlur}
+              />
+              <label htmlFor="description">{translate('webApp.classManagement.description')}</label>
+            </span>
+          </form>
         </div>
       </Dialog>
-    </>
+    </div>
   );
 };
 

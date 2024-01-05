@@ -9,8 +9,8 @@ const TeacherRoutes = () => (
   <div>
     <div className="teacher-content">
       <ErrorBoundaryRoutes>
-        <Route path="class-management/detail" element={<ClassDetail />} />
-        <Route path="class-management/*" element={<ClassManagement />} />
+        <Route path="detail" element={<ClassDetail />} />
+        <Route index element={<ClassManagement />} />
       </ErrorBoundaryRoutes>
     </div>
   </div>

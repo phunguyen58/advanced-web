@@ -21,9 +21,6 @@ export const Home = () => {
     if (isAdmin) {
       navigate('/admin/user-management');
     }
-    if (isTeacher) {
-      navigate('/teacher/class-management');
-    }
   }, []);
 
   return (

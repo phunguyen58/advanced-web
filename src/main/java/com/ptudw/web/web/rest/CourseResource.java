@@ -96,6 +96,9 @@ public class CourseResource {
         if (course.getId() != null) {
             throw new BadRequestAlertException("A new course cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        if (courseService.findOneByCode(course.getCode()).isPresent()) {
+            throw new BadRequestAlertException("A new course cannot already have an code", ENTITY_NAME, "codeexists");
+        }
         Course result = courseService.save(course);
         return ResponseEntity
             .created(new URI("/api/courses/" + result.getId()))

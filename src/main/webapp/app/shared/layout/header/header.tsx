@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import AccountMenu from '../menus/account';
 import { LocaleMenu } from '../menus';
 import { Brand, Home } from './header-components';
+import EntitiesMenu from 'app/entities/menu';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -69,6 +70,10 @@ const Header = (props: IHeaderProps) => {
   const redirectToMyCourses = () => {
     window.location.href = '/my-courses';
   };
+
+  const redirectoClassManagement = () => {
+    window.location.href = '/class';
+  };
   /* jhipster-needle-add-element-to-menu - JHipster will add new menu items here */
 
   return (
@@ -120,12 +125,21 @@ const Header = (props: IHeaderProps) => {
             )}
             {props.isAuthenticated && (
               <Button
-                className="aw-btn-header"
+                className="aw-btn-header mr-2"
                 label={translate('webApp.course.home.myCourses')}
                 icon="pi pi-bookmark"
                 onClick={redirectToMyCourses}
               />
             )}
+            {props.isAuthenticated && (
+              <Button
+                className="aw-btn-header"
+                label={translate('webApp.course.home.classManagement')}
+                icon="pi pi-briefcase"
+                onClick={redirectoClassManagement}
+              />
+            )}
+            {/* {props.isAuthenticated && <EntitiesMenu />} */}
             {!props.isAuthenticated && (
               <NavItem active={true}>
                 <NavLink tag={Link} to="/landing" className="d-flex align-items-center">
