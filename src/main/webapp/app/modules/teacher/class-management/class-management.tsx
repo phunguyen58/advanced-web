@@ -90,7 +90,7 @@ export const ClassManagement = () => {
 
   const handleCreateClass = (_class: ICourse) => {
     // Perform actions to create the class (e.g., make an API call)
-    console.log(`Creating class with name: ${JSON.stringify(_class)}`);
+    // console.log(`Creating class with name: ${JSON.stringify(_class)}`);
     _class.expirationDate = convertDateTimeToServer(_class.expirationDate);
     _class.createdDate = convertDateTimeToServer(_class.createdDate);
     _class.lastModifiedDate = convertDateTimeToServer(_class.lastModifiedDate);

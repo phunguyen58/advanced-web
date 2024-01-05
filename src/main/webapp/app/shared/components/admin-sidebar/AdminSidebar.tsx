@@ -28,7 +28,7 @@ export const AdminSidebar = () => {
 
       <div
         className={`admin-menu-item ${curActiveMenu === 'class' ? 'active' : ''}`}
-        onClick={() => handleMenuItemClick('class', '/admin/class-management')}
+        onClick={() => handleMenuItemClick('class', '/class')}
       >
         <FontAwesomeIcon icon="book" className="me-3" />
         <span>Class management</span>
