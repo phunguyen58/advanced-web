@@ -14,7 +14,7 @@ const ClassDetailRoutes = () => (
     <ClassDetailMenu></ClassDetailMenu>
     <div className="ms-5">
       <ErrorBoundaryRoutes>
-        <Route index element={<ClassDetail />} />
+        <Route index element={<ClassStream />} />
         <Route path="stream" element={<ClassStream />} />
         <Route path="class-work" element={<ClassWork />} />
         <Route path="people" element={<ClassPeople />} />

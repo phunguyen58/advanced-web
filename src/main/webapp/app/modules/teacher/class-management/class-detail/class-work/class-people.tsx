@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './class-work.scss';
+import './class-people.scss';
 
 const ClassPeople = () => {
   return <div className="class-detail-container">class work</div>;

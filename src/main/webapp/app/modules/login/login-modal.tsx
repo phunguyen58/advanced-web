@@ -45,8 +45,8 @@ const LoginModal = (props: ILoginModalProps) => {
         const user = result.user;
         // IdP data available using getAdditionalUserInfo(result)
         // ...
-        console.log(token);
-        console.log(user);
+        // console.log(token);
+        // console.log(user);
         props.handleSocialLogin(token, user.uid);
       })
       .catch(error => {
@@ -71,8 +71,8 @@ const LoginModal = (props: ILoginModalProps) => {
         const user = result.user;
         // IdP data available using getAdditionalUserInfo(result)
         // ...
-        console.log(token);
-        console.log(user);
+        // console.log(token);
+        // console.log(user);
         props.handleSocialLogin(token, user.uid);
       })
       .catch(error => {

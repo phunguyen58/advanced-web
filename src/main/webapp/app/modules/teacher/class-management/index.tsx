@@ -9,7 +9,9 @@ const ClassManagementRoutes = () => (
   <div className="class-management-container">
     <ErrorBoundaryRoutes>
       <Route index element={<ClassManagement />} />
-      <Route path="detail/*" element={<ClassDetail />} />
+      <Route path=":id">
+        <Route path="detail/*" element={<ClassDetail />} />
+      </Route>
     </ErrorBoundaryRoutes>
   </div>
 );
