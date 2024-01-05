@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './class-work.scss';
 
-const ClassWork = () => {
+const ClassPeople = () => {
   return <div className="class-detail-container">class work</div>;
 };
 
-export default ClassWork;
+export default ClassPeople;
