@@ -12,7 +12,7 @@ let stompClient = null;
 let subscriber = null;
 let connection: Promise<any>;
 let connectedPromise: any = null;
-let listener: Observable<any>;
+export let listener: Observable<any>;
 let listenerObserver: any;
 let alreadyConnectedOnce = false;
 
@@ -33,9 +33,75 @@ export const sendActivity = (page: string) => {
   });
 };
 
+export const sendNotificationStudent = (message: string, userSenderLogin: string, userReceiverLogin) => {
+  if (stompClient !== null && stompClient.connected) {
+    stompClient.send(
+      '/notification-student', // destination
+      JSON.stringify({ message, userSenderLogin, userReceiverLogin }), // body
+      {} // header
+    );
+  }
+};
+
+export const sendNotificationTeacher = (message: string, userSenderLogin: string, userReceiverLogin) => {
+  if (stompClient !== null && stompClient.connected) {
+    stompClient.send(
+      '/notification-teacher', // destination
+      JSON.stringify({ message, userSenderLogin, userReceiverLogin }), // body
+      {} // header
+    );
+  }
+};
+
+export const sendNotificationCreateGradeReview = (message: string, gradeReviewId: number, type: string) => {
+  if (stompClient !== null && stompClient.connected) {
+    stompClient.send(
+      '/notification-teacher', // destination
+      JSON.stringify({ message, gradeReviewId, type }), // body
+      {} // header
+    );
+  }
+};
+
+export const sendNotificationStudentCommentOnGradeReview = (message: string, gradeReviewId: number, type: string) => {
+  if (stompClient !== null && stompClient.connected) {
+    stompClient.send(
+      '/notification-teacher', // destination
+      JSON.stringify({ message, gradeReviewId, type }), // body
+      {} // header
+    );
+  }
+};
+
+export const sendNotificationSubmitGradeReview = (message: string, gradeReviewId: number, studentId: string, type: string) => {
+  if (stompClient !== null && stompClient.connected) {
+    stompClient.send(
+      '/notification-student', // destination
+      JSON.stringify({ message, gradeReviewId, userReceiverLogin: studentId, type }), // body
+      {} // header
+    );
+  }
+};
+
+export const sendNotificationTeacherCommentOnGradeReview = (message: string, gradeReviewId: number, studentId: string, type: string) => {
+  if (stompClient !== null && stompClient.connected) {
+    stompClient.send(
+      '/notification-student', // destination
+      JSON.stringify({ message, gradeReviewId, userReceiverLogin: studentId, type }), // body
+      {} // header
+    );
+  }
+};
+
 const subscribe = () => {
   connection.then(() => {
     subscriber = stompClient.subscribe('/topic/tracker', data => {
+      listenerObserver.next(JSON.parse(data.body));
+    });
+    subscriber = stompClient.subscribe('/notification-student', data => {
+      listenerObserver.next(JSON.parse(data.body));
+    });
+    subscriber = stompClient.subscribe('/notification-teacher', data => {
       listenerObserver.next(JSON.parse(data.body));
     });
   });
@@ -92,8 +158,7 @@ const unsubscribe = () => {
 export default store => next => action => {
   if (getAccount.fulfilled.match(action)) {
     connect();
-    const isAdmin = action.payload.data.authorities.includes('ROLE_ADMIN');
-    if (!alreadyConnectedOnce && isAdmin) {
+    if (!alreadyConnectedOnce) {
       subscribe();
       receive().subscribe(activity => {
         return store.dispatch(websocketActivityMessage(activity));

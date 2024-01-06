@@ -43,6 +43,9 @@ public class Notification implements Serializable {
     @Column(name = "grade_review_id")
     private Long gradeReviewId;
 
+    @Column(name = "is_read")
+    private Boolean isRead;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -149,6 +152,19 @@ public class Notification implements Serializable {
         this.gradeReviewId = gradeReviewId;
     }
 
+    public Boolean getIsRead() {
+        return this.isRead;
+    }
+
+    public Notification isRead(Boolean isRead) {
+        this.setIsRead(isRead);
+        return this;
+    }
+
+    public void setIsRead(Boolean isRead) {
+        this.isRead = isRead;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -180,6 +196,7 @@ public class Notification implements Serializable {
             ", role='" + getRole() + "'" +
             ", link='" + getLink() + "'" +
             ", gradeReviewId=" + getGradeReviewId() +
+            ", isRead='" + getIsRead() + "'" +
             "}";
     }
 }

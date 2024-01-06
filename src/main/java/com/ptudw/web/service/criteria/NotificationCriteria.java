@@ -37,6 +37,8 @@ public class NotificationCriteria implements Serializable, Criteria {
 
     private LongFilter gradeReviewId;
 
+    private BooleanFilter isRead;
+
     private Boolean distinct;
 
     public NotificationCriteria() {}
@@ -50,6 +52,7 @@ public class NotificationCriteria implements Serializable, Criteria {
         this.role = other.role == null ? null : other.role.copy();
         this.link = other.link == null ? null : other.link.copy();
         this.gradeReviewId = other.gradeReviewId == null ? null : other.gradeReviewId.copy();
+        this.isRead = other.isRead == null ? null : other.isRead.copy();
         this.distinct = other.distinct;
     }
 
@@ -178,6 +181,21 @@ public class NotificationCriteria implements Serializable, Criteria {
         this.gradeReviewId = gradeReviewId;
     }
 
+    public BooleanFilter getIsRead() {
+        return isRead;
+    }
+
+    public BooleanFilter isRead() {
+        if (isRead == null) {
+            isRead = new BooleanFilter();
+        }
+        return isRead;
+    }
+
+    public void setIsRead(BooleanFilter isRead) {
+        this.isRead = isRead;
+    }
+
     public Boolean getDistinct() {
         return distinct;
     }
@@ -204,13 +222,14 @@ public class NotificationCriteria implements Serializable, Criteria {
             Objects.equals(role, that.role) &&
             Objects.equals(link, that.link) &&
             Objects.equals(gradeReviewId, that.gradeReviewId) &&
+            Objects.equals(isRead, that.isRead) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, message, topic, receivers, sender, role, link, gradeReviewId, distinct);
+        return Objects.hash(id, message, topic, receivers, sender, role, link, gradeReviewId, isRead, distinct);
     }
 
     // prettier-ignore
@@ -225,6 +244,7 @@ public class NotificationCriteria implements Serializable, Criteria {
             (role != null ? "role=" + role + ", " : "") +
             (link != null ? "link=" + link + ", " : "") +
             (gradeReviewId != null ? "gradeReviewId=" + gradeReviewId + ", " : "") +
+            (isRead != null ? "isRead=" + isRead + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

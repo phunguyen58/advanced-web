@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import './index.scss';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { listener, sendNotificationStudent } from 'app/config/websocket-middleware';
 
 export const UserManagement = () => {
   const excelFileInputRef = useRef(null);
@@ -56,6 +57,14 @@ export const UserManagement = () => {
         order: sortSplit[1],
       });
     }
+
+    const handleMessage = message => {
+      console.log('Hello: ', message);
+    };
+
+    listener.subscribe((message: any) => {
+      handleMessage(message);
+    });
   }, [location.search]);
 
   const sort = p => () =>
@@ -113,6 +122,10 @@ export const UserManagement = () => {
     }
   };
 
+  const handleSendNotificationStudent = () => {
+    sendNotificationStudent('Hello', 'admin', 'student');
+  };
+
   const account = useAppSelector(state => state.authentication.account);
   const users = useAppSelector(state => state.userManagement.users);
   const totalItems = useAppSelector(state => state.userManagement.totalItems);
@@ -123,6 +136,9 @@ export const UserManagement = () => {
       <h2 id="user-management-page-heading" data-cy="userManagementPageHeading">
         <Translate contentKey="userManagement.home.title">Users</Translate>
         <div className="d-flex justify-content-end">
+          <Button className="me-2 btn-action" onClick={handleSendNotificationStudent} disabled={loading}>
+            <FontAwesomeIcon icon="bell" spin={loading} />
+          </Button>
           <Button className="me-2 btn-action" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />
           </Button>

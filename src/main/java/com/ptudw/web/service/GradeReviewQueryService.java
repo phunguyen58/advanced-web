@@ -120,6 +120,9 @@ public class GradeReviewQueryService extends QueryService<GradeReview> {
             if (criteria.getIsFinal() != null) {
                 specification = specification.and(buildSpecification(criteria.getIsFinal(), GradeReview_.isFinal));
             }
+            if (criteria.getFinalGrade() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getFinalGrade(), GradeReview_.finalGrade));
+            }
         }
         return specification;
     }

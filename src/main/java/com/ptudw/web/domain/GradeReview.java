@@ -50,6 +50,9 @@ public class GradeReview implements Serializable {
     @Column(name = "expectation_grade")
     private Long expectationGrade;
 
+    @Column(name = "final_grade")
+    private Long finalGrade;
+
     @Column(name = "student_explanation")
     private String studentExplanation;
 
@@ -58,6 +61,9 @@ public class GradeReview implements Serializable {
 
     @Column(name = "is_final")
     private Boolean isFinal;
+
+    @Column(name = "comment")
+    private String comment;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -178,6 +184,19 @@ public class GradeReview implements Serializable {
         this.expectationGrade = expectationGrade;
     }
 
+    public Long getFinalGrade() {
+        return this.finalGrade;
+    }
+
+    public GradeReview finalGrade(Long finalGrade) {
+        this.setFinalGrade(finalGrade);
+        return this;
+    }
+
+    public void setFinalGrade(Long finalGrade) {
+        this.finalGrade = finalGrade;
+    }
+
     public String getStudentExplanation() {
         return this.studentExplanation;
     }
@@ -217,6 +236,19 @@ public class GradeReview implements Serializable {
         this.isFinal = isFinal;
     }
 
+    public String getComment() {
+        return this.comment;
+    }
+
+    public GradeReview comment(String comment) {
+        this.setComment(comment);
+        return this;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -249,9 +281,11 @@ public class GradeReview implements Serializable {
             ", assimentGradeId=" + getAssimentGradeId() +
             ", currentGrade=" + getCurrentGrade() +
             ", expectationGrade=" + getExpectationGrade() +
+            ", finalGrade=" + getFinalGrade() +
             ", studentExplanation='" + getStudentExplanation() + "'" +
             ", teacherComment='" + getTeacherComment() + "'" +
             ", isFinal='" + getIsFinal() + "'" +
+            ", comment='" + getComment() + "'" +
             "}";
     }
 }

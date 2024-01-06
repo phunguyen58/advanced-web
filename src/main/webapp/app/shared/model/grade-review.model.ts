@@ -8,9 +8,11 @@ export interface IGradeReview {
   assimentGradeId?: number | null;
   currentGrade?: number | null;
   expectationGrade?: number | null;
+  finalGrade?: number | null;
   studentExplanation?: string | null;
   teacherComment?: string | null;
   isFinal?: boolean | null;
+  comment?: string | null;
 }
 
 export const defaultValue: Readonly<IGradeReview> = {
