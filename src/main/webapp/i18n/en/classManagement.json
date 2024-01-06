@@ -10,7 +10,9 @@
                 "confirm": "Confirm",
                 "cancel": "Cancel",
                 "create": "Create"
-            }
+            },
+            "studentId": "Student id",
+            "finalGrade": "Final grade"
         }
     }
 }

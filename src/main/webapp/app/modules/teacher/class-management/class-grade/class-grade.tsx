@@ -3,7 +3,7 @@ import './class-grade.scss';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
-import { getSortState } from 'react-jhipster';
+import { getSortState, translate } from 'react-jhipster';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 import { IUserCourse } from 'app/shared/model/user-course.model';
 import { getAssignmentsByCourseId, getAssimentGrades, getCourse, getUserById, getUserCourses } from './grade-util';
@@ -244,7 +244,7 @@ const ClassGrade = () => {
   return (
     <div className="class-detail-container">
       <DataTable ref={dt} stripedRows={true} value={data} tableStyle={{ minWidth: '50rem' }} header={header}>
-        <Column key={'studentId'} field="studentId" header="Student ID"></Column>
+        <Column key={'studentId'} field="studentId" header={translate('webApp.classManagement.studentId')}></Column>
         {/* TODO: implement final grade */}
         {course.assignments?.map((assignment, index) => (
           <Column
@@ -258,7 +258,7 @@ const ClassGrade = () => {
             }}
           ></Column>
         ))}
-        <Column key={'studentId'} field="finalGrade" header="Final grade"></Column>
+        <Column key={'studentId'} field="finalGrade" header={translate('webApp.classManagement.finalGrade')}></Column>
       </DataTable>
     </div>
   );
