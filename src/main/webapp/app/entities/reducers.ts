@@ -1,6 +1,6 @@
 import categories from 'app/entities/categories/categories.reducer';
 import product from 'app/entities/product/product.reducer';
-import course from 'app/entities/course/course.reducer';
+import course from 'app/entities/course/course-router/course.reducer';
 import gradeStructure from 'app/entities/grade-structure/grade-structure.reducer';
 import gradeComposition from 'app/entities/grade-composition/grade-composition.reducer';
 import assignment from 'app/entities/assignment/assignment.reducer';

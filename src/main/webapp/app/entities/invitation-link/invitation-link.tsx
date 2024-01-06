@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { joinAClass } from '../course/course.reducer';
+import { joinAClass } from '../course/course-router/course.reducer';
 import { Translate } from 'react-jhipster';
 
 export const InvitationLink = () => {

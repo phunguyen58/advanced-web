@@ -216,6 +216,19 @@ public class UserResource {
     }
 
     /**
+     * {@code GET /admin/users/:id} : get the "login" user.
+     *
+     * @param id the id of the user to find.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "login" user, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/users/user-id/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.TEACHER + "\")")
+    public ResponseEntity<AdminUserDTO> getUser(@PathVariable @Pattern(regexp = Constants.LOGIN_REGEX) Long id) {
+        log.debug("REST request to get User : {}", id);
+        return ResponseUtil.wrapOrNotFound(userService.getUserById(id).map(AdminUserDTO::new));
+    }
+
+    /**
      * {@code DELETE /admin/users/:login} : delete the "login" User.
      *
      * @param login the login of the user to delete.

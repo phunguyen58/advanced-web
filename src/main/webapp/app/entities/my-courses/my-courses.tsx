@@ -10,7 +10,7 @@ import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-u
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { ICourse } from 'app/shared/model/course.model';
-import { getEntities, getMyCourses } from '../course/course.reducer';
+import { getEntities, getMyCourses } from '../course/course-router/course.reducer';
 import ClassCard from 'app/shared/components/class-card/class-card';
 
 export const MyCourses = () => {

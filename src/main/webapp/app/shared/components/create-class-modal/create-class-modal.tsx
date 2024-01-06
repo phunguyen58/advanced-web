@@ -9,7 +9,7 @@ import { ICourse } from 'app/shared/model/course.model';
 
 import { translate } from 'react-jhipster';
 import { useFormik } from 'formik';
-import { initCourse } from 'app/entities/course/courseUtil';
+import { initCourse } from 'app/entities/course/course-router/courseUtil';
 import { classNames } from 'primereact/utils';
 
 import * as _ from 'lodash';

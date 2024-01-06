@@ -7,7 +7,7 @@ import { Collapse, Nav, NavItem, NavLink, Navbar, NavbarToggler } from 'reactstr
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { joinAClass } from 'app/entities/course/course.reducer';
+import { joinAClass } from 'app/entities/course/course-router/course.reducer';
 import { setLocale } from 'app/shared/reducers/locale';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
