@@ -39,7 +39,15 @@
       "joinacourse": "Join a class",
       "enterinvitationcode": "Enter invitation code to join a class",
       "join": "Join",
-      "details": "Details"
+      "details": "Details",
+      "inviteSuccess": "Send class invitation successfully!",
+      "invite": "Invite",
+      "addEmails": "Add emails",
+      "copyCode": "Copy Code",
+      "copyLink": "Copy Link",
+      "copied": "Copied!",
+      "sendInvitation": "Send Invitation",
+      "invitePeople": "Invite People"
     }
   }
 }

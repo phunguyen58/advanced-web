@@ -31,6 +31,10 @@ public class MailService {
 
     private static final String BASE_URL = "baseUrl";
 
+    private static final String EMAIL = "email";
+
+    private static final String INVITATION_CODE = "invitationCode";
+
     private final JHipsterProperties jHipsterProperties;
 
     private final JavaMailSender javaMailSender;
@@ -93,6 +97,18 @@ public class MailService {
     }
 
     @Async
+    public void sendEmailFromTemplate(User sender, String email, String invitationCode, String templateName, String titleKey) {
+        Locale locale = Locale.forLanguageTag(sender.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(EMAIL, email);
+        context.setVariable(INVITATION_CODE, invitationCode);
+        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        String content = templateEngine.process(templateName, context);
+        String subject = messageSource.getMessage(titleKey, null, locale);
+        sendEmail(email, subject, content, false, true);
+    }
+
+    @Async
     public void sendActivationEmail(User user) {
         log.debug("Sending activation email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title");
@@ -108,5 +124,11 @@ public class MailService {
     public void sendPasswordResetMail(User user) {
         log.debug("Sending password reset email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title");
+    }
+
+    @Async
+    public void sendInviteToClassMail(User sender, String email, String invitationCode) {
+        log.debug("Sending invite to class email to '{}'", email);
+        sendEmailFromTemplate(sender, email, invitationCode, "mail/inviteToClassEmail", "email.inviteToClass.title");
     }
 }

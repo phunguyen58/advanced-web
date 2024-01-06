@@ -12,8 +12,8 @@ export interface IClassCardProp {
 export default function ClassCard(prop: IClassCardProp) {
   const navigate = useNavigate();
 
-  const showDetail = () => {
-    navigate('/class/detail');
+  const showDetail = id => {
+    navigate(`/course/${id}`);
   };
   const header = (
     <div className="position-relative">
@@ -31,7 +31,12 @@ export default function ClassCard(prop: IClassCardProp) {
   );
   const footer = (
     <div className="d-flex justify-content-end">
-      <Button className="aw-detail-btn" label={translate('webApp.course.details')} icon="pi pi-arrow-up-right" onClick={showDetail} />
+      <Button
+        className="aw-detail-btn"
+        label={translate('webApp.course.details')}
+        icon="pi pi-arrow-up-right"
+        onClick={() => showDetail(prop.course.id)}
+      />
     </div>
   );
 

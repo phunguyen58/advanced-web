@@ -39,7 +39,15 @@
       "joinacourse": "Tham gia khóa học",
       "enterinvitationcode": "Nhập mã thư mời",
       "join": "Tham gia",
-      "details": "Chi tiết"
+      "details": "Chi tiết",
+      "inviteSuccess": "Đã gửi email mời thành công!",
+      "invite": "Mời",
+      "addEmails": "Thêm email",
+      "copyCode": "Copy Code",
+      "copyLink": "Copy Link",
+      "copied": "Copied!",
+      "sendInvitation": "Gửi lời mời",
+      "invitePeople": "Mời người khác"
     }
   }
 }
