@@ -5,6 +5,8 @@ import { TabMenu } from 'primereact/tabmenu';
 import { MenuItem } from 'primereact/menuitem';
 import './class-detail-menu.scss';
 import { MenuContext } from './class-detail-context';
+import { set } from 'lodash';
+import { dispatch } from 'rxjs/internal/observable/pairs';
 
 export const ClassDetailMenu = () => {
   const { activeMenu, setActiveMenu } = useContext(MenuContext);
@@ -18,6 +20,13 @@ export const ClassDetailMenu = () => {
     people: 2,
     grade: 3,
   };
+
+  useEffect(() => {
+    const path = location.pathname.split('/')[4];
+    if (path) {
+      setActiveIndex(TAB_NAME[path]);
+    }
+  });
 
   const { id } = useParams<'id'>();
   const [searchParams] = useSearchParams();

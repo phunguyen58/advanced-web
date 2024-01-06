@@ -14,15 +14,15 @@ export const AssignmentDetail = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { id } = useParams<'id'>();
+  const { asignmentId } = useParams<'asignmentId'>();
 
   useEffect(() => {
-    dispatch(getEntity(id));
+    dispatch(getEntity(asignmentId));
   }, []);
 
   const assignmentEntity = useAppSelector(state => state.assignment.entity);
   return (
-    <Row>
+    <Row className="px-4">
       <Col md="8">
         <h2 data-cy="assignmentDetailsHeading">
           <Translate contentKey="webApp.assignment.detail.title">Assignment</Translate>
