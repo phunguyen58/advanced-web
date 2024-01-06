@@ -25,9 +25,10 @@ const CourseRouterRoutes = () => (
       {/* <Route index element={<CourseDetail />} /> */}
       <Route path="stream" element={<ClassStream />} />
       <Route path="class-work" element={<ClassWork />} />
-      <Route path="class-work/assignment/:id" element={<AssignmentDetail />} />
-      <Route path="class-work/assignment/:id/edit" element={<AssignmentUpdate />} />
-      <Route path="class-work/assignment/:id/delete" element={<AssignmentDeleteDialog />} />
+      <Route path="class-work/assignment/:asignmentId" element={<AssignmentDetail />} />
+      <Route path="class-work/assignment/new" element={<AssignmentUpdate />} />
+      <Route path="class-work/assignment/:asignmentId/edit" element={<AssignmentUpdate />} />
+      <Route path="class-work/assignment/:asignmentId/delete" element={<AssignmentDeleteDialog />} />
       <Route path="people" element={<ClassPeople />} />
       <Route path="grade" element={<ClassGrade />} />
       <Route path="new" element={<CourseUpdate />} />
