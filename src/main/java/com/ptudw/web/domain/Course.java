@@ -68,12 +68,12 @@ public class Course implements Serializable {
     @Column(name = "last_modified_date", nullable = false)
     private ZonedDateTime lastModifiedDate;
 
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "assignmentGrades", "course", "gradeComposition" }, allowSetters = true)
     private Set<Assignment> assignments = new HashSet<>();
 
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "assignments", "course" }, allowSetters = true)
     private Set<GradeComposition> gradeCompositions = new HashSet<>();
