@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
 import { Translate, TextFormat } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,9 +8,11 @@ import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { getEntity } from './assignment.reducer';
+import AssignmentGrade from '../assignment-grade/assignment-grade';
 
 export const AssignmentDetail = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const { id } = useParams<'id'>();
 
@@ -44,71 +46,15 @@ export const AssignmentDetail = () => {
             </span>
           </dt>
           <dd>{assignmentEntity.description}</dd>
-          <dt>
-            <span id="weight">
-              <Translate contentKey="webApp.assignment.weight">Weight</Translate>
-            </span>
-          </dt>
-          <dd>{assignmentEntity.weight}</dd>
-          <dt>
-            <span id="isDeleted">
-              <Translate contentKey="webApp.assignment.isDeleted">Is Deleted</Translate>
-            </span>
-          </dt>
-          <dd>{assignmentEntity.isDeleted ? 'true' : 'false'}</dd>
-          <dt>
-            <span id="createdBy">
-              <Translate contentKey="webApp.assignment.createdBy">Created By</Translate>
-            </span>
-          </dt>
-          <dd>{assignmentEntity.createdBy}</dd>
-          <dt>
-            <span id="createdDate">
-              <Translate contentKey="webApp.assignment.createdDate">Created Date</Translate>
-            </span>
-          </dt>
-          <dd>
-            {assignmentEntity.createdDate ? <TextFormat value={assignmentEntity.createdDate} type="date" format={APP_DATE_FORMAT} /> : null}
-          </dd>
-          <dt>
-            <span id="lastModifiedBy">
-              <Translate contentKey="webApp.assignment.lastModifiedBy">Last Modified By</Translate>
-            </span>
-          </dt>
-          <dd>{assignmentEntity.lastModifiedBy}</dd>
-          <dt>
-            <span id="lastModifiedDate">
-              <Translate contentKey="webApp.assignment.lastModifiedDate">Last Modified Date</Translate>
-            </span>
-          </dt>
-          <dd>
-            {assignmentEntity.lastModifiedDate ? (
-              <TextFormat value={assignmentEntity.lastModifiedDate} type="date" format={APP_DATE_FORMAT} />
-            ) : null}
-          </dd>
-          <dt>
-            <Translate contentKey="webApp.assignment.course">Course</Translate>
-          </dt>
-          <dd>{assignmentEntity.course ? assignmentEntity.course.id : ''}</dd>
-          <dt>
-            <Translate contentKey="webApp.assignment.gradeComposition">Grade Composition</Translate>
-          </dt>
-          <dd>{assignmentEntity.gradeComposition ? assignmentEntity.gradeComposition.id : ''}</dd>
         </dl>
-        <Button tag={Link} to="/assignment" replace color="info" data-cy="entityDetailsBackButton">
+        <Button onClick={() => navigate(-2)} replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}
           <span className="d-none d-md-inline">
             <Translate contentKey="entity.action.back">Back</Translate>
           </span>
         </Button>
-        &nbsp;
-        <Button tag={Link} to={`/assignment/${assignmentEntity.id}/edit`} replace color="primary">
-          <FontAwesomeIcon icon="pencil-alt" />{' '}
-          <span className="d-none d-md-inline">
-            <Translate contentKey="entity.action.edit">Edit</Translate>
-          </span>
-        </Button>
       </Col>
+      <AssignmentGrade></AssignmentGrade>
     </Row>
   );
 };

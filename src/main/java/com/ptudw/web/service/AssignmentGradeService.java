@@ -2,6 +2,7 @@ package com.ptudw.web.service;
 
 import com.ptudw.web.domain.AssignmentGrade;
 import com.ptudw.web.repository.AssignmentGradeRepository;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,5 +119,10 @@ public class AssignmentGradeService {
     public void delete(Long id) {
         log.debug("Request to delete AssignmentGrade : {}", id);
         assignmentGradeRepository.deleteById(id);
+    }
+
+    public List<AssignmentGrade> saveAll(List<AssignmentGrade> assignmentGrades) {
+        log.debug("Request to save a list of AssignmentGrades");
+        return assignmentGradeRepository.saveAll(assignmentGrades);
     }
 }

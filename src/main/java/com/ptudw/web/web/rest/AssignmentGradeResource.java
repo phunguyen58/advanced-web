@@ -1,16 +1,28 @@
 package com.ptudw.web.web.rest;
 
+import com.ptudw.web.domain.Assignment;
 import com.ptudw.web.domain.AssignmentGrade;
+import com.ptudw.web.domain.User;
+import com.ptudw.web.domain.UserCourse;
 import com.ptudw.web.repository.AssignmentGradeRepository;
+import com.ptudw.web.security.AuthoritiesConstants;
 import com.ptudw.web.service.AssignmentGradeQueryService;
 import com.ptudw.web.service.AssignmentGradeService;
+import com.ptudw.web.service.AssignmentService;
+import com.ptudw.web.service.UserCourseQueryService;
+import com.ptudw.web.service.UserService;
 import com.ptudw.web.service.criteria.AssignmentGradeCriteria;
+import com.ptudw.web.service.criteria.UserCourseCriteria;
+import com.ptudw.web.service.dto.AdminUserDTO;
 import com.ptudw.web.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -22,6 +34,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import tech.jhipster.service.filter.LongFilter;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -46,14 +59,26 @@ public class AssignmentGradeResource {
 
     private final AssignmentGradeQueryService assignmentGradeQueryService;
 
+    private final UserCourseQueryService userCourseQueryService;
+
+    private final UserService userService;
+
+    private final AssignmentService assignmentService;
+
     public AssignmentGradeResource(
         AssignmentGradeService assignmentGradeService,
         AssignmentGradeRepository assignmentGradeRepository,
-        AssignmentGradeQueryService assignmentGradeQueryService
+        AssignmentGradeQueryService assignmentGradeQueryService,
+        UserCourseQueryService userCourseQueryService,
+        UserService userService,
+        AssignmentService assignmentService
     ) {
         this.assignmentGradeService = assignmentGradeService;
         this.assignmentGradeRepository = assignmentGradeRepository;
         this.assignmentGradeQueryService = assignmentGradeQueryService;
+        this.userCourseQueryService = userCourseQueryService;
+        this.userService = userService;
+        this.assignmentService = assignmentService;
     }
 
     /**
@@ -204,5 +229,49 @@ public class AssignmentGradeResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PostMapping("/assignment-grades/course/{courseId}/create-assigment-grade-list/{assignmentId}")
+    public ResponseEntity<List<AssignmentGrade>> createAssignmentGrade(
+        @PathVariable(value = "courseId", required = true) final Long courseId,
+        @PathVariable(value = "assignmentId", required = true) final Long assignmentId
+    ) throws URISyntaxException {
+        log.debug("REST request to save AssignmentGrade : {}", courseId);
+        UserCourseCriteria userCourseCriteria = new UserCourseCriteria();
+        LongFilter courseIdFilter = new LongFilter();
+        courseIdFilter.setEquals(courseId);
+        userCourseCriteria.setCourseId(courseIdFilter);
+        List<UserCourse> userCourses = userCourseQueryService.findByCriteria(userCourseCriteria);
+
+        List<Long> userIds = userCourses.stream().map(UserCourse::getUserId).collect(Collectors.toList());
+
+        List<AdminUserDTO> listUsers = userService.findAllByIds(userIds, Pageable.unpaged()).getContent();
+
+        Assignment assignment = assignmentService.findOne(assignmentId).get();
+        List<AssignmentGrade> assignmentGrades = new ArrayList<AssignmentGrade>();
+        User currentUser = userService
+            .getUserWithAuthorities()
+            .orElseThrow(() -> new BadRequestAlertException("Invalid user", ENTITY_NAME, "userinvalid"));
+        listUsers.forEach(user -> {
+            if (user.getAuthorities().contains(AuthoritiesConstants.STUDENT)) {
+                AssignmentGrade assignmentGrade = new AssignmentGrade();
+                assignmentGrade.setAssignment(assignment);
+                assignmentGrade.setGrade(0L);
+                assignmentGrade.setIsDeleted(false);
+                assignmentGrade.setCreatedBy(currentUser.getLogin());
+                assignmentGrade.setCreatedDate(ZonedDateTime.now());
+                assignmentGrade.setLastModifiedBy(currentUser.getLogin());
+                assignmentGrade.setLastModifiedDate(ZonedDateTime.now());
+                assignmentGrade.setStudentId(Objects.nonNull(user.getStudentId()) ? user.getStudentId() : user.getLogin());
+                assignmentGrades.add(assignmentGrade);
+            }
+        });
+
+        List<AssignmentGrade> result = assignmentGradeService.saveAll(assignmentGrades);
+
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, assignment.getId().toString()))
+            .body(result);
     }
 }

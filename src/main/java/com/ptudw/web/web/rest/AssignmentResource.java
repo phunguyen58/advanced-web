@@ -22,6 +22,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import tech.jhipster.service.filter.BooleanFilter;
+import tech.jhipster.service.filter.LongFilter;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -159,6 +161,27 @@ public class AssignmentResource {
         @org.springdoc.api.annotations.ParameterObject Pageable pageable
     ) {
         log.debug("REST request to get Assignments by criteria: {}", criteria);
+        BooleanFilter booleanFilter = new BooleanFilter();
+        booleanFilter.setEquals(false);
+        criteria.setIsDeleted(booleanFilter);
+        Page<Assignment> page = assignmentQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/assignments/course/{courseId}")
+    public ResponseEntity<List<Assignment>> getAllAssignmentsByCourseId(
+        @PathVariable Long courseId,
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+    ) {
+        AssignmentCriteria criteria = new AssignmentCriteria();
+        LongFilter longFilter = new LongFilter();
+        longFilter.setEquals(courseId);
+        criteria.setCourseId(longFilter);
+        BooleanFilter booleanFilter = new BooleanFilter();
+        booleanFilter.setEquals(false);
+        criteria.setIsDeleted(booleanFilter);
+        log.debug("REST request to get Assignments by criteria: {}", criteria);
         Page<Assignment> page = assignmentQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -198,7 +221,13 @@ public class AssignmentResource {
     @DeleteMapping("/assignments/{id}")
     public ResponseEntity<Void> deleteAssignment(@PathVariable Long id) {
         log.debug("REST request to delete Assignment : {}", id);
-        assignmentService.delete(id);
+        assignmentService
+            .findOne(id)
+            .ifPresent(assignment -> {
+                log.debug("Delete assignment: {}", assignment);
+                assignment.setIsDeleted(true);
+                assignmentService.update(assignment);
+            });
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

@@ -40,7 +40,6 @@ const Header = (props: IHeaderProps) => {
   };
 
   const account = useAppSelector(state => state.authentication.account);
-  console.log('currentUser', account);
 
   const renderDevRibbon = () =>
     props.isInProduction === false ? (
