@@ -12,10 +12,10 @@ import { getEntity } from './assignment-grade.reducer';
 export const AssignmentGradeDetail = () => {
   const dispatch = useAppDispatch();
 
-  const { id } = useParams<'id'>();
+  const { gradeId } = useParams<'gradeId'>();
 
   useEffect(() => {
-    dispatch(getEntity(id));
+    dispatch(getEntity(gradeId));
   }, []);
 
   const assignmentGradeEntity = useAppSelector(state => state.assignmentGrade.entity);

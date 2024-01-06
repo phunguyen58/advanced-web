@@ -25,7 +25,7 @@ export const AssignmentDeleteDialog = () => {
   const updateSuccess = useAppSelector(state => state.assignment.updateSuccess);
 
   const handleClose = () => {
-    navigate('/assignment' + location.search);
+    navigate(-2);
   };
 
   useEffect(() => {

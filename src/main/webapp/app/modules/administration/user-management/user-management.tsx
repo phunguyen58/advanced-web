@@ -99,7 +99,6 @@ export const UserManagement = () => {
           },
         })
         .then(response => {
-          console.log(response.data);
           // Handle successful response from the backend
           getUsersFromProps();
           excelFileInputRef.current.value = '';

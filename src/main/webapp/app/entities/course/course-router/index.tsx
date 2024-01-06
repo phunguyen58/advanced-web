@@ -10,6 +10,10 @@ import ClassGrade from 'app/modules/teacher/class-management/class-grade/class-g
 import { ClassDetailMenu } from 'app/shared/components/class-detail-menu/class-detail-menu';
 import CourseUpdate from './course-update';
 import CourseDeleteDialog from './course-delete-dialog';
+import AssignmentDetail from 'app/entities/assignment/assignment-detail';
+import AssignmentGradeDetail from 'app/entities/assignment-grade/assignment-grade-detail';
+import AssignmentUpdate from 'app/entities/assignment/assignment-update';
+import AssignmentDeleteDialog from 'app/entities/assignment/assignment-delete-dialog';
 
 const CourseRouterRoutes = () => (
   <div>
@@ -21,6 +25,9 @@ const CourseRouterRoutes = () => (
       {/* <Route index element={<CourseDetail />} /> */}
       <Route path="stream" element={<ClassStream />} />
       <Route path="class-work" element={<ClassWork />} />
+      <Route path="class-work/assignment/:id" element={<AssignmentDetail />} />
+      <Route path="class-work/assignment/:id/edit" element={<AssignmentUpdate />} />
+      <Route path="class-work/assignment/:id/delete" element={<AssignmentDeleteDialog />} />
       <Route path="people" element={<ClassPeople />} />
       <Route path="grade" element={<ClassGrade />} />
       <Route path="new" element={<CourseUpdate />} />

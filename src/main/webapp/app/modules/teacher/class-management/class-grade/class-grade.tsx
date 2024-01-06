@@ -63,12 +63,9 @@ const ClassGrade = () => {
 
   useEffect(() => {
     dispatch(getCourse(id));
-    console.log(dt.current?.getTable().rows);
   }, []);
 
-  useEffect(() => {
-    console.log('course', course);
-  }, [course]);
+  useEffect(() => {}, [course]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -108,19 +105,8 @@ const ClassGrade = () => {
               // Extract data from Axios response
               assignmentGrades = assignmentGradesResponse.data;
               assignmentGrades = assignmentGrades.filter(assignmentGrade => {
-                console.log(
-                  'condition: ',
-                  course.assignments.findIndex(assignment => assignment.id === assignmentGrade.assignment.id) !== -1,
-                  assignmentGrade
-                );
                 course.assignments.findIndex(assignment => assignment.id === assignmentGrade.assignment.id) !== -1 &&
                   assignmentGrade.assignment !== null;
-              });
-
-              console.log(index, {
-                studentId: user ? user.id : null,
-                assignmentGrade: assignmentGrades,
-                info: user,
               });
             } catch (err) {}
             return {
@@ -137,9 +123,6 @@ const ClassGrade = () => {
         console.error('Error fetching data:', error);
       }
     };
-
-    fetchData().then(value => console.log(value));
-    console.log('data:', data);
   }, [userCourseList]);
 
   // Rest of your component code remains unchanged

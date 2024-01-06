@@ -3,10 +3,11 @@
     "assignment": {
       "home": {
         "title": "Assignments",
-        "refreshListLabel": "Refresh list",
+        "refreshListLabel": "Làm mới",
         "createLabel": "Thêm mới một Assignment",
         "createOrEditLabel": "Thêm mới hoặc cập nhật Assignment",
-        "notFound": "No Assignments found"
+        "notFound": "No Assignments found",
+        "createList": "Tạo danh sách điểm cho Assignment"
       },
       "created": "Một Assignment mới được tạo với định danh {{ param }}",
       "updated": "Một Assignment cập nhật với định danh {{ param }}",

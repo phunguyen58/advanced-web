@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Table } from 'reactstrap';
-import { Translate, TextFormat, getSortState, JhiPagination, JhiItemCount } from 'react-jhipster';
+import { Translate, TextFormat, getSortState, JhiPagination, JhiItemCount, translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
@@ -10,7 +10,10 @@ import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-u
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { IAssignmentGrade } from 'app/shared/model/assignment-grade.model';
-import { getEntities } from './assignment-grade.reducer';
+import { getEntities, getEntitiesByAssignmentId } from './assignment-grade.reducer';
+import { createAssignmentGradeList } from './assignment-grade.reducer';
+import { Dialog } from 'primereact/dialog';
+import AssignmentGradeUpdate from './assignment-grade-update';
 
 export const AssignmentGrade = () => {
   const dispatch = useAppDispatch();
@@ -22,18 +25,34 @@ export const AssignmentGrade = () => {
     overridePaginationStateWithQueryParams(getSortState(location, ITEMS_PER_PAGE, 'id'), location.search)
   );
 
+  const account = useAppSelector(state => state.authentication.account);
+
   const assignmentGradeList = useAppSelector(state => state.assignmentGrade.entities);
   const loading = useAppSelector(state => state.assignmentGrade.loading);
   const totalItems = useAppSelector(state => state.assignmentGrade.totalItems);
 
+  const pathParts = location.pathname.split('/'); // Split the path by '/'
+  const courseIdIndex = pathParts.indexOf('course') + 1; // Get the index of 'course' and add 1
+  const assignmentIdIndex = pathParts.indexOf('assignment') + 1; // Get the index of 'assignment' and add 1
+
+  const courseId = Number(pathParts[courseIdIndex]);
+  const assignmentId = Number(pathParts[assignmentIdIndex]);
+
   const getAllEntities = () => {
     dispatch(
-      getEntities({
+      getEntitiesByAssignmentId({
+        query: `assignmentId.equals=${assignmentId}`,
         page: paginationState.activePage - 1,
         size: paginationState.itemsPerPage,
         sort: `${paginationState.sort},${paginationState.order}`,
       })
     );
+  };
+
+  const createAssignmentGradeListHandle = () => {
+    if (assignmentGradeList.length === 0) {
+      dispatch(createAssignmentGradeList({ courseId, assignmentId }));
+    }
   };
 
   const sortEntities = () => {
@@ -80,9 +99,28 @@ export const AssignmentGrade = () => {
   const handleSyncList = () => {
     sortEntities();
   };
+  const [assignmentGradeId, setAssignmentGradeId] = useState(0); // Using useState hook to maintain value
+  const [isDisplayAssignmentGradeUpdate, setIsDisplayAssignmentGradeUpdate] = useState(false);
+  const handleToShowAssignmentGradeUpdate = (assignmentGradeIdParam: number) => {
+    setIsDisplayAssignmentGradeUpdate(true);
+    setAssignmentGradeId(assignmentGradeIdParam);
+  };
 
   return (
     <div>
+      {isDisplayAssignmentGradeUpdate && isDisplayAssignmentGradeUpdate === true && (
+        <Dialog
+          className="join-a-course-dialog"
+          header={translate('webApp.assignmentGrade.home.title')}
+          draggable={false}
+          resizable={false}
+          visible={isDisplayAssignmentGradeUpdate}
+          style={{ width: '80vw' }}
+          onHide={() => setIsDisplayAssignmentGradeUpdate(false)}
+        >
+          <AssignmentGradeUpdate assignmentGradeId={assignmentGradeId}></AssignmentGradeUpdate>
+        </Dialog>
+      )}
       <h2 id="assignment-grade-heading" data-cy="AssignmentGradeHeading">
         <Translate contentKey="webApp.assignmentGrade.home.title">Assignment Grades</Translate>
         <div className="d-flex justify-content-end">
@@ -90,11 +128,18 @@ export const AssignmentGrade = () => {
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
             <Translate contentKey="webApp.assignmentGrade.home.refreshListLabel">Refresh List</Translate>
           </Button>
-          <Link to="/assignment-grade/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="webApp.assignmentGrade.home.createLabel">Create new Assignment Grade</Translate>
-          </Link>
+          {assignmentGradeList.length === 0 && (
+            <Button
+              onClick={createAssignmentGradeListHandle}
+              className="btn btn-primary jh-create-entity"
+              id="jh-create-entity"
+              data-cy="entityCreateButton"
+            >
+              <FontAwesomeIcon icon="plus" />
+              &nbsp;
+              <Translate contentKey="webApp.assignmentGrade.home.createList">Create new Assignment Grade List</Translate>
+            </Button>
+          )}
         </div>
       </h2>
       <div className="table-responsive">
@@ -111,24 +156,12 @@ export const AssignmentGrade = () => {
                 <th className="hand" onClick={sort('grade')}>
                   <Translate contentKey="webApp.assignmentGrade.grade">Grade</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('isDeleted')}>
-                  <Translate contentKey="webApp.assignmentGrade.isDeleted">Is Deleted</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('createdBy')}>
-                  <Translate contentKey="webApp.assignmentGrade.createdBy">Created By</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('createdDate')}>
-                  <Translate contentKey="webApp.assignmentGrade.createdDate">Created Date</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th className="hand" onClick={sort('lastModifiedBy')}>
                   <Translate contentKey="webApp.assignmentGrade.lastModifiedBy">Last Modified By</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('lastModifiedDate')}>
                   <Translate contentKey="webApp.assignmentGrade.lastModifiedDate">Last Modified Date</Translate>{' '}
                   <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="webApp.assignmentGrade.assignment">Assignment</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th />
               </tr>
@@ -137,59 +170,41 @@ export const AssignmentGrade = () => {
               {assignmentGradeList.map((assignmentGrade, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
                   <td>
-                    <Button tag={Link} to={`/assignment-grade/${assignmentGrade.id}`} color="link" size="sm">
+                    <Button tag={Link} to={`assignment-grade/${assignmentGrade.id}`} color="link" size="sm">
                       {assignmentGrade.id}
                     </Button>
                   </td>
                   <td>{assignmentGrade.studentId}</td>
                   <td>{assignmentGrade.grade}</td>
-                  <td>{assignmentGrade.isDeleted ? 'true' : 'false'}</td>
-                  <td>{assignmentGrade.createdBy}</td>
-                  <td>
-                    {assignmentGrade.createdDate ? (
-                      <TextFormat type="date" value={assignmentGrade.createdDate} format={APP_DATE_FORMAT} />
-                    ) : null}
-                  </td>
                   <td>{assignmentGrade.lastModifiedBy}</td>
                   <td>
                     {assignmentGrade.lastModifiedDate ? (
                       <TextFormat type="date" value={assignmentGrade.lastModifiedDate} format={APP_DATE_FORMAT} />
                     ) : null}
                   </td>
-                  <td>
-                    {assignmentGrade.assignment ? (
-                      <Link to={`/assignment/${assignmentGrade.assignment.id}`}>{assignmentGrade.assignment.id}</Link>
-                    ) : (
-                      ''
-                    )}
-                  </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
-                      <Button
-                        tag={Link}
-                        to={`/assignment-grade/${assignmentGrade.id}`}
-                        color="info"
-                        size="sm"
-                        data-cy="entityDetailsButton"
-                      >
+                      {/* <Button tag={Link} to={`assignment-grade/${assignmentGrade.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.view">View</Translate>
                         </span>
-                      </Button>
-                      <Button
-                        tag={Link}
-                        to={`/assignment-grade/${assignmentGrade.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
-                        color="primary"
-                        size="sm"
-                        data-cy="entityEditButton"
-                      >
-                        <FontAwesomeIcon icon="pencil-alt" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.edit">Edit</Translate>
-                        </span>
-                      </Button>
-                      <Button
+                      </Button> */}
+                      {account && account.authorities.includes('ROLE_TEACHER') && (
+                        <Button
+                          onClick={() => handleToShowAssignmentGradeUpdate(assignmentGrade.id)}
+                          color="primary"
+                          size="sm"
+                          data-cy="entityEditButton"
+                        >
+                          <FontAwesomeIcon icon="pencil-alt" />{' '}
+                          <span className="d-none d-md-inline">
+                            <Translate contentKey="entity.action.edit">Edit</Translate>
+                          </span>
+                        </Button>
+                      )}
+
+                      {/* <Button
                         tag={Link}
                         to={`/assignment-grade/${assignmentGrade.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
                         color="danger"
@@ -200,7 +215,7 @@ export const AssignmentGrade = () => {
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.delete">Delete</Translate>
                         </span>
-                      </Button>
+                      </Button> */}
                     </div>
                   </td>
                 </tr>
