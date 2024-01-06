@@ -78,6 +78,10 @@ const Header = (props: IHeaderProps) => {
   const redirectoClassManagement = () => {
     window.location.href = '/class';
   };
+
+  const redirectToAdmin = () => {
+    window.location.href = '/admin/user-management';
+  };
   /* jhipster-needle-add-element-to-menu - JHipster will add new menu items here */
 
   return (
@@ -119,6 +123,14 @@ const Header = (props: IHeaderProps) => {
         <NavbarToggler style={{ background: '#000' }} aria-label="Menu" onClick={toggleMenu} />
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ms-auto" navbar>
+            {props.isAuthenticated && account.authorities.includes(AUTHORITIES.ADMIN) && (
+              <Button
+                className="aw-btn-header mr-2"
+                label={translate('global.menu.admin.main')}
+                icon="pi pi-user"
+                onClick={() => redirectToAdmin()}
+              />
+            )}
             {props.isAuthenticated && (
               <Button
                 className="aw-btn-header mr-2"

@@ -1,11 +1,14 @@
 package com.ptudw.web.web.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.ptudw.web.domain.Course;
 import com.ptudw.web.domain.User;
 import com.ptudw.web.domain.UserCourse;
 import com.ptudw.web.repository.CourseRepository;
 import com.ptudw.web.service.CourseQueryService;
 import com.ptudw.web.service.CourseService;
+import com.ptudw.web.service.MailService;
 import com.ptudw.web.service.UserCourseQueryService;
 import com.ptudw.web.service.UserService;
 import com.ptudw.web.service.criteria.CourseCriteria;
@@ -14,7 +17,6 @@ import com.ptudw.web.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -69,18 +71,22 @@ public class CourseResource {
 
     private final UserCourseQueryService userCourseQueryService;
 
+    private final MailService mailService;
+
     public CourseResource(
         CourseService courseService,
         CourseRepository courseRepository,
         CourseQueryService courseQueryService,
         UserService userService,
-        UserCourseQueryService userCourseQueryService
+        UserCourseQueryService userCourseQueryService,
+        MailService mailService
     ) {
         this.courseService = courseService;
         this.courseRepository = courseRepository;
         this.courseQueryService = courseQueryService;
         this.userService = userService;
         this.userCourseQueryService = userCourseQueryService;
+        this.mailService = mailService;
     }
 
     /**
@@ -91,7 +97,7 @@ public class CourseResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/courses")
-    public ResponseEntity<Course> createCourse(@Valid @RequestBody Course course) throws URISyntaxException {
+    public ResponseEntity<Course> createCourse(@RequestBody Course course) throws URISyntaxException {
         log.debug("REST request to save Course : {}", course);
         if (course.getId() != null) {
             throw new BadRequestAlertException("A new course cannot already have an ID", ENTITY_NAME, "idexists");
@@ -323,5 +329,23 @@ public class CourseResource {
             .ok()
             .headers(HeaderUtil.createAlert(applicationName, "webApp.course.coursejoinedsuccessfully", course.getId().toString()))
             .body(course);
+    }
+
+    @PostMapping("/courses/send-invitation/{invitationCode}")
+    public ResponseEntity<Void> sendInvitation(@PathVariable String invitationCode, @RequestBody List<String> emails)
+        throws URISyntaxException, JsonMappingException, JsonProcessingException {
+        log.debug("REST request to send invitation: {}", invitationCode);
+
+        Optional
+            .ofNullable(emails)
+            .orElse(Collections.emptyList())
+            .forEach(email -> {
+                mailService.sendInviteToClassMail(userService.getUserWithAuthorities().orElse(null), email, invitationCode);
+            });
+
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createAlert(applicationName, "webApp.course.inviteSuccess", invitationCode))
+            .body(null);
     }
 }

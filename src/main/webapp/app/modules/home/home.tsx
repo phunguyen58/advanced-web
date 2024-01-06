@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
 import { Button } from 'primereact/button';
+import React from 'react';
 import './home.scss';
 
 import { AUTHORITIES } from 'app/config/constants';
@@ -13,11 +13,6 @@ const Home = () => {
   const isTeacher = useAppSelector(state => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.TEACHER]));
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isAdmin) {
-      navigate('/admin/user-management');
-    }
-  }, []);
   return (
     <div className="surface-0 flex justify-content-center">
       <div id="home" className="landing-wrapper overflow-hidden">
