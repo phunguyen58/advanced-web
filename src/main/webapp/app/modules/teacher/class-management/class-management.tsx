@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import CreateClassModal from '../../../shared/components/create-class-modal/create-class-modal';
 import { convertDateTimeToServer } from 'app/shared/util/date-utils';
-import { createEntity, getEntities } from 'app/entities/course/course.reducer';
+import { createEntity, getEntities } from 'app/entities/course/course-router/course.reducer';
 import { Button } from 'primereact/button';
 import ClassCard from '../../../shared/components/class-card/class-card';
 import { useLocation, useNavigate } from 'react-router-dom';

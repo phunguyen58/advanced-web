@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { TabMenu } from 'primereact/tabmenu';
@@ -19,7 +19,7 @@ export const ClassDetailMenu = () => {
     grade: 3,
   };
 
-  const { id } = useParams();
+  const { id } = useParams<'id'>();
   const [searchParams] = useSearchParams();
 
   const [activeIndex, setActiveIndex] = useState(TAB_NAME[curActiveMenu]);
@@ -36,6 +36,11 @@ export const ClassDetailMenu = () => {
     navigate(path);
   };
 
+  useEffect(() => {
+    console.log('id: ', id);
+    console.log('searchParams: ', searchParams);
+  });
+
   return (
     <div className="aw-class-detail-menu-container">
       <TabMenu
@@ -43,7 +48,7 @@ export const ClassDetailMenu = () => {
         unstyled={false}
         activeIndex={activeIndex}
         onTabChange={e => {
-          handleMenuItemClick(TAB_INDEX[e.index], `/class/${id}/detail/${TAB_INDEX[e.index]}`);
+          handleMenuItemClick(TAB_INDEX[e.index], `/course/${id}/detail/${TAB_INDEX[e.index]}`);
           setActiveIndex(e.index);
         }}
       />

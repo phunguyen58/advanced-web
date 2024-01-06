@@ -9,7 +9,7 @@ import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { ICourse } from 'app/shared/model/course.model';
-import { getEntities as getCourses } from 'app/entities/course/course.reducer';
+import { getEntities as getCourses } from 'app/entities/course/course-router/course.reducer';
 import { IGradeComposition } from 'app/shared/model/grade-composition.model';
 import { GradeType } from 'app/shared/model/enumerations/grade-type.model';
 import { getEntity, updateEntity, createEntity, reset } from './grade-composition.reducer';

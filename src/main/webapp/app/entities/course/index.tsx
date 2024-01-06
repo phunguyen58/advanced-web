@@ -2,22 +2,19 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
-
-import Course from './course';
-import CourseDetail from './course-detail';
-import CourseUpdate from './course-update';
-import CourseDeleteDialog from './course-delete-dialog';
+import CourseRouterRoutes from './course-router';
+import CourseRouter from './course-router';
+import ClassManagement from 'app/modules/teacher/class-management/class-management';
 
 const CourseRoutes = () => (
-  <ErrorBoundaryRoutes>
-    <Route index element={<Course />} />
-    <Route path="new" element={<CourseUpdate />} />
-    <Route path=":id">
-      <Route index element={<CourseDetail />} />
-      <Route path="edit" element={<CourseUpdate />} />
-      <Route path="delete" element={<CourseDeleteDialog />} />
-    </Route>
-  </ErrorBoundaryRoutes>
+  <div>
+    {/* <Route index element={<Course />} /> */}
+    <ErrorBoundaryRoutes>
+      <Route path=":id">
+        <Route path="detail/*" element={<CourseRouter />} />
+      </Route>
+    </ErrorBoundaryRoutes>
+  </div>
 );
 
 export default CourseRoutes;
