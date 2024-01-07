@@ -40,7 +40,7 @@ const ClassGradeStructure = () => {
   const [course, setCourse] = useState<ICourse>();
 
   useEffect(() => {
-    getGradeCompositions(1).then(value => setGradeCompositions(value.data));
+    getGradeCompositions(id).then(value => setGradeCompositions(value.data));
   }, []);
 
   const handleClose = () => {
