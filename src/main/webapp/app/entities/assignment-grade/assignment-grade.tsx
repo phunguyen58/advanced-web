@@ -30,6 +30,7 @@ export const AssignmentGrade = () => {
   const assignmentGradeList = useAppSelector(state => state.assignmentGrade.entities);
   const loading = useAppSelector(state => state.assignmentGrade.loading);
   const totalItems = useAppSelector(state => state.assignmentGrade.totalItems);
+  const assignmentEntity = useAppSelector(state => state.assignment.entities);
 
   const pathParts = location.pathname.split('/'); // Split the path by '/'
   const courseIdIndex = pathParts.indexOf('course') + 1; // Get the index of 'course' and add 1
@@ -222,72 +223,79 @@ export const AssignmentGrade = () => {
             </thead>
             <tbody>
               {assignmentGradeList.map((assignmentGrade, i) => (
-                <tr key={`entity-${i}`} data-cy="entityTable">
-                  {/* <td>
-                    <Button tag={Link} to={`assignment-grade/${assignmentGrade.id}`} color="link" size="sm">
-                      {assignmentGrade.id}
-                    </Button>
-                  </td> */}
-                  <td>{assignmentGrade.studentId}</td>
-                  <td>{assignmentGrade.grade}</td>
-                  <td>{assignmentGrade.lastModifiedBy}</td>
-                  <td>
-                    {assignmentGrade.lastModifiedDate ? (
-                      <TextFormat type="date" value={assignmentGrade.lastModifiedDate} format={APP_DATE_FORMAT} />
-                    ) : null}
-                  </td>
-                  <td className="text-end">
-                    <div className="flex-btn-group-container">
-                      {/* <Button tag={Link} to={`assignment-grade/${assignmentGrade.id}`} color="info" size="sm" data-cy="entityDetailsButton">
-                        <FontAwesomeIcon icon="eye" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.view">View</Translate>
-                        </span>
-                      </Button> */}
+                <>
+                  {(!account.authorities.includes(AUTHORITIES.STUDENT) ||
+                    (assignmentGrade?.assignment?.gradeComposition?.isPublic && !account.authorities.includes(AUTHORITIES.STUDENT))) && (
+                    <>
+                      <tr key={`entity-${i}`} data-cy="entityTable">
+                        {/* <td>
+                      <Button tag={Link} to={`assignment-grade/${assignmentGrade.id}`} color="link" size="sm">
+                        {assignmentGrade.id}
+                      </Button>
+                    </td> */}
+                        <td>{assignmentGrade.studentId}</td>
+                        <td>{assignmentGrade.grade}</td>
+                        <td>{assignmentGrade.lastModifiedBy}</td>
+                        <td>
+                          {assignmentGrade.lastModifiedDate ? (
+                            <TextFormat type="date" value={assignmentGrade.lastModifiedDate} format={APP_DATE_FORMAT} />
+                          ) : null}
+                        </td>
+                        <td className="text-end">
+                          <div className="flex-btn-group-container">
+                            {/* <Button tag={Link} to={`assignment-grade/${assignmentGrade.id}`} color="info" size="sm" data-cy="entityDetailsButton">
+                          <FontAwesomeIcon icon="eye" />{' '}
+                          <span className="d-none d-md-inline">
+                            <Translate contentKey="entity.action.view">View</Translate>
+                          </span>
+                        </Button> */}
 
-                      {account && account.authorities.includes('ROLE_TEACHER') && (
-                        <Button
-                          onClick={() => handleToShowAssignmentGradeUpdate(assignmentGrade.id)}
-                          size="sm"
-                          data-cy="entityEditButton"
-                          className="btn-action"
-                        >
-                          <FontAwesomeIcon icon="pencil-alt" />{' '}
-                          {/* <span className="d-none d-md-inline">
-                            <Translate contentKey="entity.action.edit">Edit</Translate>
-                          </span> */}
-                        </Button>
-                      )}
+                            {account && account.authorities.includes('ROLE_TEACHER') && (
+                              <Button
+                                onClick={() => handleToShowAssignmentGradeUpdate(assignmentGrade.id)}
+                                size="sm"
+                                data-cy="entityEditButton"
+                                className="btn-action"
+                              >
+                                <FontAwesomeIcon icon="pencil-alt" />{' '}
+                                {/* <span className="d-none d-md-inline">
+                              <Translate contentKey="entity.action.edit">Edit</Translate>
+                            </span> */}
+                              </Button>
+                            )}
 
-                      {account && (
-                        <Button
-                          onClick={() => handleToShowGradeReview(assignmentGrade)}
+                            {account && (
+                              <Button
+                                onClick={() => handleToShowGradeReview(assignmentGrade)}
+                                color="danger"
+                                size="sm"
+                                data-cy="entityEditButton"
+                                className="ms-2"
+                              >
+                                <span className="d-none d-md-inline">
+                                  <Translate contentKey="webApp.gradeReview.detail.title">Grade Review</Translate>
+                                </span>
+                              </Button>
+                            )}
+
+                            {/* <Button
+                          tag={Link}
+                          to={`/assignment-grade/${assignmentGrade.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
                           color="danger"
                           size="sm"
-                          data-cy="entityEditButton"
-                          className="ms-2"
+                          data-cy="entityDeleteButton"
                         >
+                          <FontAwesomeIcon icon="trash" />{' '}
                           <span className="d-none d-md-inline">
-                            <Translate contentKey="webApp.gradeReview.detail.title">Grade Review</Translate>
+                            <Translate contentKey="entity.action.delete">Delete</Translate>
                           </span>
-                        </Button>
-                      )}
-
-                      {/* <Button
-                        tag={Link}
-                        to={`/assignment-grade/${assignmentGrade.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
-                        color="danger"
-                        size="sm"
-                        data-cy="entityDeleteButton"
-                      >
-                        <FontAwesomeIcon icon="trash" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.delete">Delete</Translate>
-                        </span>
-                      </Button> */}
-                    </div>
-                  </td>
-                </tr>
+                        </Button> */}
+                          </div>
+                        </td>
+                      </tr>
+                    </>
+                  )}
+                </>
               ))}
             </tbody>
           </Table>

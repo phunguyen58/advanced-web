@@ -122,7 +122,7 @@ const ClassGradeStructure = () => {
               onSubmit={async (data: FormData) => {
                 if (
                   !data.gradeCompositions.filter(value => value.name).length ||
-                  !data.gradeCompositions.filter(value => value.scale).length
+                  !data.gradeCompositions.filter(value => value.scale || value.scale === 0).length
                 ) {
                   toast.error(translate('webApp.gradeStructure.invalidForm'), { position: toast.POSITION.TOP_LEFT });
                   return;

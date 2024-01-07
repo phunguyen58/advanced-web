@@ -34,7 +34,7 @@ export const AssignmentUpdate = () => {
   const updateSuccess = useAppSelector(state => state.assignment.updateSuccess);
 
   const handleClose = () => {
-    navigate(-1);
+    // navigate(-1);
   };
 
   useEffect(() => {
@@ -230,7 +230,7 @@ export const AssignmentUpdate = () => {
                   : null}
               </ValidatedField>
               <Button
-                onClick={() => handleClose()}
+                onClick={() => window.history.back()}
                 id="cancel-save"
                 data-cy="entityCreateCancelButton"
                 replace
