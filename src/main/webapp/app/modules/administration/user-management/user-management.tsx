@@ -136,9 +136,9 @@ export const UserManagement = () => {
       <h2 id="user-management-page-heading" data-cy="userManagementPageHeading">
         <Translate contentKey="userManagement.home.title">Users</Translate>
         <div className="d-flex justify-content-end">
-          <Button className="me-2 btn-action" onClick={handleSendNotificationStudent} disabled={loading}>
+          {/* <Button className="me-2 btn-action" onClick={handleSendNotificationStudent} disabled={loading}>
             <FontAwesomeIcon icon="bell" spin={loading} />
-          </Button>
+          </Button> */}
           <Button className="me-2 btn-action" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />
           </Button>
