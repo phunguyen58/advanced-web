@@ -124,7 +124,11 @@ const ClassGrade = () => {
                 field={assignment.name}
                 body={(rowData: IGradeBoard) => {
                   const assignmentGrade = rowData.userAssignmentGradesInCourse.find(value => value.assignment?.id === assignment?.id);
-                  return assignmentGrade ? assignmentGrade.grade : null;
+                  return assignmentGrade
+                    ? rowData.gradeType === GradeType.PERCENTAGE
+                      ? assignmentGrade.grade + '%'
+                      : assignmentGrade.grade
+                    : null;
                 }}
               ></Column>
             ))
