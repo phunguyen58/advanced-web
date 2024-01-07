@@ -17,12 +17,11 @@ import AssignmentGradeDetail from 'app/entities/assignment-grade/assignment-grad
 import AssignmentUpdate from 'app/entities/assignment/assignment-update';
 import AssignmentDeleteDialog from 'app/entities/assignment/assignment-delete-dialog';
 import Course from '..';
-import GradeReview from 'app/entities/grade-review';
+import GradeReview from 'app/entities/grade-review/grade-review';
+import GradeReviewUpdate from 'app/entities/grade-review/grade-review-update';
 
 const CourseRouterRoutes = () => {
-  const handleCourseUpdate = () => {
-    console.log('handleCourseUpdate');
-  };
+  const handleCourseUpdate = () => {};
   return (
     <div>
       {/* <Route index element={<Course />} /> */}
@@ -47,7 +46,9 @@ const CourseRouterRoutes = () => {
         <Route path="delete" element={<CourseDeleteDialog />} />
         <Route path="grade-structure" element={<ClassGradeStructure />} />
         <Route path="list" element={<Course />} />
-        <Route path="grade-review/*" element={<GradeReview />} />
+        <Route path="grade-review" element={<GradeReview />} />
+        <Route path="grade-review/:id/edit" element={<GradeReviewUpdate />} />
+        <Route path="grade-review/new" element={<GradeReviewUpdate />} />
       </ErrorBoundaryRoutes>
     </div>
   );

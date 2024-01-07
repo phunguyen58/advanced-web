@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { getEntity } from './assignment.reducer';
 import AssignmentGrade from '../assignment-grade/assignment-grade';
+import { Divider } from 'primereact/divider';
 
 export const AssignmentDetail = () => {
   const dispatch = useAppDispatch();
@@ -22,18 +23,18 @@ export const AssignmentDetail = () => {
 
   const assignmentEntity = useAppSelector(state => state.assignment.entity);
   return (
-    <Row className="px-4">
-      <Col md="8">
+    <Row className="px-5">
+      <Col md="12">
         <h2 data-cy="assignmentDetailsHeading">
           <Translate contentKey="webApp.assignment.detail.title">Assignment</Translate>
         </h2>
         <dl className="jh-entity-details">
-          <dt>
+          {/* <dt>
             <span id="id">
               <Translate contentKey="global.field.id">ID</Translate>
             </span>
-          </dt>
-          <dd>{assignmentEntity.id}</dd>
+          </dt> */}
+          {/* <dd>{assignmentEntity.id}</dd> */}
           <dt>
             <span id="name">
               <Translate contentKey="webApp.assignment.name">Name</Translate>
@@ -47,14 +48,17 @@ export const AssignmentDetail = () => {
           </dt>
           <dd>{assignmentEntity.description}</dd>
         </dl>
-        <Button onClick={() => navigate(-2)} replace color="info" data-cy="entityDetailsBackButton">
-          <FontAwesomeIcon icon="arrow-left" />{' '}
+
+        <Divider />
+
+        <AssignmentGrade></AssignmentGrade>
+
+        <Button onClick={() => navigate(-2)} replace color="light" className="btn-outline-dark" data-cy="entityDetailsBackButton">
           <span className="d-none d-md-inline">
             <Translate contentKey="entity.action.back">Back</Translate>
           </span>
         </Button>
       </Col>
-      <AssignmentGrade></AssignmentGrade>
     </Row>
   );
 };

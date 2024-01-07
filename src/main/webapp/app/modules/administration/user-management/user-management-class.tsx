@@ -95,12 +95,12 @@ export const UserManagementClass = () => {
       <Table responsive striped>
         <thead>
           <tr>
-            <th className="hand d-flex gap-2" onClick={sort('id')}>
+            {/* <th className="hand d-flex gap-2" onClick={sort('id')}>
               <div className="d-flex gap-2 align-items-center">
                 <Translate contentKey="global.field.id">ID</Translate>
                 <FontAwesomeIcon icon="sort" />
               </div>
-            </th>
+            </th> */}
             <th className="hand" onClick={sort('login')}>
               <div className="d-flex gap-2 align-items-center">
                 <Translate contentKey="userManagement.login">Login</Translate>
@@ -127,7 +127,7 @@ export const UserManagementClass = () => {
         <tbody>
           {users.map((user, i) => (
             <tr id={user.login} key={`user-${i}`}>
-              <td>{user.id}</td>
+              {/* <td>{user.id}</td> */}
               <td>{user.login}</td>
               <td>{user.email}</td>
               <td>

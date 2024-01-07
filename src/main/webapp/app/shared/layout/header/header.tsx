@@ -93,9 +93,9 @@ const Header = (props: IHeaderProps) => {
   /* jhipster-needle-add-element-to-menu - JHipster will add new menu items here */
 
   useEffect(() => {
-    const fetchNotifications = (prevNotiLen, isSocketCall) => {
+    const fetchNotifications = (prevNotiLen, isSocketCall, message) => {
       axios.get(`/api/notifications?receivers.equals=${account.login}&isRead.equals=false&sort=id,desc`).then(res => {
-        if (res.data.length > prevNotiLen && isSocketCall) {
+        if (res.data[0].message === message && isSocketCall) {
           toast.info(translate(`pushNotification.${res.data[0].message}`), { position: toast.POSITION.BOTTOM_RIGHT });
         }
         setNotifications(res.data);
@@ -105,7 +105,7 @@ const Header = (props: IHeaderProps) => {
     const handleMessage = (message, prevNotiLen) => {
       if (message?.type === 'notification') {
         setTimeout(() => {
-          fetchNotifications(prevNotiLen, true);
+          fetchNotifications(prevNotiLen, true, message.message);
         }, 2000);
       }
     };
@@ -113,7 +113,10 @@ const Header = (props: IHeaderProps) => {
     listener?.subscribe((message: any) => {
       handleMessage(message, notifications.length);
     });
-    fetchNotifications(0, false);
+
+    if (notifications.length === 0) {
+      fetchNotifications(0, false, null);
+    }
   }, [listener]);
 
   const toggleNotificationDialog = () => {

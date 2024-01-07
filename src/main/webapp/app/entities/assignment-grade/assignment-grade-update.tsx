@@ -124,9 +124,9 @@ export const AssignmentGradeUpdate = ({ assignmentGradeId }: { assignmentGradeId
                 }}
               />
 
-              <Button color="primary" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
-                <FontAwesomeIcon icon="save" />
-                &nbsp;
+              <Button className="btn-success" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
+                {/* <FontAwesomeIcon icon="save" />
+                &nbsp; */}
                 <Translate contentKey="entity.action.save">Save</Translate>
               </Button>
             </ValidatedForm>

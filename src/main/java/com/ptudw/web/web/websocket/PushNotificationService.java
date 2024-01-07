@@ -74,14 +74,16 @@ public class PushNotificationService implements ApplicationListener<SessionDisco
         log.debug("Sending notification to student {}", notificationDTO);
 
         userRepository
-            .findOneByStudentId(notificationDTO.getUserReceiverLogin())
+            .findOneByStudentId(notificationDTO.getStudentId())
             .ifPresent(u -> {
                 Notification notification = new Notification();
                 notification.setMessage(notificationDTO.getMessage());
                 notification.setTopic(notificationDTO.getTopic());
                 notification.setReceivers(u.getLogin());
                 notification.setSender(principal.getName());
-                notification.setLink("/grade-review/" + notificationDTO.getGradeReviewId() + "/edit");
+                notification.setLink(
+                    "/course/" + notificationDTO.getCourseId() + "/detail/grade-review/" + notificationDTO.getGradeReviewId() + "/edit"
+                );
                 notification.setIsRead(false);
                 notificationRepository.save(notification);
             });

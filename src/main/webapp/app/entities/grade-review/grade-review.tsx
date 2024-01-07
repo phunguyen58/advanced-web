@@ -132,10 +132,9 @@ export const GradeReview = () => {
               <th className="hand" onClick={sort('expectationGrade')}>
                 <Translate contentKey="webApp.gradeReview.expectationGrade">Expectation Grade</Translate> <FontAwesomeIcon icon="sort" />
               </th>
-              {/* <th className="hand" onClick={sort('studentExplanation')}>
-                  <Translate contentKey="webApp.gradeReview.studentExplanation">Student Explanation</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
-                </th> */}
+              <th className="hand" onClick={sort('finalGrade')}>
+                <Translate contentKey="webApp.gradeReview.finalGrade">Final Grade</Translate> <FontAwesomeIcon icon="sort" />
+              </th>
               {/* <th className="hand" onClick={sort('teacherComment')}>
                   <Translate contentKey="webApp.gradeReview.teacherComment">Teacher Comment</Translate> <FontAwesomeIcon icon="sort" />
                 </th> */}
@@ -161,7 +160,7 @@ export const GradeReview = () => {
                 {/* <td>{gradeReview.assimentGradeId}</td> */}
                 <td>{gradeReview.currentGrade}</td>
                 <td>{gradeReview.expectationGrade}</td>
-                {/* <td>{gradeReview.studentExplanation}</td> */}
+                <td>{gradeReview.finalGrade}</td>
                 {/* <td>{gradeReview.teacherComment}</td> */}
                 {/* <td>{gradeReview.isFinal ? 'true' : 'false'}</td> */}
                 <td className="text-end">
@@ -174,7 +173,7 @@ export const GradeReview = () => {
                       </Button> */}
                     <Button
                       tag={Link}
-                      to={`/grade-review/${gradeReview.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
+                      to={`/course/${gradeReview.courseId}/detail/grade-review/${gradeReview.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
                       size="sm"
                       data-cy="entityEditButton"
                       className="btn-action"

@@ -4,7 +4,7 @@ import { JhiItemCount, JhiPagination, TextFormat, Translate, getSortState, trans
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Table } from 'reactstrap';
 
-import { APP_DATE_FORMAT } from 'app/config/constants';
+import { APP_DATE_FORMAT, AUTHORITIES } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
@@ -27,7 +27,6 @@ export const AssignmentGrade = () => {
   );
 
   const account = useAppSelector(state => state.authentication.account);
-
   const assignmentGradeList = useAppSelector(state => state.assignmentGrade.entities);
   const loading = useAppSelector(state => state.assignmentGrade.loading);
   const totalItems = useAppSelector(state => state.assignmentGrade.totalItems);
@@ -40,9 +39,18 @@ export const AssignmentGrade = () => {
   const assignmentId = Number(pathParts[assignmentIdIndex]);
 
   const getAllEntities = () => {
+    // Construct the base query
+    let baseQuery = `assignmentId.equals=${assignmentId}`;
+
+    // Add conditions based on user role
+    if (account.authorities.includes(AUTHORITIES.STUDENT)) {
+      baseQuery += `&studentId.equals=${account.studentId}`;
+    }
+
+    // Dispatch action with the constructed query
     dispatch(
       getEntitiesByAssignmentId({
-        query: `assignmentId.equals=${assignmentId}`,
+        query: baseQuery,
         page: paginationState.activePage - 1,
         size: paginationState.itemsPerPage,
         sort: `${paginationState.sort},${paginationState.order}`,
@@ -109,9 +117,9 @@ export const AssignmentGrade = () => {
 
   const handleToShowGradeReview = assignmentGrade => {
     if (assignmentGrade.gradeReviewId) {
-      navigate(`/grade-review/${assignmentGrade.id}/edit`);
+      window.location.href = `course/${courseId}/detail/grade-review/${assignmentGrade.gradeReviewId}/edit`;
     } else {
-      navigate(`/grade-review/new?assignmentGradeId=${assignmentGrade.id}`);
+      window.location.href = `course/${courseId}/detail/grade-review/new?assignmentGradeId=${assignmentGrade.id}`;
     }
   };
 
@@ -162,15 +170,19 @@ export const AssignmentGrade = () => {
       <h2 id="assignment-grade-heading" data-cy="AssignmentGradeHeading">
         <Translate contentKey="webApp.assignmentGrade.home.title">Assignment Grades</Translate>
         <div className="d-flex justify-content-end">
-          <label htmlFor="fileInput" className="custom-file-upload">
-            {translate('userManagement.importExcel')}
-          </label>
-          <input id="fileInput" type="file" onChange={onFileChange} style={{ display: 'none' }} ref={excelFileInputRef} />
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
+          {account.authorities.includes(AUTHORITIES.TEACHER) && (
+            <>
+              <label htmlFor="fileInput" className="custom-file-upload">
+                {translate('userManagement.importExcel')}
+              </label>
+              <input id="fileInput" type="file" onChange={onFileChange} style={{ display: 'none' }} ref={excelFileInputRef} />
+            </>
+          )}
+          <Button className="me-2 btn-action" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="webApp.assignmentGrade.home.refreshListLabel">Refresh List</Translate>
+            {/* <Translate contentKey="webApp.assignmentGrade.home.refreshListLabel">Refresh List</Translate> */}
           </Button>
-          {assignmentGradeList.length === 0 && (
+          {assignmentGradeList.length === 0 && account.authorities.includes(AUTHORITIES.TEACHER) && (
             <Button
               onClick={createAssignmentGradeListHandle}
               className="btn btn-primary jh-create-entity"
@@ -189,9 +201,9 @@ export const AssignmentGrade = () => {
           <Table responsive>
             <thead>
               <tr>
-                <th className="hand" onClick={sort('id')}>
+                {/* <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="webApp.assignmentGrade.id">ID</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
+                </th> */}
                 <th className="hand" onClick={sort('studentId')}>
                   <Translate contentKey="webApp.assignmentGrade.studentId">Student Id</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
@@ -211,11 +223,11 @@ export const AssignmentGrade = () => {
             <tbody>
               {assignmentGradeList.map((assignmentGrade, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
-                  <td>
+                  {/* <td>
                     <Button tag={Link} to={`assignment-grade/${assignmentGrade.id}`} color="link" size="sm">
                       {assignmentGrade.id}
                     </Button>
-                  </td>
+                  </td> */}
                   <td>{assignmentGrade.studentId}</td>
                   <td>{assignmentGrade.grade}</td>
                   <td>{assignmentGrade.lastModifiedBy}</td>
@@ -225,35 +237,38 @@ export const AssignmentGrade = () => {
                     ) : null}
                   </td>
                   <td className="text-end">
-                    <div className="btn-group flex-btn-group-container">
+                    <div className="flex-btn-group-container">
                       {/* <Button tag={Link} to={`assignment-grade/${assignmentGrade.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.view">View</Translate>
                         </span>
                       </Button> */}
-                      {account && (
-                        <Button
-                          onClick={() => handleToShowGradeReview(assignmentGrade)}
-                          color="primary"
-                          size="sm"
-                          data-cy="entityEditButton"
-                        >
-                          <span className="d-none d-md-inline">
-                            <Translate contentKey="webApp.gradeReview.detail.title">Grade Review</Translate>
-                          </span>
-                        </Button>
-                      )}
+
                       {account && account.authorities.includes('ROLE_TEACHER') && (
                         <Button
                           onClick={() => handleToShowAssignmentGradeUpdate(assignmentGrade.id)}
-                          color="primary"
                           size="sm"
                           data-cy="entityEditButton"
+                          className="btn-action"
                         >
                           <FontAwesomeIcon icon="pencil-alt" />{' '}
-                          <span className="d-none d-md-inline">
+                          {/* <span className="d-none d-md-inline">
                             <Translate contentKey="entity.action.edit">Edit</Translate>
+                          </span> */}
+                        </Button>
+                      )}
+
+                      {account && (
+                        <Button
+                          onClick={() => handleToShowGradeReview(assignmentGrade)}
+                          color="danger"
+                          size="sm"
+                          data-cy="entityEditButton"
+                          className="ms-2"
+                        >
+                          <span className="d-none d-md-inline">
+                            <Translate contentKey="webApp.gradeReview.detail.title">Grade Review</Translate>
                           </span>
                         </Button>
                       )}

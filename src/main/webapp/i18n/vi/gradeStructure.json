@@ -25,7 +25,8 @@
       "lastModifiedBy": "Last Modified By",
       "lastModifiedDate": "Last Modified Date",
       "type": "Type",
-      "saveSuccess": "Cấu trúc điểm đã cập nhật!"
+      "saveSuccess": "Cấu trúc điểm đã cập nhật!",
+      "invalidForm": "Vui lòng điền đầy đủ thông tin!"
     }
   }
 }

@@ -19,6 +19,8 @@ public class NotificationDTO {
 
     private String courseId;
 
+    private String studentId;
+
     private List<String> receivers = new ArrayList<>();
 
     public NotificationDTO() {
@@ -91,5 +93,13 @@ public class NotificationDTO {
 
     public void setCourseId(String courseId) {
         this.courseId = courseId;
+    }
+
+    public String getStudentId() {
+        return this.studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 }

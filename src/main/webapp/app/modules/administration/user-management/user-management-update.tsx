@@ -141,7 +141,9 @@ export const UserManagementUpdate = () => {
                       </Col>
                     ) : null}
                     <Col md="6" className="mb-3">
-                      <Label className="mandatory">{translate('userManagement.login')}</Label>
+                      <Label className="mandatory">
+                        <span>{translate('userManagement.login')}</span>
+                      </Label>
                       <Field
                         className="field"
                         type="text"
@@ -157,7 +159,9 @@ export const UserManagementUpdate = () => {
                       )}
                     </Col>
                     <Col md="6" className="mb-3">
-                      <Label className="mandatory">{translate('userManagement.firstName')}</Label>
+                      <Label className="mandatory">
+                        <span>{translate('userManagement.firstName')}</span>
+                      </Label>
 
                       <Field className="field" type="text" name="firstName" value={values.firstName} onChange={handleChange('firstName')} />
                       {touched.firstName && errors.firstName && (
@@ -167,7 +171,9 @@ export const UserManagementUpdate = () => {
                       )}
                     </Col>
                     <Col md="6" className="mb-3">
-                      <Label className="mandatory">{translate('userManagement.lastName')}</Label>
+                      <Label className="mandatory">
+                        <span>{translate('userManagement.lastName')}</span>
+                      </Label>
 
                       <Field className="field" type="text" name="lastName" value={values.lastName} onChange={handleChange('lastName')} />
                       {touched.lastName && errors.lastName && (
@@ -177,7 +183,9 @@ export const UserManagementUpdate = () => {
                       )}
                     </Col>
                     <Col md="6" className="mb-3">
-                      <Label className="mandatory">{translate('global.form.email.label')}</Label>
+                      <Label className="mandatory">
+                        <span>{translate('global.form.email.label')}</span>
+                      </Label>
                       <Field
                         className="field"
                         name="email"
