@@ -13,6 +13,7 @@ import com.ptudw.web.service.UserCourseQueryService;
 import com.ptudw.web.service.UserService;
 import com.ptudw.web.service.criteria.CourseCriteria;
 import com.ptudw.web.service.criteria.UserCourseCriteria;
+import com.ptudw.web.service.dto.AdminUserDTO;
 import com.ptudw.web.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,6 +31,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -348,5 +350,25 @@ public class CourseResource {
             .ok()
             .headers(HeaderUtil.createAlert(applicationName, "webApp.course.inviteSuccess", invitationCode))
             .body(null);
+    }
+
+    @GetMapping("/users/course/{courseId}")
+    public ResponseEntity<List<AdminUserDTO>> getAllUsersByCourseId(
+        @PathVariable Long courseId,
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get all User in a course: {}", courseId);
+
+        UserCourseCriteria userCourseCriteria = new UserCourseCriteria();
+        LongFilter courseIdFilter = new LongFilter();
+        courseIdFilter.setEquals(courseId);
+        userCourseCriteria.setCourseId(courseIdFilter);
+        List<UserCourse> userCourses = userCourseQueryService.findByCriteria(userCourseCriteria);
+
+        List<Long> userIds = userCourses.stream().map(UserCourse::getUserId).collect(Collectors.toList());
+
+        final Page<AdminUserDTO> page = userService.findAllByIds(userIds, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 }

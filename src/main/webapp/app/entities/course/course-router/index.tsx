@@ -31,6 +31,7 @@ const CourseRouterRoutes = () => (
       <Route path="class-work/assignment/:asignmentId/edit" element={<AssignmentUpdate />} />
       <Route path="class-work/assignment/:asignmentId/delete" element={<AssignmentDeleteDialog />} />
       <Route path="people" element={<ClassPeople />} />
+      {/* <Route path="people/user-management-class" element={<ClassPeople />} /> */}
       <Route path="grade" element={<ClassGrade />} />
       <Route path="new" element={<CourseUpdate />} />
       <Route path="edit" element={<CourseUpdate />} />
