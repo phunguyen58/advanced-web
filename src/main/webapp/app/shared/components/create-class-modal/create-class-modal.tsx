@@ -48,9 +48,9 @@ const CreateClassModal = (prop: ICreateClassModalProp) => {
     },
     onSubmit: (data: ICourse) => {
       prop.onCreateClass({
-        ownerId: account.id,
-        createdBy: account.id,
-        lastModifiedBy: account.id,
+        ownerId: account.login,
+        createdBy: account.login,
+        lastModifiedBy: account.login,
         ...data,
       });
       formik.resetForm();

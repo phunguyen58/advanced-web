@@ -24,7 +24,6 @@ export interface GradeReview {
 
 const ClassGrade = () => {
   const dt = useRef<DataTable<GradeReview[]>>(null);
-  (window as any).a = dt;
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();

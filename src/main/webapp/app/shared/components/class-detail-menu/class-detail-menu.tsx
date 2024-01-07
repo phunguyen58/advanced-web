@@ -29,12 +29,13 @@ export const ClassDetailMenu = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const TAB_INDEX = ['stream', 'class-work', 'people', 'grade'];
+  const TAB_INDEX = ['stream', 'class-work', 'people', 'grade', 'grade-structure'];
   const TAB_NAME = {
     stream: 0,
     'class-work': 1,
     people: 2,
     grade: 3,
+    'grade-structure': 4,
   };
 
   useEffect(() => {
@@ -62,10 +63,11 @@ export const ClassDetailMenu = () => {
 
   const [activeIndex, setActiveIndex] = useState(TAB_NAME[curActiveMenu]);
   const items: MenuItem[] = [
-    { label: 'Grade structure', icon: 'pi pi-fw pi-home', className: 'aw-menu-item' },
-    { label: 'Assginments', icon: 'pi pi-fw pi-calendar', className: 'aw-menu-item' },
-    { label: 'Members', icon: 'pi pi-fw pi-users', className: 'aw-menu-item' },
-    { label: 'Grade board', icon: 'pi pi-fw pi-folder', className: 'aw-menu-item' },
+    { label: 'Stream', icon: 'pi pi-fw pi-home', className: 'aw-menu-item' },
+    { label: 'ClassWork', icon: 'pi pi-fw pi-calendar', className: 'aw-menu-item' },
+    { label: 'People', icon: 'pi pi-fw pi-people', className: 'aw-menu-item' },
+    { label: 'Grade', icon: 'pi pi-fw pi-file', className: 'aw-menu-item' },
+    { label: 'Grade structure', icon: 'pi pi-fw pi-file', className: 'aw-menu-item' },
   ];
 
   const handleMenuItemClick = (menuName, path) => {
