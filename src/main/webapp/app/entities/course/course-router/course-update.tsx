@@ -31,17 +31,14 @@ export const CourseUpdate = ({ onEventTrigger }) => {
 
   const handleClose = () => {
     emitEvent();
-    navigate('/class' + location.search);
   };
 
   const emitEvent = () => {
-    const eventData = 'Data to be sent with the event'; // Data to be sent along with the event
     // Call the function passed as a prop to emit the event
-    onEventTrigger(eventData);
+    onEventTrigger(false);
   };
 
   useEffect(() => {
-    console.log('CourseUpdate useEffect');
     if (isNew) {
       // dispatch(reset());
     } else {
@@ -233,11 +230,13 @@ export const CourseUpdate = ({ onEventTrigger }) => {
                 </Button>
               )}
               &nbsp;
-              <Button color="primary" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
-                <FontAwesomeIcon icon="save" />
-                &nbsp;
-                <Translate contentKey="entity.action.save">Save</Translate>
-              </Button>
+              {courseEntity.isDeleted !== true && (
+                <Button color="primary" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
+                  <FontAwesomeIcon icon="save" />
+                  &nbsp;
+                  <Translate contentKey="entity.action.save">Save</Translate>
+                </Button>
+              )}
             </ValidatedForm>
           )}
         </Col>

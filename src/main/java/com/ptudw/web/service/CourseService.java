@@ -166,7 +166,7 @@ public class CourseService {
     }
 
     public Page<Course> findAllByIds(List<Long> courseIds, Pageable pageable) {
-        return courseRepository.findAllByIdIn(courseIds, pageable);
+        return courseRepository.findAllByIdInAndIsDeleted(courseIds, false, pageable);
     }
 
     public Course createCourse(Course course, User user) {

@@ -21,9 +21,7 @@ import GradeReview from 'app/entities/grade-review/grade-review';
 import GradeReviewUpdate from 'app/entities/grade-review/grade-review-update';
 
 const CourseRouterRoutes = () => {
-  const handleCourseUpdate = () => {
-    console.log('handleCourseUpdate');
-  };
+  const handleCourseUpdate = () => {};
   return (
     <div>
       {/* <Route index element={<Course />} /> */}

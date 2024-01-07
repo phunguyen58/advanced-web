@@ -69,7 +69,7 @@ const ClassStream = () => {
           </dt>
           <dd>{courseEntity.createdBy}</dd>
         </dl>
-        {account.authorities.includes(AUTHORITIES.TEACHER) && (
+        {account.authorities.includes(AUTHORITIES.TEACHER) && courseEntity.isDeleted !== true && (
           <Button tag={Link} to={`edit`} replace color="primary">
             <FontAwesomeIcon icon="pencil-alt" />{' '}
             <span className="d-none d-md-inline">

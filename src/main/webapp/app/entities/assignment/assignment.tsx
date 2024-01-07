@@ -340,11 +340,13 @@ export const Assignment = () => {
               <FontAwesomeIcon icon="sync" spin={loading} />{' '}
               <Translate contentKey="webApp.assignment.home.refreshListLabel">Refresh List</Translate>
             </Button>
-            <Link to="assignment/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-              <FontAwesomeIcon icon="plus" />
-              &nbsp;
-              <Translate contentKey="webApp.assignment.home.createLabel">Create new Assignment</Translate>
-            </Link>
+            {account.authorities.includes(AUTHORITIES.TEACHER) && (
+              <Link to="assignment/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+                <FontAwesomeIcon icon="plus" />
+                &nbsp;
+                <Translate contentKey="webApp.assignment.home.createLabel">Create new Assignment</Translate>
+              </Link>
+            )}
           </div>
         </h2>
         <div className="table-responsive">
