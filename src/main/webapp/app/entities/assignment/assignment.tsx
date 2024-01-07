@@ -336,14 +336,11 @@ export const Assignment = () => {
       <div className="px-4">
         <h2 id="assignment-heading" data-cy="AssignmentHeading">
           <div className="d-flex justify-content-end">
-            <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
+            <Button className="me-2 btn-action" onClick={handleSyncList} disabled={loading}>
               <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-              <Translate contentKey="webApp.assignment.home.refreshListLabel">Refresh List</Translate>
             </Button>
             {account.authorities.includes(AUTHORITIES.TEACHER) && (
-              <Link to="assignment/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-                <FontAwesomeIcon icon="plus" />
-                &nbsp;
+              <Link to="assignment/new" className="btn btn-success jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
                 <Translate contentKey="webApp.assignment.home.createLabel">Create new Assignment</Translate>
               </Link>
             )}
@@ -354,9 +351,6 @@ export const Assignment = () => {
             <Table responsive>
               <thead>
                 <tr>
-                  <th className="hand" onClick={sort('id')}>
-                    <Translate contentKey="webApp.assignment.id">ID</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th className="hand" onClick={sort('name')}>
                     <Translate contentKey="webApp.assignment.name">Name</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -369,47 +363,39 @@ export const Assignment = () => {
               <tbody>
                 {assignmentList.map((assignment, i) => (
                   <tr key={`entity-${i}`} data-cy="entityTable">
-                    <td>
-                      <Button tag={Link} to={`assignment/${assignment.id}`} color="link" size="sm">
-                        {assignment.id}
-                      </Button>
-                    </td>
                     <td>{assignment.name}</td>
                     <td>{assignment.description}</td>
                     <td className="text-end">
-                      <div className="btn-group flex-btn-group-container">
-                        <Button tag={Link} to={`assignment/${assignment.id}`} color="info" size="sm" data-cy="entityDetailsButton">
+                      <div className="flex-btn-group-container">
+                        <Button
+                          tag={Link}
+                          to={`assignment/${assignment.id}`}
+                          className="btn-action"
+                          size="sm"
+                          data-cy="entityDetailsButton"
+                        >
                           <FontAwesomeIcon icon="eye" />{' '}
-                          <span className="d-none d-md-inline">
-                            <Translate contentKey="entity.action.view">View</Translate>
-                          </span>
                         </Button>
                         {account.authorities.includes(AUTHORITIES.TEACHER) && (
                           <Button
                             tag={Link}
                             to={`assignment/${assignment.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
-                            color="primary"
                             size="sm"
                             data-cy="entityEditButton"
+                            className="btn-action"
                           >
                             <FontAwesomeIcon icon="pencil-alt" />{' '}
-                            <span className="d-none d-md-inline">
-                              <Translate contentKey="entity.action.edit">Edit</Translate>
-                            </span>
                           </Button>
                         )}
                         {account.authorities.includes(AUTHORITIES.TEACHER) && (
                           <Button
                             tag={Link}
                             to={`assignment/${assignment.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
-                            color="danger"
                             size="sm"
                             data-cy="entityDeleteButton"
+                            className="btn-action"
                           >
                             <FontAwesomeIcon icon="trash" />{' '}
-                            <span className="d-none d-md-inline">
-                              <Translate contentKey="entity.action.delete">Delete</Translate>
-                            </span>
                           </Button>
                         )}
                       </div>

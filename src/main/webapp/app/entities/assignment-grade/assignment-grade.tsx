@@ -178,9 +178,9 @@ export const AssignmentGrade = () => {
               <input id="fileInput" type="file" onChange={onFileChange} style={{ display: 'none' }} ref={excelFileInputRef} />
             </>
           )}
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
+          <Button className="me-2 btn-action" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="webApp.assignmentGrade.home.refreshListLabel">Refresh List</Translate>
+            {/* <Translate contentKey="webApp.assignmentGrade.home.refreshListLabel">Refresh List</Translate> */}
           </Button>
           {assignmentGradeList.length === 0 && account.authorities.includes(AUTHORITIES.TEACHER) && (
             <Button
@@ -201,9 +201,9 @@ export const AssignmentGrade = () => {
           <Table responsive>
             <thead>
               <tr>
-                <th className="hand" onClick={sort('id')}>
+                {/* <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="webApp.assignmentGrade.id">ID</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
+                </th> */}
                 <th className="hand" onClick={sort('studentId')}>
                   <Translate contentKey="webApp.assignmentGrade.studentId">Student Id</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
@@ -223,11 +223,11 @@ export const AssignmentGrade = () => {
             <tbody>
               {assignmentGradeList.map((assignmentGrade, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
-                  <td>
+                  {/* <td>
                     <Button tag={Link} to={`assignment-grade/${assignmentGrade.id}`} color="link" size="sm">
                       {assignmentGrade.id}
                     </Button>
-                  </td>
+                  </td> */}
                   <td>{assignmentGrade.studentId}</td>
                   <td>{assignmentGrade.grade}</td>
                   <td>{assignmentGrade.lastModifiedBy}</td>
@@ -237,35 +237,38 @@ export const AssignmentGrade = () => {
                     ) : null}
                   </td>
                   <td className="text-end">
-                    <div className="btn-group flex-btn-group-container">
+                    <div className="flex-btn-group-container">
                       {/* <Button tag={Link} to={`assignment-grade/${assignmentGrade.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.view">View</Translate>
                         </span>
                       </Button> */}
-                      {account && (
-                        <Button
-                          onClick={() => handleToShowGradeReview(assignmentGrade)}
-                          color="primary"
-                          size="sm"
-                          data-cy="entityEditButton"
-                        >
-                          <span className="d-none d-md-inline">
-                            <Translate contentKey="webApp.gradeReview.detail.title">Grade Review</Translate>
-                          </span>
-                        </Button>
-                      )}
+
                       {account && account.authorities.includes('ROLE_TEACHER') && (
                         <Button
                           onClick={() => handleToShowAssignmentGradeUpdate(assignmentGrade.id)}
-                          color="primary"
                           size="sm"
                           data-cy="entityEditButton"
+                          className="btn-action"
                         >
                           <FontAwesomeIcon icon="pencil-alt" />{' '}
-                          <span className="d-none d-md-inline">
+                          {/* <span className="d-none d-md-inline">
                             <Translate contentKey="entity.action.edit">Edit</Translate>
+                          </span> */}
+                        </Button>
+                      )}
+
+                      {account && (
+                        <Button
+                          onClick={() => handleToShowGradeReview(assignmentGrade)}
+                          color="danger"
+                          size="sm"
+                          data-cy="entityEditButton"
+                          className="ms-2"
+                        >
+                          <span className="d-none d-md-inline">
+                            <Translate contentKey="webApp.gradeReview.detail.title">Grade Review</Translate>
                           </span>
                         </Button>
                       )}

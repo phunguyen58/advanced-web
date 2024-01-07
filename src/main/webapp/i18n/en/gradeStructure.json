@@ -25,7 +25,8 @@
       "lastModifiedBy": "Last Modified By",
       "lastModifiedDate": "Last Modified Date",
       "type": "Type",
-      "saveSuccess": "Grade Structure updated!"
+      "saveSuccess": "Grade Structure updated!",
+      "invalidForm": "Please fill in all required fields"
     }
   }
 }

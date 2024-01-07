@@ -228,17 +228,20 @@ export const AssignmentUpdate = () => {
                     ))
                   : null}
               </ValidatedField>
-              <Button onClick={() => handleClose()} id="cancel-save" data-cy="entityCreateCancelButton" replace color="info">
-                <FontAwesomeIcon icon="arrow-left" />
-                &nbsp;
+              <Button
+                onClick={() => handleClose()}
+                id="cancel-save"
+                data-cy="entityCreateCancelButton"
+                replace
+                color="light"
+                className="btn btn-outline-dark"
+              >
                 <span className="d-none d-md-inline">
                   <Translate contentKey="entity.action.back">Back</Translate>
                 </span>
               </Button>
               &nbsp;
-              <Button color="primary" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
-                <FontAwesomeIcon icon="save" />
-                &nbsp;
+              <Button className="btn btn-success" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
                 <Translate contentKey="entity.action.save">Save</Translate>
               </Button>
             </ValidatedForm>

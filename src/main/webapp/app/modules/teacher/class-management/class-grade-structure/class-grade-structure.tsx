@@ -24,6 +24,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { sendNotificationFinalizeGradeComposition } from 'app/config/websocket-middleware';
 import { toast } from 'react-toastify';
+import { Skeleton } from 'primereact/skeleton';
 
 export interface FormData {
   gradeCompositions: IGradeComposition[];
@@ -44,12 +45,14 @@ const ClassGradeStructure = () => {
   const updateSuccess = useAppSelector(state => state.gradeStructure.updateSuccess);
   const [course, setCourse] = useState<ICourse>();
   const [oldIsPublicNumber, setOldIsPublicNumber] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     getGradeCompositions(id).then(value => {
       setGradeCompositions(value.data);
       setGradeType(value.data[0].type);
       setOldIsPublicNumber(value.data.filter(value1 => value1.isPublic).length);
+      setIsLoading(false);
     });
   }, []);
 
@@ -92,132 +95,146 @@ const ClassGradeStructure = () => {
 
   return (
     <div className="d-flex aw-class-grade-structure-container flex-column">
-      <div className="aw-grade-type d-flex flex-row gap-2 align-items-center">
-        <label htmlFor="type">
-          <b>{translate('webApp.gradeStructure.type')}</b>
-        </label>
-        <Dropdown
-          name="type"
-          options={Object.keys(GradeType).map(type => ({ label: translate(`webApp.GradeType.${type}`), value: type }))}
-          value={gradeType}
-          onChange={(e: DropdownChangeEvent) => {
-            setGradeType(e.value);
-          }}
-          placeholder={translate('webApp.gradeStructure.type')}
-          disabled={isStudent}
-        />
-      </div>
-      <div className="aw-form">
-        <Formik
-          initialValues={{ gradeCompositions: gradeCompositions } as FormData}
-          enableReinitialize
-          validationSchema={validationSchema}
-          onSubmit={async (data: FormData) => {
-            if (data.gradeCompositions.filter(value => value.isPublic).length) {
-              sendNotificationFinalizeGradeComposition('gradeCompositionFinalized', course.id, 'notification');
-            }
+      {isLoading ? (
+        <Skeleton width="100%" height="100%" />
+      ) : (
+        <>
+          <div className="aw-grade-type d-flex flex-row gap-2 align-items-center">
+            <label htmlFor="type">
+              <b>{translate('webApp.gradeStructure.type')}</b>
+            </label>
+            <Dropdown
+              name="type"
+              options={Object.keys(GradeType).map(type => ({ label: translate(`webApp.GradeType.${type}`), value: type }))}
+              value={gradeType}
+              onChange={(e: DropdownChangeEvent) => {
+                setGradeType(e.value);
+              }}
+              placeholder={translate('webApp.gradeStructure.type')}
+              disabled={isStudent}
+            />
+          </div>
+          <div className="aw-form">
+            <Formik
+              initialValues={{ gradeCompositions: gradeCompositions } as FormData}
+              enableReinitialize
+              validationSchema={validationSchema}
+              onSubmit={async (data: FormData) => {
+                if (
+                  !data.gradeCompositions.filter(value => value.name).length ||
+                  !data.gradeCompositions.filter(value => value.scale).length
+                ) {
+                  toast.error(translate('webApp.gradeStructure.invalidForm'), { position: toast.POSITION.TOP_LEFT });
+                  return;
+                }
 
-            data.gradeCompositions.forEach(value => {
-              value.type = gradeType;
-            });
-            axios.post(`/api/grade-compositions/bulk/${course.id}`, data.gradeCompositions).then(res => {
-              setGradeCompositions(res.data);
-              toast.success(translate('webApp.gradeStructure.saveSuccess'), { position: toast.POSITION.TOP_LEFT });
-            });
-          }}
-        >
-          {({ values }) => (
-            <Form>
-              <FieldArray name="gradeCompositions">
-                {({ insert, remove, push }) => (
-                  <div className="aw-composition-item">
-                    {values.gradeCompositions.length > 0 &&
-                      values.gradeCompositions.map((composition, index) => (
-                        <div className="d-flex flex-row gap-3 mt-3" key={index}>
-                          {!isStudent && (
-                            <div className="d-flex flex-column gap-1 justify-content-center">
-                              <i
-                                className="pi pi-fw pi-chevron-up position"
-                                onClick={() => {
-                                  if (index > 0) {
-                                    insert(index - 1, composition);
-                                    remove(index + 1);
-                                  }
-                                }}
-                              />
-                              <i
-                                className="pi pi-fw pi-chevron-down position"
-                                onClick={() => {
-                                  if (index < values.gradeCompositions.length - 1) {
-                                    insert(index + 2, composition);
-                                    remove(index);
-                                  }
-                                }}
-                              />
+                if (data.gradeCompositions.filter(value => value.isPublic).length) {
+                  sendNotificationFinalizeGradeComposition('gradeCompositionFinalized', course.id, 'notification');
+                }
+
+                data.gradeCompositions.forEach(value => {
+                  value.type = gradeType;
+                });
+                axios.post(`/api/grade-compositions/bulk/${course.id}`, data.gradeCompositions).then(res => {
+                  setGradeCompositions(res.data);
+                  toast.success(translate('webApp.gradeStructure.saveSuccess'), { position: toast.POSITION.TOP_LEFT });
+                });
+              }}
+            >
+              {({ values }) => (
+                <Form>
+                  <FieldArray name="gradeCompositions">
+                    {({ insert, remove, push }) => (
+                      <div className="aw-composition-item">
+                        {values.gradeCompositions.length > 0 &&
+                          values.gradeCompositions.map((composition, index) => (
+                            <div className="d-flex flex-row gap-3 mt-3" key={index}>
+                              {!isStudent && (
+                                <div className="d-flex flex-column gap-1 justify-content-center">
+                                  <i
+                                    className="pi pi-fw pi-chevron-up position"
+                                    onClick={() => {
+                                      if (index > 0) {
+                                        insert(index - 1, composition);
+                                        remove(index + 1);
+                                      }
+                                    }}
+                                  />
+                                  <i
+                                    className="pi pi-fw pi-chevron-down position"
+                                    onClick={() => {
+                                      if (index < values.gradeCompositions.length - 1) {
+                                        insert(index + 2, composition);
+                                        remove(index);
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              )}
+                              <div className="grade-composition-container d-flex flex-row gap-3">
+                                <div className="d-flex flex-row gap-2 align-items-center">
+                                  <label className="mandatory" htmlFor={`gradeCompositions.${index}.name`}>
+                                    <span className="label">Name</span>
+                                  </label>
+                                  <Field name={`gradeCompositions.${index}.name`} type="text" disabled={isStudent} />
+                                </div>
+                                <div className="d-flex flex-row gap-2  align-items-center">
+                                  <label className="mandatory" htmlFor={`gradeCompositions.${index}.scale`}>
+                                    <span className="label">Scale</span>
+                                  </label>
+                                  <Field name={`gradeCompositions.${index}.scale`} type="number" disabled={isStudent} />
+                                </div>
+                                <div className="aw-is-public-checkbox">
+                                  <Field name={`gradeCompositions.${index}.isPublic`} type="checkbox" disabled={isStudent} />
+                                  <label htmlFor={`gradeCompositions.${index}.isPublic`}>Publish</label>
+                                </div>
+                              </div>
+                              {!isStudent && (
+                                <div className="aw-delete-btn-container justify-content-end">
+                                  <Button type="button" className="btn btn-action" onClick={() => remove(index)}>
+                                    <FontAwesomeIcon icon={'trash'} />
+                                  </Button>
+                                </div>
+                              )}
                             </div>
-                          )}
-                          <div className="grade-composition-container d-flex flex-row gap-3">
-                            <div className="d-flex flex-row gap-2 align-items-center">
-                              <label className="mandatory" htmlFor={`gradeCompositions.${index}.name`}>
-                                <span className="label">Name</span>
-                              </label>
-                              <Field name={`gradeCompositions.${index}.name`} type="text" disabled={isStudent} />
-                            </div>
-                            <div className="d-flex flex-row gap-2  align-items-center">
-                              <label className="mandatory" htmlFor={`gradeCompositions.${index}.scale`}>
-                                <span className="label">Scale</span>
-                              </label>
-                              <Field name={`gradeCompositions.${index}.scale`} type="number" disabled={isStudent} />
-                            </div>
-                            <div className="aw-is-public-checkbox">
-                              <Field name={`gradeCompositions.${index}.isPublic`} type="checkbox" disabled={isStudent} />
-                              <label htmlFor={`gradeCompositions.${index}.isPublic`}>Publish</label>
-                            </div>
+                          ))}
+                        {!isStudent && (
+                          <div className="d-flex justify-content-center">
+                            <Button
+                              className="btn-add mt-3 mb-3"
+                              onClick={() =>
+                                push({
+                                  type: gradeType,
+                                  // createdDate: displayDefaultDateTime(),
+                                  // lastModifiedDate: displayDefaultDateTime(),
+                                  name: `Grade composition ${values.gradeCompositions.length + 1}`,
+                                  scale: 0,
+                                  isDeleted: false,
+                                  isPublic: false,
+                                  // lastModifiedBy: account.login,
+                                  // createdBy: account.login,
+                                } as IGradeComposition)
+                              }
+                              type="button"
+                            >
+                              <FontAwesomeIcon icon={'plus'} />
+                            </Button>
                           </div>
-                          {!isStudent && (
-                            <div className="aw-delete-btn-container justify-content-end">
-                              <Button type="button" className="btn btn-action" onClick={() => remove(index)}>
-                                <FontAwesomeIcon icon={'trash'} />
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    {!isStudent && (
-                      <div className="d-flex justify-content-center">
-                        <Button
-                          className="btn-add mt-3 mb-3"
-                          onClick={() =>
-                            push({
-                              type: gradeType,
-                              // createdDate: displayDefaultDateTime(),
-                              // lastModifiedDate: displayDefaultDateTime(),
-                              name: `Grade composition ${values.gradeCompositions.length + 1}`,
-                              scale: 0,
-                              isDeleted: false,
-                              isPublic: false,
-                              // lastModifiedBy: account.login,
-                              // createdBy: account.login,
-                            } as IGradeComposition)
-                          }
-                          type="button"
-                        >
-                          <FontAwesomeIcon icon={'plus'} />
-                        </Button>
+                        )}
                       </div>
                     )}
-                  </div>
-                )}
-              </FieldArray>
-              {!isStudent && (
-                <Button className="btn btn-success" id="save-entity" type="submit" disabled={updating}>
-                  <Translate contentKey="entity.action.save">Save</Translate>
-                </Button>
+                  </FieldArray>
+                  {!isStudent && (
+                    <Button className="btn btn-success" id="save-entity" type="submit" disabled={updating}>
+                      <Translate contentKey="entity.action.save">Save</Translate>
+                    </Button>
+                  )}
+                </Form>
               )}
-            </Form>
-          )}
-        </Formik>
-      </div>
+            </Formik>
+          </div>
+        </>
+      )}
     </div>
   );
 };
