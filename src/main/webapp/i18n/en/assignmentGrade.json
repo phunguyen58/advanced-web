@@ -6,7 +6,8 @@
         "refreshListLabel": "Refresh list",
         "createLabel": "Create a new Assignment Grade",
         "createOrEditLabel": "Create or edit a Assignment Grade",
-        "notFound": "No Assignment Grades found"
+        "notFound": "No Assignment Grades found",
+        "createList": "Create a list of Assignment Grades"
       },
       "created": "A new Assignment Grade is created with identifier {{ param }}",
       "updated": "A Assignment Grade is updated with identifier {{ param }}",

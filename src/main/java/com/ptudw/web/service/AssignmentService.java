@@ -2,6 +2,7 @@ package com.ptudw.web.service;
 
 import com.ptudw.web.domain.Assignment;
 import com.ptudw.web.repository.AssignmentRepository;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +100,17 @@ public class AssignmentService {
     public Page<Assignment> findAll(Pageable pageable) {
         log.debug("Request to get all Assignments");
         return assignmentRepository.findAll(pageable);
+    }
+
+    /**
+     * Get all the assignments.
+     *
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public List<Assignment> findAllByCourseId(Long courseId) {
+        log.debug("Request to get all Assignments by courseId");
+        return assignmentRepository.findAllByCourseId(courseId);
     }
 
     /**

@@ -80,6 +80,9 @@ public class NotificationService {
                 if (notification.getGradeReviewId() != null) {
                     existingNotification.setGradeReviewId(notification.getGradeReviewId());
                 }
+                if (notification.getIsRead() != null) {
+                    existingNotification.setIsRead(notification.getIsRead());
+                }
 
                 return existingNotification;
             })

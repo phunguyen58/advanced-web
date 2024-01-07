@@ -16,7 +16,7 @@
     "detail": {
       "title": "User"
     },
-    "login": "Login",
+    "login": "Username",
     "firstName": "First name",
     "lastName": "Last name",
     "email": "Email",
@@ -30,6 +30,12 @@
     "lastModifiedDate": "Modified date",
     "studentId": "Student ID",
     "importExcel": "Import Excel",
-    "updateStudentIds": "Updated student IDs"
+    "updateStudentIds": "Updated student IDs",
+    "userRole": {
+      "ROLE_ADMIN": "Administrator",
+      "ROLE_USER": "User",
+      "ROLE_TEACHER": "Teacher",
+      "ROLE_STUDENT": "Student"
+    }
   }
 }

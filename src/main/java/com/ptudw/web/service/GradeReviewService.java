@@ -92,6 +92,12 @@ public class GradeReviewService {
                 if (gradeReview.getIsFinal() != null) {
                     existingGradeReview.setIsFinal(gradeReview.getIsFinal());
                 }
+                if (gradeReview.getFinalGrade() != null) {
+                    existingGradeReview.setFinalGrade(gradeReview.getFinalGrade());
+                }
+                if (gradeReview.getComment() != null) {
+                    existingGradeReview.setComment(gradeReview.getComment());
+                }
 
                 return existingGradeReview;
             })

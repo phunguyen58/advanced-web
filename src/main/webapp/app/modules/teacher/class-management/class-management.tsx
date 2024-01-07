@@ -5,21 +5,22 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import CreateClassModal from '../../../shared/components/create-class-modal/create-class-modal';
 import { convertDateTimeToServer } from 'app/shared/util/date-utils';
-import { createEntity, getEntities } from 'app/entities/course/course-router/course.reducer';
+import { createEntity, getEntities, getMyCourses } from 'app/entities/course/course-router/course.reducer';
 import { Button } from 'primereact/button';
 import ClassCard from '../../../shared/components/class-card/class-card';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
-import { getSortState, translate } from 'react-jhipster';
+import { JhiItemCount, JhiPagination, Translate, getSortState, translate } from 'react-jhipster';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { ICourse } from 'app/shared/model/course.model';
+import { AUTHORITIES } from 'app/config/constants';
 
 export const ClassManagement = () => {
   const dispatch = useAppDispatch();
   const account = useAppSelector(state => state.authentication.account);
   const classes = useAppSelector(state => state.course.entities);
   const loading = useAppSelector(state => state.course.loading);
-
+  const totalItems = useAppSelector(state => state.course.totalItems);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -29,7 +30,7 @@ export const ClassManagement = () => {
 
   const getAllEntities = () => {
     dispatch(
-      getEntities({
+      getMyCourses({
         page: paginationState.activePage - 1,
         size: paginationState.itemsPerPage,
         sort: `${paginationState.sort},${paginationState.order}`,
@@ -90,7 +91,6 @@ export const ClassManagement = () => {
 
   const handleCreateClass = (_class: ICourse) => {
     // Perform actions to create the class (e.g., make an API call)
-    console.log(`Creating class with name: ${JSON.stringify(_class)}`);
     _class.expirationDate = convertDateTimeToServer(_class.expirationDate);
     _class.createdDate = convertDateTimeToServer(_class.createdDate);
     _class.lastModifiedDate = convertDateTimeToServer(_class.lastModifiedDate);
@@ -103,20 +103,55 @@ export const ClassManagement = () => {
 
   return (
     <div className="d-flex min-vh-100 flex-column aw-class-management-container pt-1">
-      <div className="d-flex justify-content-end">
-        <Button
-          className="aw-create-class-btn"
-          label={translate('webApp.classManagement.createClassButton')}
-          icon="pi pi-plus"
-          onClick={() => setVisible(true)}
-        />
+      <div className="d-flex align-items-center justify-content-between">
+        <h2 id="course-heading" data-cy="CourseHeading">
+          <Translate contentKey="webApp.course.home.classManagement">Courses</Translate>
+        </h2>
+        {account.authorities.includes(AUTHORITIES.TEACHER) && (
+          <Button
+            className="aw-create-class-btn mt-3 mr-4"
+            label={translate('webApp.classManagement.createClassButton')}
+            icon="pi pi-plus"
+            onClick={() => setVisible(true)}
+          />
+        )}
       </div>
       <CreateClassModal visible={visible} setVisible={toggleModal} onCreateClass={handleCreateClass}></CreateClassModal>
       <div className="d-flex flex-wrap gap-3 p-3">
-        {classes.map((clazz, index) => (
-          <ClassCard course={clazz}></ClassCard>
-        ))}
+        {classes && classes.length > 0 ? (
+          <div className="grid">
+            {classes.map(course => (
+              <div className="col-4">
+                <ClassCard course={course} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          !loading && (
+            <div className="alert alert-warning">
+              <Translate contentKey="webApp.course.home.notFound">No Courses found</Translate>
+            </div>
+          )
+        )}
       </div>
+      {totalItems ? (
+        <div className={classes && classes.length > 0 ? '' : 'd-none'}>
+          <div className="justify-content-center d-flex">
+            <JhiItemCount page={paginationState.activePage} total={totalItems} itemsPerPage={paginationState.itemsPerPage} i18nEnabled />
+          </div>
+          <div className="justify-content-center d-flex">
+            <JhiPagination
+              activePage={paginationState.activePage}
+              onSelect={handlePagination}
+              maxButtons={5}
+              itemsPerPage={paginationState.itemsPerPage}
+              totalItems={totalItems}
+            />
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   );
 };

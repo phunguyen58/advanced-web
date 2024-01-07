@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { IAssignmentGrade } from 'app/shared/model/assignment-grade.model';
+import { IAssignment } from 'app/shared/model/assignment.model';
 import { ICourse } from 'app/shared/model/course.model';
 import { IUserCourse } from 'app/shared/model/user-course.model';
 import { IUser } from 'app/shared/model/user.model';
@@ -10,6 +11,7 @@ const assignmentGradeUrl = 'api/assignment-grades';
 const userCourseUrl = 'api/user-courses';
 const userUrl = 'api/admin/users';
 const courseUrl = 'api/courses';
+const assignmentUrl = 'api/assignments';
 
 // Actions
 
@@ -38,3 +40,8 @@ export const getCourse = createAsyncThunk(
   },
   { serializeError: serializeAxiosError }
 );
+
+export const getAssignmentsByCourseId = courseId => {
+  const requestUrl = `${assignmentUrl}/course-id/${courseId}`;
+  return axios.get<IAssignment[]>(requestUrl);
+};

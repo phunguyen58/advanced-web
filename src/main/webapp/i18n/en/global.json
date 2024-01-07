@@ -155,5 +155,10 @@
     "invitationcodeexpired": "Invitation code expired"
 
   },
-  "footer": "This is your footer"
+  "footer": "This is your footer",
+  "pushNotification": {
+    "gradeReviewCreated": "A new grade review has been created.",
+    "gradeReviewCompleted": "A grade review has been completed.",
+    "newComment": "A new comment has been added to your grade review."
+  }
 }

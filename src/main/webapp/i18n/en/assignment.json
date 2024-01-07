@@ -28,7 +28,8 @@
       "lastModifiedDate": "Last Modified Date",
       "assignmentGrades": "Assignment Grades",
       "course": "Course",
-      "gradeComposition": "Grade Composition"
+      "gradeComposition": "Grade Composition",
+      "assignmentGradeUpdated": "Assignment Grade Updated"
     }
   }
 }

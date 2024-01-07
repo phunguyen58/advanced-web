@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
@@ -38,6 +36,9 @@
             <column name="expectation_grade" type="bigint">
                 <constraints nullable="true" />
             </column>
+            <column name="final_grade" type="bigint">
+                <constraints nullable="true" />
+            </column>
             <column name="student_explanation" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
@@ -45,6 +46,9 @@
                 <constraints nullable="true" />
             </column>
             <column name="is_final" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="comment" type="varchar(1048576)">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
@@ -62,11 +66,7 @@
           Spring Boot configuration key.
     -->
     <changeSet id="20240105163822-1-data" author="jhipster" context="faker">
-        <loadData
-                  file="config/liquibase/fake-data/grade_review.csv"
-                  separator=";"
-                  tableName="grade_review"
-                  usePreparedStatements="true">
+        <loadData file="config/liquibase/fake-data/grade_review.csv" separator=";" tableName="grade_review" usePreparedStatements="true">
             <column name="id" type="numeric"/>
             <column name="grade_composition_id" type="numeric"/>
             <column name="student_id" type="string"/>

@@ -30,6 +30,12 @@
     "lastModifiedDate": "Ngày sửa",
     "studentId": "Mã số sinh viên",
     "importExcel": "Nhập file Excel",
-    "updateStudentIds": "Đã cập nhật các mã số sinh viên"
+    "updateStudentIds": "Đã cập nhật các mã số sinh viên",
+    "userRole": {
+      "ROLE_ADMIN": "Quản trị viên",
+      "ROLE_USER": "User",
+      "ROLE_TEACHER": "Giáo viên",
+      "ROLE_STUDENT": "Học sinh"
+    }
   }
 }

@@ -11,6 +11,7 @@ import Docs from './docs/docs';
 import Tracker from './tracker/tracker';
 import { AdminSidebar } from 'app/shared/components/admin-sidebar/AdminSidebar';
 import './index.scss';
+import Course from 'app/entities/course/course';
 
 const AdministrationRoutes = () => (
   <div>
@@ -24,6 +25,7 @@ const AdministrationRoutes = () => (
         <Route path="configuration" element={<Configuration />} />
         <Route path="logs" element={<Logs />} />
         <Route path="docs" element={<Docs />} />
+        <Route path="course-management" element={<Course />} />
       </ErrorBoundaryRoutes>
     </div>
   </div>

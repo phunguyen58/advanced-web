@@ -222,7 +222,15 @@ public class UserResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "login" user, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/users/user-id/{id}")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.TEACHER + "\")")
+    @PreAuthorize(
+        "hasAnyAuthority('" +
+        AuthoritiesConstants.TEACHER +
+        "', '" +
+        AuthoritiesConstants.ADMIN +
+        "', '" +
+        AuthoritiesConstants.STUDENT +
+        "')"
+    )
     public ResponseEntity<AdminUserDTO> getUser(@PathVariable @Pattern(regexp = Constants.LOGIN_REGEX) Long id) {
         log.debug("REST request to get User : {}", id);
         return ResponseUtil.wrapOrNotFound(userService.getUserById(id).map(AdminUserDTO::new));
@@ -240,28 +248,5 @@ public class UserResource {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "userManagement.deleted", login)).build();
-    }
-
-    @GetMapping("/users/course/{courseId}")
-    public ResponseEntity<List<AdminUserDTO>> getAllUsersByCourseId(
-        @PathVariable Long courseId,
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable
-    ) {
-        log.debug("REST request to get all User in a course: {}", courseId);
-        if (!onlyContainsAllowedProperties(pageable)) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        UserCourseCriteria userCourseCriteria = new UserCourseCriteria();
-        LongFilter courseIdFilter = new LongFilter();
-        courseIdFilter.setEquals(courseId);
-        userCourseCriteria.setCourseId(courseIdFilter);
-        List<UserCourse> userCourses = userCourseQueryService.findByCriteria(userCourseCriteria);
-
-        List<Long> userIds = userCourses.stream().map(UserCourse::getUserId).collect(Collectors.toList());
-
-        final Page<AdminUserDTO> page = userService.findAllByIds(userIds, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 }

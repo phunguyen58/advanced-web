@@ -1,9 +1,13 @@
 package com.ptudw.web.web.rest;
 
+import com.ptudw.web.domain.AssignmentGrade;
 import com.ptudw.web.domain.GradeReview;
 import com.ptudw.web.repository.GradeReviewRepository;
+import com.ptudw.web.security.SecurityUtils;
+import com.ptudw.web.service.AssignmentGradeService;
 import com.ptudw.web.service.GradeReviewQueryService;
 import com.ptudw.web.service.GradeReviewService;
+import com.ptudw.web.service.UserService;
 import com.ptudw.web.service.criteria.GradeReviewCriteria;
 import com.ptudw.web.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -46,14 +50,22 @@ public class GradeReviewResource {
 
     private final GradeReviewQueryService gradeReviewQueryService;
 
+    private final AssignmentGradeService assignmentGradeService;
+
+    private final UserService userService;
+
     public GradeReviewResource(
         GradeReviewService gradeReviewService,
         GradeReviewRepository gradeReviewRepository,
-        GradeReviewQueryService gradeReviewQueryService
+        GradeReviewQueryService gradeReviewQueryService,
+        AssignmentGradeService assignmentGradeService,
+        UserService userService
     ) {
         this.gradeReviewService = gradeReviewService;
         this.gradeReviewRepository = gradeReviewRepository;
         this.gradeReviewQueryService = gradeReviewQueryService;
+        this.assignmentGradeService = assignmentGradeService;
+        this.userService = userService;
     }
 
     /**
@@ -70,6 +82,14 @@ public class GradeReviewResource {
             throw new BadRequestAlertException("A new gradeReview cannot already have an ID", ENTITY_NAME, "idexists");
         }
         GradeReview result = gradeReviewService.save(gradeReview);
+
+        assignmentGradeService
+            .findOne(result.getAssimentGradeId())
+            .ifPresent(assignmentGrade -> {
+                assignmentGrade.setGradeReviewId(result.getId());
+                assignmentGradeService.save(assignmentGrade);
+            });
+
         return ResponseEntity
             .created(new URI("/api/grade-reviews/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -89,7 +109,7 @@ public class GradeReviewResource {
     @PutMapping("/grade-reviews/{id}")
     public ResponseEntity<GradeReview> updateGradeReview(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody GradeReview gradeReview
+        @RequestBody GradeReview gradeReview
     ) throws URISyntaxException {
         log.debug("REST request to update GradeReview : {}, {}", id, gradeReview);
         if (gradeReview.getId() == null) {
@@ -104,6 +124,16 @@ public class GradeReviewResource {
         }
 
         GradeReview result = gradeReviewService.update(gradeReview);
+
+        if (SecurityUtils.hasCurrentUserAnyOfAuthorities("ROLE_ADMIN", "ROLE_TEACHER") && result.getFinalGrade() != null) {
+            assignmentGradeService
+                .findOne(result.getAssimentGradeId())
+                .ifPresent(assignmentGrade -> {
+                    assignmentGrade.setGrade(result.getFinalGrade());
+                    assignmentGradeService.save(assignmentGrade);
+                });
+        }
+
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, gradeReview.getId().toString()))

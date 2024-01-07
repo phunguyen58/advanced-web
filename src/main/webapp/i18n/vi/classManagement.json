@@ -10,7 +10,9 @@
                 "confirm": "Xác nhận",
                 "cancel": "Hủy",
                 "create": "Tạo"
-            }
+            },
+            "studentId": "Mã sinh viên",
+            "finalGrade": "Điểm trung bình"
         }
     }
 }

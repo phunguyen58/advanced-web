@@ -3,10 +3,11 @@
     "assignment": {
       "home": {
         "title": "Assignments",
-        "refreshListLabel": "Refresh list",
+        "refreshListLabel": "Làm mới",
         "createLabel": "Thêm mới một Assignment",
         "createOrEditLabel": "Thêm mới hoặc cập nhật Assignment",
-        "notFound": "No Assignments found"
+        "notFound": "No Assignments found",
+        "createList": "Tạo danh sách điểm cho Assignment"
       },
       "created": "Một Assignment mới được tạo với định danh {{ param }}",
       "updated": "Một Assignment cập nhật với định danh {{ param }}",
@@ -15,7 +16,7 @@
         "question": "Bạn có chắc là muốn xóa Assignment {{ id }}?"
       },
       "detail": {
-        "title": "Assignment"
+        "title": "Bài tập"
       },
       "id": "ID",
       "name": "Name",
@@ -28,7 +29,8 @@
       "lastModifiedDate": "Last Modified Date",
       "assignmentGrades": "Assignment Grades",
       "course": "Course",
-      "gradeComposition": "Grade Composition"
+      "gradeComposition": "Grade Composition",
+      "assignmentGradeUpdated": "Đã cập nhật điểm"
     }
   }
 }
