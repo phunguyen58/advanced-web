@@ -128,4 +128,17 @@ public class AssignmentGradeService {
         log.debug("Request to save a list of AssignmentGrades");
         return assignmentGradeRepository.saveAll(assignmentGrades);
     }
+
+    public void updateAssignmentGradeByExcel(List<List<String>> data, Long assignmentId) {
+        log.debug("Request to update assignment grade by excel");
+        List<AssignmentGrade> assignmentGrades = assignmentGradeRepository.findAllByAssignmentId(assignmentId);
+        for (List<String> row : data) {
+            for (AssignmentGrade assignmentGrade : assignmentGrades) {
+                if (row.get(0).equals(assignmentGrade.getStudentId())) {
+                    assignmentGrade.setGrade(Long.parseLong(row.get(1)));
+                    assignmentGradeRepository.save(assignmentGrade);
+                }
+            }
+        }
+    }
 }

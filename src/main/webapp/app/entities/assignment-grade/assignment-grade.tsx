@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useRef, useState } from 'react';
+import { JhiItemCount, JhiPagination, TextFormat, Translate, getSortState, translate } from 'react-jhipster';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Table } from 'reactstrap';
-import { Translate, TextFormat, getSortState, JhiPagination, JhiItemCount, translate } from 'react-jhipster';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
-import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
-import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { APP_DATE_FORMAT } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
+import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 
-import { IAssignmentGrade } from 'app/shared/model/assignment-grade.model';
-import { getEntities, getEntitiesByAssignmentId } from './assignment-grade.reducer';
-import { createAssignmentGradeList } from './assignment-grade.reducer';
+import axios from 'axios';
 import { Dialog } from 'primereact/dialog';
+import { toast } from 'react-toastify';
 import AssignmentGradeUpdate from './assignment-grade-update';
+import { createAssignmentGradeList, getEntitiesByAssignmentId } from './assignment-grade.reducer';
 
 export const AssignmentGrade = () => {
   const dispatch = useAppDispatch();
+  const excelFileInputRef = useRef(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -114,6 +115,35 @@ export const AssignmentGrade = () => {
     }
   };
 
+  const onFileChange = event => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Replace 'YOUR_BACKEND_API_ENDPOINT' with the actual API endpoint to handle file uploads
+      axios
+        .post(`/api/upload/assignment-grades/${assignmentId}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          // Handle successful response from the backend
+          getAllEntities();
+          excelFileInputRef.current.value = '';
+          toast.success(translate('webApp.assignment.assignmentGradeUpdated'), {
+            position: toast.POSITION.TOP_LEFT,
+          });
+        })
+        .catch(error => {
+          console.error('Error uploading file:', error);
+          // Handle error
+        });
+    }
+  };
+
   return (
     <div>
       {isDisplayAssignmentGradeUpdate && isDisplayAssignmentGradeUpdate === true && (
@@ -132,6 +162,10 @@ export const AssignmentGrade = () => {
       <h2 id="assignment-grade-heading" data-cy="AssignmentGradeHeading">
         <Translate contentKey="webApp.assignmentGrade.home.title">Assignment Grades</Translate>
         <div className="d-flex justify-content-end">
+          <label htmlFor="fileInput" className="custom-file-upload">
+            {translate('userManagement.importExcel')}
+          </label>
+          <input id="fileInput" type="file" onChange={onFileChange} style={{ display: 'none' }} ref={excelFileInputRef} />
           <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
             <Translate contentKey="webApp.assignmentGrade.home.refreshListLabel">Refresh List</Translate>

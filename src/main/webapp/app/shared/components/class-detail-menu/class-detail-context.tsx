@@ -10,6 +10,11 @@ interface MenuInvitationCodeContextProps {
   setInvitationCode: React.Dispatch<React.SetStateAction<string>>;
 }
 
+interface CourseOwnerIdContextProps {
+  courseOwnerId: string;
+  setCourseOwnerId: React.Dispatch<React.SetStateAction<string>>;
+}
+
 interface MenuProviderProps {
   children: ReactNode;
 }
@@ -48,4 +53,22 @@ export const InvitationCodeProvider: React.FC<MenuProviderProps> = ({ children }
   }, [invitationCode]);
 
   return <InvitationCodeContext.Provider value={value}>{children}</InvitationCodeContext.Provider>;
+};
+
+export const CourseOwnerIdContext = createContext<CourseOwnerIdContextProps>({
+  courseOwnerId: '',
+  setCourseOwnerId() {},
+});
+
+export const CourseOwnerIdProvider: React.FC<MenuProviderProps> = ({ children }) => {
+  const [courseOwnerId, setCourseOwnerId] = useState<string>('');
+
+  const value = useMemo(() => {
+    return {
+      courseOwnerId,
+      setCourseOwnerId,
+    };
+  }, [courseOwnerId]);
+
+  return <CourseOwnerIdContext.Provider value={value}>{children}</CourseOwnerIdContext.Provider>;
 };

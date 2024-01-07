@@ -10,14 +10,17 @@ import { translate } from 'react-jhipster';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button } from 'reactstrap';
-import { InvitationCodeContext, MenuContext } from './class-detail-context';
+import { CourseOwnerIdContext, InvitationCodeContext, MenuContext } from './class-detail-context';
 import './class-detail-menu.scss';
+import { set } from 'lodash';
 
 export const ClassDetailMenu = () => {
   const { activeMenu, setActiveMenu } = useContext(MenuContext);
   const { invitationCode, setInvitationCode } = useContext(InvitationCodeContext);
+  const { courseOwnerId, setCourseOwnerId } = useContext(CourseOwnerIdContext);
   const [curActiveMenu, setCurActiveMenu] = useState(activeMenu);
   const [curInvitationCode, setCurInvitationCode] = useState(invitationCode);
+  const [curCourseOwnerId, setCurCourseOwnerId] = useState(courseOwnerId);
   const [isCopyInvitationCode, setIsCopyInvitationCode] = useState(false);
   const [isCopyInvitationLink, setIsCopyInvitationLink] = useState(false);
   const [invitedMails, setInvitedMails] = useState([]);
@@ -51,6 +54,8 @@ export const ClassDetailMenu = () => {
       axios.get(`/api/courses/${id}`).then(res => {
         setCurInvitationCode(res.data.invitationCode);
         setInvitationCode(res.data.invitationCode);
+        setCurCourseOwnerId(res.data.ownerId);
+        setCourseOwnerId(res.data.ownerId);
       });
     }
   }, []);
@@ -124,7 +129,7 @@ export const ClassDetailMenu = () => {
           setActiveIndex(e.index);
         }}
       />
-      {hasAnyAuthority(account.authorities, ['ROLE_TEACHER']) && (
+      {hasAnyAuthority(account.authorities, ['ROLE_TEACHER']) && account.id === curCourseOwnerId && (
         <>
           <Button className="d-flex flex-row align-items-center btn-invite btn btn-dark" onClick={() => setVisible(true)}>
             {translate('webApp.course.invite')}
