@@ -4,7 +4,7 @@ import { JhiItemCount, JhiPagination, TextFormat, Translate, getSortState, trans
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Table } from 'reactstrap';
 
-import { APP_DATE_FORMAT } from 'app/config/constants';
+import { APP_DATE_FORMAT, AUTHORITIES } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
@@ -27,7 +27,6 @@ export const AssignmentGrade = () => {
   );
 
   const account = useAppSelector(state => state.authentication.account);
-
   const assignmentGradeList = useAppSelector(state => state.assignmentGrade.entities);
   const loading = useAppSelector(state => state.assignmentGrade.loading);
   const totalItems = useAppSelector(state => state.assignmentGrade.totalItems);
@@ -40,9 +39,18 @@ export const AssignmentGrade = () => {
   const assignmentId = Number(pathParts[assignmentIdIndex]);
 
   const getAllEntities = () => {
+    // Construct the base query
+    let baseQuery = `assignmentId.equals=${assignmentId}`;
+
+    // Add conditions based on user role
+    if (account.authorities.includes(AUTHORITIES.STUDENT)) {
+      baseQuery += `&studentId.equals=${account.studentId}`;
+    }
+
+    // Dispatch action with the constructed query
     dispatch(
       getEntitiesByAssignmentId({
-        query: `assignmentId.equals=${assignmentId}`,
+        query: baseQuery,
         page: paginationState.activePage - 1,
         size: paginationState.itemsPerPage,
         sort: `${paginationState.sort},${paginationState.order}`,
@@ -162,15 +170,19 @@ export const AssignmentGrade = () => {
       <h2 id="assignment-grade-heading" data-cy="AssignmentGradeHeading">
         <Translate contentKey="webApp.assignmentGrade.home.title">Assignment Grades</Translate>
         <div className="d-flex justify-content-end">
-          <label htmlFor="fileInput" className="custom-file-upload">
-            {translate('userManagement.importExcel')}
-          </label>
-          <input id="fileInput" type="file" onChange={onFileChange} style={{ display: 'none' }} ref={excelFileInputRef} />
+          {account.authorities.includes(AUTHORITIES.TEACHER) && (
+            <>
+              <label htmlFor="fileInput" className="custom-file-upload">
+                {translate('userManagement.importExcel')}
+              </label>
+              <input id="fileInput" type="file" onChange={onFileChange} style={{ display: 'none' }} ref={excelFileInputRef} />
+            </>
+          )}
           <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
             <Translate contentKey="webApp.assignmentGrade.home.refreshListLabel">Refresh List</Translate>
           </Button>
-          {assignmentGradeList.length === 0 && (
+          {assignmentGradeList.length === 0 && account.authorities.includes(AUTHORITIES.TEACHER) && (
             <Button
               onClick={createAssignmentGradeListHandle}
               className="btn btn-primary jh-create-entity"
