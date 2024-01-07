@@ -8,7 +8,8 @@
         "createOrEditLabel": "Thêm mới hoặc cập nhật Lớp học",
         "notFound": "Không tìm thấy Lớp học nào",
         "myCourses": "Lớp học của tôi",
-        "classManagement": "Quản lý lớp học"
+        "classManagement": "Quản lý lớp học",
+        "createClass": "Tạo lớp học"
       },
       "created": "Một Lớp học mới được tạo với định danh {{ param }}",
       "updated": "Một Lớp học cập nhật với định danh {{ param }}",
@@ -23,9 +24,9 @@
       "code": "Mã lớp",
       "name": "Tên lớp",
       "ownerId": "Owner Id",
-      "description": "Description",
-      "invitationCode": "Invitation Code",
-      "expirationDate": "Expiration Date",
+      "description": "Mô tả",
+      "invitationCode": "Mã thư mời",
+      "expirationDate": "Ngày hết hạn của Mã thư mời vào lớp",
       "isDeleted": "Is Deleted",
       "createdBy": "Created By",
       "createdDate": "Created Date",

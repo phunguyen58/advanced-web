@@ -10,6 +10,7 @@ import com.ptudw.web.service.CourseQueryService;
 import com.ptudw.web.service.CourseService;
 import com.ptudw.web.service.MailService;
 import com.ptudw.web.service.UserCourseQueryService;
+import com.ptudw.web.service.UserCourseService;
 import com.ptudw.web.service.UserService;
 import com.ptudw.web.service.criteria.CourseCriteria;
 import com.ptudw.web.service.criteria.UserCourseCriteria;
@@ -75,13 +76,16 @@ public class CourseResource {
 
     private final MailService mailService;
 
+    private final UserCourseService userCourseService;
+
     public CourseResource(
         CourseService courseService,
         CourseRepository courseRepository,
         CourseQueryService courseQueryService,
         UserService userService,
         UserCourseQueryService userCourseQueryService,
-        MailService mailService
+        MailService mailService,
+        UserCourseService userCourseService
     ) {
         this.courseService = courseService;
         this.courseRepository = courseRepository;
@@ -89,6 +93,7 @@ public class CourseResource {
         this.userService = userService;
         this.userCourseQueryService = userCourseQueryService;
         this.mailService = mailService;
+        this.userCourseService = userCourseService;
     }
 
     /**
@@ -107,8 +112,14 @@ public class CourseResource {
         if (courseService.findOneByCode(course.getCode()).isPresent()) {
             throw new BadRequestAlertException("A new course cannot already have an code", ENTITY_NAME, "codeexists");
         }
-        course.setExpirationDate(ZonedDateTime.now().plusDays(90));
-        Course result = courseService.save(course);
+
+        Optional<User> user = userService.getUserWithAuthorities();
+        if (!user.isPresent()) {
+            throw new BadRequestAlertException("Invalid user", ENTITY_NAME, "userinvalid");
+        }
+
+        Course result = courseService.createCourse(course, user.get());
+
         return ResponseEntity
             .created(new URI("/api/courses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))

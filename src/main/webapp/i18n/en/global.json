@@ -152,8 +152,8 @@
     "userinvalid": "Invalid user",
     "useralreadyjoined": "User already joined",
     "studentIdExisted": "Student ID already existed",
-    "invitationcodeexpired": "Invitation code expired"
-
+    "invitationcodeexpired": "Invitation code expired",
+    "cantcreateusercourse": "Can't create class dueto some error"
   },
   "footer": "This is your footer",
   "pushNotification": {
