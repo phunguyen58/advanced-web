@@ -48,7 +48,10 @@
       "copied": "Copied!",
       "sendInvitation": "Send Invitation",
       "invitePeople": "Invite People",
-      "class": "Class"
+      "class": "Class",
+      "active": "Active",
+      "inactive": "Inactive",
+      "status": "Status"
     }
   }
 }

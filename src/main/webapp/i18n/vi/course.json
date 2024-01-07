@@ -48,7 +48,10 @@
       "copied": "Copied!",
       "sendInvitation": "Gửi lời mời",
       "invitePeople": "Mời người khác",
-      "class": "Lớp"
+      "class": "Lớp",
+      "active": "Hoạt động",
+      "inactive": "Không hoạt động",
+      "status": "Trạng thái"
     }
   }
 }
