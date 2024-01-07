@@ -201,7 +201,7 @@ export const AssignmentUpdate = () => {
                       </option>
                     ))
                   : null}
-              </ValidatedField>
+              </ValidatedField>*/}
               <ValidatedField
                 id="assignment-gradeComposition"
                 name="gradeComposition"
@@ -217,7 +217,7 @@ export const AssignmentUpdate = () => {
                       </option>
                     ))
                   : null}
-              </ValidatedField> */}
+              </ValidatedField>
               <Button onClick={() => handleClose()} id="cancel-save" data-cy="entityCreateCancelButton" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

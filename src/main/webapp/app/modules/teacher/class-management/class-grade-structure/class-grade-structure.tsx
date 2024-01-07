@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { Formik, Field, Form, useFormik, FieldArray, FieldArrayRenderProps } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { translate, Translate } from 'react-jhipster';
+import { translate, Translate, ValidatedField } from 'react-jhipster';
 import { GradeType } from 'app/shared/model/enumerations/grade-type.model';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
@@ -20,6 +20,8 @@ import {
   updateGradeComposition,
 } from './class-grade-structure-util';
 import { ICourse } from 'app/shared/model/course.model';
+import * as Yup from 'yup';
+import axios from 'axios';
 
 export interface FormData {
   gradeCompositions: IGradeComposition[];
@@ -31,6 +33,7 @@ const ClassGradeStructure = () => {
   const { id } = useParams<'id'>();
   const account = useAppSelector(state => state.authentication.account);
   const isNew = id === undefined;
+  const isStudent = account.authorities.includes('ROLE_STUDENT');
 
   const [gradeCompositions, setGradeCompositions] = useState<IGradeComposition[]>([]);
   const [gradeType, setGradeType] = useState<GradeType>(GradeType.NONE);
@@ -40,12 +43,24 @@ const ClassGradeStructure = () => {
   const [course, setCourse] = useState<ICourse>();
 
   useEffect(() => {
-    getGradeCompositions(id).then(value => setGradeCompositions(value.data));
+    getGradeCompositions(id).then(value => {
+      setGradeCompositions(value.data);
+      setGradeType(value.data[0].type);
+    });
   }, []);
 
   const handleClose = () => {
     navigate('/grade-structure');
   };
+
+  const validationSchema = Yup.object().shape({
+    gradeCompositions: Yup.array().of(
+      Yup.object().shape({
+        name: Yup.string().required(translate('entity.validation.required')),
+        scale: Yup.number().required(translate('entity.validation.required')),
+      })
+    ),
+  });
 
   useEffect(() => {
     getCourse(id).then(value => setCourse(value.data));
@@ -73,9 +88,9 @@ const ClassGradeStructure = () => {
 
   return (
     <div className="d-flex aw-class-grade-structure-container flex-column">
-      <div className="aw-grade-type d-flex flex-column">
+      <div className="aw-grade-type d-flex flex-row gap-2 align-items-center">
         <label htmlFor="type">
-          <Translate contentKey="webApp.gradeStructure.type">Type</Translate>
+          <b>{translate('webApp.gradeStructure.type')}</b>
         </label>
         <Dropdown
           name="type"
@@ -85,66 +100,21 @@ const ClassGradeStructure = () => {
             setGradeType(e.value);
           }}
           placeholder={translate('webApp.gradeStructure.type')}
+          disabled={isStudent}
         />
       </div>
       <div className="aw-form">
         <Formik
           initialValues={{ gradeCompositions: gradeCompositions } as FormData}
           enableReinitialize
+          validationSchema={validationSchema}
           onSubmit={async (data: FormData) => {
-            // await new Promise(r => setTimeout(r, 500));
-            gradeCompositions.map(value => {
-              return { ...value, type: gradeType };
+            data.gradeCompositions.forEach(value => {
+              value.type = gradeType;
             });
-            const gradeIds = gradeCompositions.map(value => value.id).filter(id => id !== null);
-            data = {
-              gradeCompositions: data.gradeCompositions.map(value => {
-                return { ...value, type: gradeType };
-              }),
-            };
-
-            console.log('gradeCompositions', data);
-            const newGradeComposition = data.gradeCompositions.filter(composition => !composition.id);
-            const oldGradeComposition = data.gradeCompositions.filter(composition => composition.id && gradeIds.includes(composition.id));
-            const deletedGradeComposition = gradeCompositions.filter(
-              composition => data.gradeCompositions.findIndex(value => value.id === composition.id) === -1
-            );
-
-            newGradeComposition
-              .map(value => {
-                return {
-                  ...value,
-                  createdDate: convertDateTimeToServer(value.createdDate),
-                  lastModifiedDate: convertDateTimeToServer(value.lastModifiedDate),
-                  course: course,
-                };
-              })
-              .forEach(value => {
-                try {
-                  createGradeComposition(value);
-                } catch (error) {
-                  console.error(error);
-                }
-              });
-            oldGradeComposition.forEach(value => {
-              try {
-                updateGradeComposition(value);
-              } catch (error) {
-                console.error(error);
-              }
+            axios.post(`/api/grade-compositions/bulk/${course.id}`, data.gradeCompositions).then(res => {
+              setGradeCompositions(res.data);
             });
-            deletedGradeComposition.forEach(value => {
-              try {
-                updateGradeComposition({ ...value, isDeleted: true });
-              } catch (error) {
-                console.error(error);
-              }
-            });
-
-            console.log('gradeConewGradeCompositionmpositions', newGradeComposition);
-            console.log('oldGradeComposition', oldGradeComposition);
-            console.log('deletedGradeComposition', deletedGradeComposition);
-            // alert(JSON.stringify(data, null, 2));
           }}
         >
           {({ values }) => (
@@ -154,51 +124,87 @@ const ClassGradeStructure = () => {
                   <div className="aw-composition-item">
                     {values.gradeCompositions.length > 0 &&
                       values.gradeCompositions.map((composition, index) => (
-                        <div className="row" key={index}>
-                          <div className="col">
-                            <label htmlFor={`gradeCompositions.${index}.name`}>Name</label>
-                            <Field name={`gradeCompositions.${index}.name`} type="text" />
+                        <div className="d-flex flex-row gap-3 mt-3" key={index}>
+                          {!isStudent && (
+                            <div className="d-flex flex-column gap-1 justify-content-center">
+                              <i
+                                className="pi pi-fw pi-chevron-up position"
+                                onClick={() => {
+                                  if (index > 0) {
+                                    insert(index - 1, composition);
+                                    remove(index + 1);
+                                  }
+                                }}
+                              />
+                              <i
+                                className="pi pi-fw pi-chevron-down position"
+                                onClick={() => {
+                                  if (index < values.gradeCompositions.length - 1) {
+                                    insert(index + 2, composition);
+                                    remove(index);
+                                  }
+                                }}
+                              />
+                            </div>
+                          )}
+                          <div className="grade-composition-container d-flex flex-row gap-3">
+                            <div className="d-flex flex-row gap-2 align-items-center">
+                              <label className="mandatory" htmlFor={`gradeCompositions.${index}.name`}>
+                                <span className="label">Name</span>
+                              </label>
+                              <Field name={`gradeCompositions.${index}.name`} type="text" disabled={isStudent} />
+                            </div>
+                            <div className="d-flex flex-row gap-2  align-items-center">
+                              <label className="mandatory" htmlFor={`gradeCompositions.${index}.scale`}>
+                                <span className="label">Scale</span>
+                              </label>
+                              <Field name={`gradeCompositions.${index}.scale`} type="number" disabled={isStudent} />
+                            </div>
+                            <div className="aw-is-public-checkbox">
+                              <Field name={`gradeCompositions.${index}.isPublic`} type="checkbox" disabled={isStudent} />
+                              <label htmlFor={`gradeCompositions.${index}.isPublic`}>Publish</label>
+                            </div>
                           </div>
-                          <div className="col">
-                            <label htmlFor={`gradeCompositions.${index}.scale`}>Scale</label>
-                            <Field name={`gradeCompositions.${index}.scale`} type="number" />
-                          </div>
-                          <div className="col aw-is-public-checkbox">
-                            <label htmlFor={`gradeCompositions.${index}.isPublic`}>isPublic</label>
-                            <Field name={`gradeCompositions.${index}.isPublic`} type="checkbox" />
-                          </div>
-                          <div className="col aw-delete-btn-container">
-                            <button type="button" className="secondary aw-delete-btn" onClick={() => remove(index)}>
-                              X
-                            </button>
-                          </div>
+                          {!isStudent && (
+                            <div className="aw-delete-btn-container justify-content-end">
+                              <Button type="button" className="btn btn-action" onClick={() => remove(index)}>
+                                <FontAwesomeIcon icon={'trash'} />
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       ))}
-                    <div
-                      className="aw-add-btn"
-                      onClick={() =>
-                        push({
-                          type: gradeType,
-                          createdDate: displayDefaultDateTime(),
-                          lastModifiedDate: displayDefaultDateTime(),
-                          scale: 10,
-                          isDeleted: false,
-                          createdBy: account.login,
-                          lastModifiedBy: account.login,
-                          isPublic: false,
-                        } as IGradeComposition)
-                      }
-                    >
-                      Add composition
-                    </div>
+                    {!isStudent && (
+                      <div className="d-flex justify-content-center">
+                        <Button
+                          className="btn-add mt-3 mb-3"
+                          onClick={() =>
+                            push({
+                              type: gradeType,
+                              // createdDate: displayDefaultDateTime(),
+                              // lastModifiedDate: displayDefaultDateTime(),
+                              name: `Grade composition ${values.gradeCompositions.length + 1}`,
+                              scale: 0,
+                              isDeleted: false,
+                              isPublic: false,
+                              // lastModifiedBy: account.login,
+                              // createdBy: account.login,
+                            } as IGradeComposition)
+                          }
+                          type="button"
+                        >
+                          <FontAwesomeIcon icon={'plus'} />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
               </FieldArray>
-              <Button color="primary" id="save-entity" type="submit" disabled={updating}>
-                <FontAwesomeIcon icon="save" />
-                &nbsp;
-                <Translate contentKey="entity.action.save">Save</Translate>
-              </Button>
+              {!isStudent && (
+                <Button className="btn btn-success" id="save-entity" type="submit" disabled={updating}>
+                  <Translate contentKey="entity.action.save">Save</Translate>
+                </Button>
+              )}
             </Form>
           )}
         </Formik>

@@ -115,7 +115,7 @@ export const CourseDetail = () => {
             <Dialog
               header={translate('webApp.course.invitePeople')}
               visible={visible}
-              style={{ width: '25vw' }}
+              style={{ width: '50vw' }}
               onHide={() => setVisible(false)}
             >
               <div className="w-100">

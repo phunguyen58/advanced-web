@@ -19,31 +19,38 @@ import AssignmentDeleteDialog from 'app/entities/assignment/assignment-delete-di
 import Course from '..';
 import GradeReview from 'app/entities/grade-review';
 
-const CourseRouterRoutes = () => (
-  <div>
-    {/* <Route index element={<Course />} /> */}
+const CourseRouterRoutes = () => {
+  const handleCourseUpdate = () => {
+    console.log('handleCourseUpdate');
+  };
+  return (
+    <div>
+      {/* <Route index element={<Course />} /> */}
 
-    <ClassDetailMenu></ClassDetailMenu>
-    <ErrorBoundaryRoutes>
-      <Route path="" element={<ClassStream />} />
-      {/* <Route index element={<CourseDetail />} /> */}
-      <Route path="stream" element={<ClassStream />} />
-      <Route path="class-work" element={<ClassWork />} />
-      <Route path="class-work/assignment/:asignmentId" element={<AssignmentDetail />} />
-      <Route path="class-work/assignment/new" element={<AssignmentUpdate />} />
-      <Route path="class-work/assignment/:asignmentId/edit" element={<AssignmentUpdate />} />
-      <Route path="class-work/assignment/:asignmentId/delete" element={<AssignmentDeleteDialog />} />
-      <Route path="people" element={<ClassPeople />} />
-      {/* <Route path="people/user-management-class" element={<ClassPeople />} /> */}
-      <Route path="grade" element={<ClassGrade />} />
-      <Route path="new" element={<CourseUpdate />} />
-      <Route path="edit" element={<CourseUpdate />} />
-      <Route path="delete" element={<CourseDeleteDialog />} />
-      <Route path="grade-structure" element={<ClassGradeStructure />} />
-      <Route path="list" element={<Course />} />
-      <Route path="grade-review/*" element={<GradeReview />} />
-    </ErrorBoundaryRoutes>
-  </div>
-);
+      <ClassDetailMenu></ClassDetailMenu>
+      <ErrorBoundaryRoutes>
+        <Route path="" element={<ClassStream />} />
+        {/* <Route index element={<CourseDetail />} /> */}
+        <Route path="stream" element={<ClassStream />} />
+        <Route path="edit" element={<CourseUpdate onEventTrigger={handleCourseUpdate} />} />
+        <Route path="stream/edit" element={<CourseUpdate onEventTrigger={handleCourseUpdate} />} />
+        <Route path="class-work" element={<ClassWork />} />
+        <Route path="class-work/assignment/:asignmentId" element={<AssignmentDetail />} />
+        <Route path="class-work/assignment/new" element={<AssignmentUpdate />} />
+        <Route path="class-work/assignment/:asignmentId/edit" element={<AssignmentUpdate />} />
+        <Route path="class-work/assignment/:asignmentId/delete" element={<AssignmentDeleteDialog />} />
+        <Route path="people" element={<ClassPeople />} />
+        {/* <Route path="people/user-management-class" element={<ClassPeople />} /> */}
+        <Route path="grade" element={<ClassGrade />} />
+        {/* <Route path="new" element={<CourseUpdate />} /> */}
+        {/* <Route path="edit" element={<CourseUpdate />} /> */}
+        <Route path="delete" element={<CourseDeleteDialog />} />
+        <Route path="grade-structure" element={<ClassGradeStructure />} />
+        <Route path="list" element={<Course />} />
+        <Route path="grade-review/*" element={<GradeReview />} />
+      </ErrorBoundaryRoutes>
+    </div>
+  );
+};
 
 export default CourseRouterRoutes;

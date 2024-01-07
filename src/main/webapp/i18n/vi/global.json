@@ -157,7 +157,8 @@
     "userinvalid": "Tài khoản không hợp lệ",
     "useralreadyjoined": "Tài khoản đã tham gia khóa học này",
     "studentIdExisted": "Mã số sinh viên đã tồn tại",
-    "invitationcodeexpired": "Mã mời đã hết hạn"
+    "invitationcodeexpired": "Mã mời đã hết hạn",
+    "cantcreateusercourse": "Không thể tạo khóa học vì đã có lỗi xảy ra"
   },
   "footer": "Đây là chân trang của bạn",
   "pushNotification": {

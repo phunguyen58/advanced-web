@@ -14,6 +14,8 @@ import { JhiItemCount, JhiPagination, Translate, getSortState, translate } from 
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { ICourse } from 'app/shared/model/course.model';
 import { AUTHORITIES } from 'app/config/constants';
+import CourseUpdate from 'app/entities/course/course-router/course-update';
+import { Dialog } from 'primereact/dialog';
 
 export const ClassManagement = () => {
   const dispatch = useAppDispatch();
@@ -85,24 +87,14 @@ export const ClassManagement = () => {
 
   const [visible, setVisible] = useState(false);
 
-  const toggleModal = () => {
-    setVisible(!visible);
-  };
-
-  const handleCreateClass = (_class: ICourse) => {
-    // Perform actions to create the class (e.g., make an API call)
-    _class.expirationDate = convertDateTimeToServer(_class.expirationDate);
-    _class.createdDate = convertDateTimeToServer(_class.createdDate);
-    _class.lastModifiedDate = convertDateTimeToServer(_class.lastModifiedDate);
-
-    const entity = {
-      ..._class,
-    };
-    dispatch(createEntity(entity));
+  const handleEventFromChild = data => {
+    // Handle the event data emitted from the ChildComponent
+    setVisible(false);
+    // Perform actions based on the emitted event
   };
 
   return (
-    <div className="d-flex min-vh-100 flex-column aw-class-management-container pt-1">
+    <div className="d-flex min-vh-100 flex-column aw-class-management-container p-2">
       <div className="d-flex align-items-center justify-content-between">
         <h2 id="course-heading" data-cy="CourseHeading">
           <Translate contentKey="webApp.course.home.classManagement">Courses</Translate>
@@ -116,8 +108,18 @@ export const ClassManagement = () => {
           />
         )}
       </div>
-      <CreateClassModal visible={visible} setVisible={toggleModal} onCreateClass={handleCreateClass}></CreateClassModal>
-      <div className="d-flex flex-wrap gap-3 p-3">
+      <Dialog
+        className="join-a-course-dialog"
+        header={translate('webApp.course.home.createClass')}
+        draggable={false}
+        resizable={false}
+        visible={visible}
+        style={{ width: '50vw' }}
+        onHide={() => setVisible(false)}
+      >
+        <CourseUpdate onEventTrigger={handleEventFromChild}></CourseUpdate>
+      </Dialog>
+      <div className="d-flex flex-wrap gap-3 p-2">
         {classes && classes.length > 0 ? (
           <div className="grid">
             {classes.map(course => (
