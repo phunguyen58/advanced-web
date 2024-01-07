@@ -13,6 +13,7 @@ import { ICourse } from 'app/shared/model/course.model';
 import { Button } from 'primereact/button';
 import { IGradeBoard } from 'app/shared/model/grade-board.model';
 import { getEntity } from 'app/entities/course/course-router/course.reducer';
+import { GradeType } from 'app/shared/model/enumerations/grade-type.model';
 
 const ClassGrade = () => {
   const dt = useRef<DataTable<IGradeBoard[]>>(null);
@@ -128,7 +129,14 @@ const ClassGrade = () => {
               ></Column>
             ))
           : null}
-        <Column key={'studentId'} field="finalGrade" header={translate('webApp.classManagement.finalGrade')}></Column>
+        <Column
+          key={'studentId'}
+          field="finalGrade"
+          header={translate('webApp.classManagement.finalGrade')}
+          body={(rowData: IGradeBoard) => {
+            return rowData.gradeType === GradeType.PERCENTAGE ? Math.round(rowData.finalGrade * 100 * 100) / 100 + '%' : rowData.finalGrade;
+          }}
+        ></Column>
       </DataTable>
     </div>
   );

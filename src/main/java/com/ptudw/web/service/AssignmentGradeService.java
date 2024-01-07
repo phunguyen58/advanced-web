@@ -122,19 +122,23 @@ public class AssignmentGradeService {
                     .stream()
                     .filter(assignmentGrade -> assignmentsIdInCourse.contains(assignmentGrade.getAssignment().getId()))
                     .collect(Collectors.toList());
-                GradeComposition gradeComposition = gradeCompositionRepository.findOneByCourseId(course.getId());
+                GradeComposition gradeComposition = assignmentsInCourse.get(0).getGradeComposition();
                 Double finalGrade = 0D;
                 if (gradeComposition.getType() != null && userAssignmentGradesInCourse.size() > 0) {
                     if (gradeComposition.getType().equals(GradeType.PERCENTAGE)) {
-                        long a = userAssignmentGradesInCourse
+                        Double a = userAssignmentGradesInCourse
                             .stream()
-                            .map(grade -> grade.getGrade() / 100 * grade.getAssignment().getGradeComposition().getScale())
-                            .mapToLong(Long::longValue)
+                            .map(grade ->
+                                Double.parseDouble(grade.getGrade().toString()) /
+                                100D *
+                                Double.parseDouble(grade.getAssignment().getGradeComposition().getScale().toString())
+                            )
+                            .mapToDouble(Double::doubleValue)
                             .sum();
-                        long b = assignmentsInCourse
+                        Double b = assignmentsInCourse
                             .stream()
-                            .map(assignment -> assignment.getGradeComposition().getScale())
-                            .mapToLong(Long::longValue)
+                            .map(assignment -> Double.parseDouble(assignment.getGradeComposition().getScale().toString()))
+                            .mapToDouble(Double::doubleValue)
                             .sum();
                         finalGrade = (double) a / b;
                     } else {
