@@ -116,6 +116,9 @@ public class AssignmentGradeQueryService extends QueryService<AssignmentGrade> {
                         )
                     );
             }
+            if (criteria.getGradeReviewId() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getGradeReviewId(), AssignmentGrade_.gradeReviewId));
+            }
         }
         return specification;
     }

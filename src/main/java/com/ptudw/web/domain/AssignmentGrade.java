@@ -36,6 +36,9 @@ public class AssignmentGrade implements Serializable {
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
+    @Column(name = "grade_review_id")
+    private Long gradeReviewId;
+
     @NotNull
     @Column(name = "created_by", nullable = false)
     private String createdBy;
@@ -175,6 +178,19 @@ public class AssignmentGrade implements Serializable {
         return this;
     }
 
+    public Long getGradeReviewId() {
+        return this.gradeReviewId;
+    }
+
+    public void setGradeReviewId(Long gradeReviewId) {
+        this.gradeReviewId = gradeReviewId;
+    }
+
+    public AssignmentGrade gradeReviewId(Long gradeReviewId) {
+        this.setGradeReviewId(gradeReviewId);
+        return this;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -202,6 +218,7 @@ public class AssignmentGrade implements Serializable {
             ", studentId='" + getStudentId() + "'" +
             ", grade=" + getGrade() +
             ", isDeleted='" + getIsDeleted() + "'" +
+            ", gradeReviewId=" + getGradeReviewId() +
             ", createdBy='" + getCreatedBy() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +

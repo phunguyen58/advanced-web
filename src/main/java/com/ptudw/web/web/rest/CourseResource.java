@@ -105,6 +105,7 @@ public class CourseResource {
         if (courseService.findOneByCode(course.getCode()).isPresent()) {
             throw new BadRequestAlertException("A new course cannot already have an code", ENTITY_NAME, "codeexists");
         }
+        course.setExpirationDate(ZonedDateTime.now().plusDays(90));
         Course result = courseService.save(course);
         return ResponseEntity
             .created(new URI("/api/courses/" + result.getId()))

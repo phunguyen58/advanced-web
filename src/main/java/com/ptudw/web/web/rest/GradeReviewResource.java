@@ -82,6 +82,14 @@ public class GradeReviewResource {
             throw new BadRequestAlertException("A new gradeReview cannot already have an ID", ENTITY_NAME, "idexists");
         }
         GradeReview result = gradeReviewService.save(gradeReview);
+
+        assignmentGradeService
+            .findOne(result.getAssimentGradeId())
+            .ifPresent(assignmentGrade -> {
+                assignmentGrade.setGradeReviewId(result.getId());
+                assignmentGradeService.save(assignmentGrade);
+            });
+
         return ResponseEntity
             .created(new URI("/api/grade-reviews/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))

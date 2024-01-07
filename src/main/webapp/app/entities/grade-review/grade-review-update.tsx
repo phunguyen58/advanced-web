@@ -56,7 +56,7 @@ export const GradeReviewUpdate = () => {
     setGradeReview(gradeReviewEntity);
 
     const getAssignment = (_assignmentGrade, __gradeReview) => {
-      axios.get(`/api/assignments/${_assignmentGrade.id}`).then(response => {
+      axios.get(`/api/assignments/${_assignmentGrade.assignment.id}`).then(response => {
         const data: any = response.data;
         setAssignmentGrade(_assignmentGrade);
 
@@ -68,13 +68,13 @@ export const GradeReviewUpdate = () => {
         const _gradeReview = {
           ...gradeReviewEntity,
           ...__gradeReview,
-          assigmentId: data.id,
-          studentId: _assignmentGrade.studentId,
-          currentGrade: gradeReviewEntity.currentGrade ?? _assignmentGrade.grade,
-          gradeCompositionId: data.gradeComposition.id,
-          assimentGradeId: _assignmentGrade.id,
+          assigmentId: data?.id,
+          studentId: _assignmentGrade?.studentId,
+          currentGrade: gradeReviewEntity?.currentGrade ?? _assignmentGrade?.grade,
+          gradeCompositionId: data?.gradeComposition?.id,
+          assimentGradeId: _assignmentGrade?.id,
           isFinal: false,
-          courseId: data.course.id,
+          courseId: data?.course?.id,
         };
 
         setGradeReview(_gradeReview);
