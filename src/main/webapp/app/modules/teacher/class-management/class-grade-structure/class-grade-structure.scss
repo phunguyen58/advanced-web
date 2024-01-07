@@ -1,0 +1,54 @@
+.aw-class-grade-structure-container {
+  width: 100%;
+  display: flex;
+  align-content: center;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  .aw-grade-type {
+    width: 200px;
+  }
+
+  .aw-form {
+    display: flex;
+    .aw-composition-item {
+      display: flex;
+      flex-direction: column;
+      width: 700px;
+    }
+    .aw-add-btn {
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .aw-is-public-checkbox {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      padding-top: 31px;
+    }
+    .aw-delete-btn-container {
+      align-items: center;
+      display: flex;
+      padding-top: 29px;
+      .aw-delete-btn {
+        border: none;
+        background-color: red;
+        font-weight: 900;
+        color: white;
+        border-radius: 6px;
+      }
+    }
+  }
+
+  .aw-form-container {
+    display: flex;
+    width: 60%;
+    justify-content: center;
+    flex-direction: column;
+
+    .aw-is-deleted-field {
+      justify-content: flex-start;
+      align-items: center;
+    }
+  }
+}
