@@ -53,7 +53,8 @@
       "inactive": "Inactive",
       "status": "Status",
       "members": "Members",
-      "gradeBoard": "Grade Board"
+      "gradeBoard": "Grade Board",
+      "stream": "Stream"
     }
   }
 }

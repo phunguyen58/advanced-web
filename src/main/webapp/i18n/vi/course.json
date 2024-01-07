@@ -53,7 +53,8 @@
       "inactive": "Không hoạt động",
       "status": "Trạng thái",
       "members": "Thành viên",
-      "gradeBoard": "Bảng điểm"
+      "gradeBoard": "Bảng điểm",
+      "stream": "Bảng tin"
     }
   }
 }
