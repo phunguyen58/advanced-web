@@ -79,6 +79,7 @@ export const AssignmentUpdate = () => {
       entity.gradeComposition = { id: values.gradeComposition };
       dispatch(createEntity(entity));
     } else {
+      entity.gradeComposition = { id: values.gradeComposition };
       dispatch(updateEntity(entity));
     }
   };
