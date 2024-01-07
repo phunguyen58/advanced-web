@@ -73,14 +73,26 @@ public class AssignmentGradeService {
             .filter(user -> !user.getAuthorities().contains(authorityRepository.findOneByName("ROLE_TEACHER")))
             .collect(Collectors.toList());
         Course course = courseRepository.findOneById(courseId);
-        List<Assignment> assignmentsInCourse = assignmentRepository.findAllByCourseId(courseId);
+        List<Assignment> assignmentsInCourse = assignmentRepository
+            .findAllByCourseId(courseId)
+            .stream()
+            .filter(assignment -> {
+                log.debug("assignment.getGradeComposition().getIsPublic() {}", assignment.getGradeComposition().getIsPublic());
+                return assignment.getGradeComposition().getIsPublic();
+            })
+            .collect(Collectors.toList());
         List<Long> assignmentsIdInCourse = assignmentsInCourse.stream().map(assignment -> assignment.getId()).collect(Collectors.toList());
 
         List<GradeBoard> gradeBoards = new ArrayList();
         users
             .stream()
             .forEach(user -> {
-                List<AssignmentGrade> userAssignmentGrades = assignmentGradeRepository.findAllByStudentId(user.getStudentId());
+                List<AssignmentGrade> userAssignmentGrades = assignmentGradeRepository
+                    .findAllByStudentId(user.getStudentId())
+                    .stream()
+                    .filter(grade -> grade.getAssignment().getGradeComposition().getIsPublic())
+                    .collect(Collectors.toList());
+
                 List<AssignmentGrade> userAssignmentGradesInCourse = userAssignmentGrades
                     .stream()
                     .filter(assignmentGrade -> assignmentsIdInCourse.contains(assignmentGrade.getAssignment().getId()))
