@@ -31,17 +31,14 @@ export const CourseUpdate = ({ onEventTrigger }) => {
 
   const handleClose = () => {
     emitEvent();
-    navigate('/class' + location.search);
   };
 
   const emitEvent = () => {
-    const eventData = 'Data to be sent with the event'; // Data to be sent along with the event
     // Call the function passed as a prop to emit the event
-    onEventTrigger(eventData);
+    onEventTrigger(false);
   };
 
   useEffect(() => {
-    console.log('CourseUpdate useEffect');
     if (isNew) {
       // dispatch(reset());
     } else {

@@ -88,9 +88,9 @@ export const ClassManagement = () => {
   const [visible, setVisible] = useState(false);
 
   const handleEventFromChild = data => {
-    // Handle the event data emitted from the ChildComponent
-    setVisible(false);
-    // Perform actions based on the emitted event
+    if (data === false) {
+      setVisible(false);
+    }
   };
 
   return (
@@ -117,7 +117,7 @@ export const ClassManagement = () => {
         style={{ width: '50vw' }}
         onHide={() => setVisible(false)}
       >
-        <CourseUpdate onEventTrigger={handleEventFromChild}></CourseUpdate>
+        <CourseUpdate onEventTrigger={() => handleEventFromChild}></CourseUpdate>
       </Dialog>
       <div className="d-flex flex-wrap gap-3 p-2">
         {classes && classes.length > 0 ? (
