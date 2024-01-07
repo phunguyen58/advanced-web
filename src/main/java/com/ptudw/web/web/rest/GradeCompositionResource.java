@@ -1,13 +1,18 @@
 package com.ptudw.web.web.rest;
 
+import com.ptudw.web.domain.Course;
 import com.ptudw.web.domain.GradeComposition;
+import com.ptudw.web.repository.CourseRepository;
 import com.ptudw.web.repository.GradeCompositionRepository;
+import com.ptudw.web.security.SecurityUtils;
 import com.ptudw.web.service.GradeCompositionQueryService;
 import com.ptudw.web.service.GradeCompositionService;
 import com.ptudw.web.service.criteria.GradeCompositionCriteria;
 import com.ptudw.web.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -20,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -46,14 +52,18 @@ public class GradeCompositionResource {
 
     private final GradeCompositionQueryService gradeCompositionQueryService;
 
+    private final CourseRepository courseRepository;
+
     public GradeCompositionResource(
         GradeCompositionService gradeCompositionService,
         GradeCompositionRepository gradeCompositionRepository,
-        GradeCompositionQueryService gradeCompositionQueryService
+        GradeCompositionQueryService gradeCompositionQueryService,
+        CourseRepository courseRepository
     ) {
         this.gradeCompositionService = gradeCompositionService;
         this.gradeCompositionRepository = gradeCompositionRepository;
         this.gradeCompositionQueryService = gradeCompositionQueryService;
+        this.courseRepository = courseRepository;
     }
 
     /**
@@ -74,6 +84,39 @@ public class GradeCompositionResource {
         return ResponseEntity
             .created(new URI("/api/grade-compositions/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    @PostMapping("/grade-compositions/bulk/{courseId}")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
+    public ResponseEntity<List<GradeComposition>> createGradeCompositions(
+        @RequestBody List<GradeComposition> gradeCompositions,
+        @PathVariable Long courseId
+    ) throws URISyntaxException {
+        log.debug("REST request to save GradeCompositions : {}", gradeCompositions);
+        List<GradeComposition> result = new ArrayList<>();
+        Optional<Course> course = courseRepository.findById(courseId);
+        course.ifPresent(c -> {
+            List<GradeComposition> gradeCompositionsInDB = gradeCompositionRepository.findAllByCourse(c);
+            gradeCompositionsInDB.forEach(gradeComposition -> {
+                gradeComposition.setIsDeleted(true);
+            });
+            gradeCompositionRepository.saveAll(gradeCompositionsInDB);
+        });
+        if (!gradeCompositions.isEmpty()) {
+            gradeCompositions.forEach(gradeComposition -> {
+                gradeComposition.setId(null);
+                gradeComposition.setCreatedBy(SecurityUtils.getCurrentUserLogin().orElse("system"));
+                gradeComposition.setCreatedDate(ZonedDateTime.now());
+                gradeComposition.setLastModifiedBy(SecurityUtils.getCurrentUserLogin().orElse("system"));
+                gradeComposition.setLastModifiedDate(ZonedDateTime.now());
+                gradeComposition.setCourse(course.orElse(null));
+            });
+            result = gradeCompositionRepository.saveAll(gradeCompositions);
+        }
+        return ResponseEntity
+            .created(new URI("/api/grade-compositions/bulk"))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.get(0).getId().toString()))
             .body(result);
     }
 
