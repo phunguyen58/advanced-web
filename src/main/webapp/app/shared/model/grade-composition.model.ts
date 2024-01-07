@@ -9,9 +9,9 @@ export interface IGradeComposition {
   scale?: number | null;
   isDeleted?: boolean | null;
   createdBy?: string;
-  createdDate?: string;
+  createdDate?: any;
   lastModifiedBy?: string;
-  lastModifiedDate?: string;
+  lastModifiedDate?: any;
   type?: GradeType;
   isPublic?: boolean | null;
   assignments?: IAssignment[] | null;
