@@ -95,7 +95,9 @@ const ClassGrade = () => {
 
   const header = (
     <div className=" aw-class-grade-container flex align-items-center justify-content-end gap-2">
-      <Button className="aw-aw-operation-button" type="button" icon="pi pi-file" rounded={true} onClick={exportCSV} data-pr-tooltip="CSV" />
+      <Button className="aw-aw-operation-button" type="button" rounded={true} onClick={exportCSV} data-pr-tooltip="CSV">
+        <img src="content/images/csv-export.png" alt="" />
+      </Button>
       <Button
         className="aw-aw-operation-button"
         type="button"
