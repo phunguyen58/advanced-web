@@ -8,4 +8,6 @@ export const convertDateTimeToServer = date => (date ? dayjs(date).toDate() : nu
 
 export const displayDefaultDateTime = () => dayjs().startOf('day').format(APP_LOCAL_DATETIME_FORMAT);
 
+export const displayDefaultDateTimeCreateClass = () => dayjs().add(14, 'day').startOf('day').format(APP_LOCAL_DATETIME_FORMAT);
+
 export const defaultDateTime = () => dayjs(dayjs().startOf('day').format(APP_LOCAL_DATETIME_FORMAT)).toDate();

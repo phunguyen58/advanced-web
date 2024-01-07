@@ -8,7 +8,8 @@
         "createOrEditLabel": "Create or edit a Course",
         "notFound": "No Courses found",
         "myCourses": "My classes",
-        "classManagement": "Class Management"
+        "classManagement": "Class Management",
+        "createClass": "Create Class"
       },
       "created": "A new Course is created with identifier {{ param }}",
       "updated": "A Course is updated with identifier {{ param }}",
@@ -25,7 +26,7 @@
       "ownerId": "Owner Id",
       "description": "Description",
       "invitationCode": "Invitation Code",
-      "expirationDate": "Expiration Date",
+      "expirationDate": "Expiration Date of Invitation Code",
       "isDeleted": "Is Deleted",
       "createdBy": "Created By",
       "createdDate": "Created Date",

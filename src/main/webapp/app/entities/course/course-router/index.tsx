@@ -36,8 +36,8 @@ const CourseRouterRoutes = () => (
       <Route path="people" element={<ClassPeople />} />
       {/* <Route path="people/user-management-class" element={<ClassPeople />} /> */}
       <Route path="grade" element={<ClassGrade />} />
-      <Route path="new" element={<CourseUpdate />} />
-      <Route path="edit" element={<CourseUpdate />} />
+      {/* <Route path="new" element={<CourseUpdate />} /> */}
+      {/* <Route path="edit" element={<CourseUpdate />} /> */}
       <Route path="delete" element={<CourseDeleteDialog />} />
       <Route path="grade-structure" element={<ClassGradeStructure />} />
       <Route path="list" element={<Course />} />
