@@ -15,6 +15,7 @@ import AssignmentGradeDetail from 'app/entities/assignment-grade/assignment-grad
 import AssignmentUpdate from 'app/entities/assignment/assignment-update';
 import AssignmentDeleteDialog from 'app/entities/assignment/assignment-delete-dialog';
 import Course from '..';
+import GradeReview from 'app/entities/grade-review';
 
 const CourseRouterRoutes = () => (
   <div>
@@ -37,6 +38,7 @@ const CourseRouterRoutes = () => (
       <Route path="edit" element={<CourseUpdate />} />
       <Route path="delete" element={<CourseDeleteDialog />} />
       <Route path="list" element={<Course />} />
+      <Route path="grade-review/*" element={<GradeReview />} />
     </ErrorBoundaryRoutes>
   </div>
 );

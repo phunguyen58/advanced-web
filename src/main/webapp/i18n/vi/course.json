@@ -51,7 +51,9 @@
       "class": "Lớp",
       "active": "Hoạt động",
       "inactive": "Không hoạt động",
-      "status": "Trạng thái"
+      "status": "Trạng thái",
+      "members": "Thành viên",
+      "gradeBoard": "Bảng điểm"
     }
   }
 }

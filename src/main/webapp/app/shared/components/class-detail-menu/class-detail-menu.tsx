@@ -29,12 +29,13 @@ export const ClassDetailMenu = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const TAB_INDEX = ['stream', 'class-work', 'people', 'grade'];
+  const TAB_INDEX = ['stream', 'class-work', 'people', 'grade', 'grade-review'];
   const TAB_NAME = {
     stream: 0,
     'class-work': 1,
     people: 2,
     grade: 3,
+    'grade-review': 4,
   };
 
   useEffect(() => {
@@ -62,10 +63,11 @@ export const ClassDetailMenu = () => {
 
   const [activeIndex, setActiveIndex] = useState(TAB_NAME[curActiveMenu]);
   const items: MenuItem[] = [
-    { label: 'Grade structure', icon: 'pi pi-fw pi-home', className: 'aw-menu-item' },
-    { label: 'Assginments', icon: 'pi pi-fw pi-calendar', className: 'aw-menu-item' },
-    { label: 'Members', icon: 'pi pi-fw pi-users', className: 'aw-menu-item' },
-    { label: 'Grade board', icon: 'pi pi-fw pi-folder', className: 'aw-menu-item' },
+    { label: translate('global.menu.entities.gradeStructure'), icon: 'pi pi-fw pi-home', className: 'aw-menu-item' },
+    { label: translate('webApp.assignment.detail.title'), icon: 'pi pi-fw pi-calendar', className: 'aw-menu-item' },
+    { label: translate('webApp.course.members'), icon: 'pi pi-fw pi-users', className: 'aw-menu-item' },
+    { label: translate('webApp.course.gradeBoard'), icon: 'pi pi-fw pi-table', className: 'aw-menu-item' },
+    { label: translate('webApp.gradeReview.detail.title'), icon: 'pi pi-fw pi-pencil', className: 'aw-menu-item' },
   ];
 
   const handleMenuItemClick = (menuName, path) => {

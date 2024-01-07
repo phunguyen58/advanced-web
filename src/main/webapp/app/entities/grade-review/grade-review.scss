@@ -41,3 +41,13 @@
     }
   }
 }
+
+.btn-action {
+  border: none;
+  background-color: transparent;
+  color: #000;
+
+  &:disabled {
+    background-color: transparent !important;
+  }
+}

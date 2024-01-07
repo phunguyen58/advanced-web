@@ -288,13 +288,14 @@ export const GradeReviewUpdate = () => {
               )} */}
                 <div className="d-flex justify-content-end">
                   <Button
-                    tag={Link}
                     id="cancel-save"
                     data-cy="entityCreateCancelButton"
-                    to="/grade-review"
                     replace
                     className="btn btn-outline-dark"
                     color="outline-dark"
+                    onClick={() => {
+                      history.back();
+                    }}
                   >
                     <span className="d-none d-md-inline">
                       <Translate contentKey="entity.action.back">Back</Translate>

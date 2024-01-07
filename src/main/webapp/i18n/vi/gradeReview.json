@@ -15,7 +15,7 @@
         "question": "Bạn có chắc là muốn xóa Grade Review {{ id }}?"
       },
       "detail": {
-        "title": "Review điểm"
+        "title": "Phúc khảo"
       },
       "id": "ID",
       "gradeCompositionId": "Grade Composition Id",

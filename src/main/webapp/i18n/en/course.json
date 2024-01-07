@@ -51,7 +51,9 @@
       "class": "Class",
       "active": "Active",
       "inactive": "Inactive",
-      "status": "Status"
+      "status": "Status",
+      "members": "Members",
+      "gradeBoard": "Grade Board"
     }
   }
 }
