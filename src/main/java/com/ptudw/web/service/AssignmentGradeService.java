@@ -16,6 +16,7 @@ import com.ptudw.web.repository.CourseRepository;
 import com.ptudw.web.repository.GradeCompositionRepository;
 import com.ptudw.web.repository.UserCourseRepository;
 import com.ptudw.web.repository.UserRepository;
+import com.ptudw.web.security.SecurityUtils;
 import com.ptudw.web.web.rest.AssignmentResource;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class AssignmentGradeService {
+
+    private static class AccountResourceException extends RuntimeException {
+
+        private AccountResourceException(String message) {
+            super(message);
+        }
+    }
 
     private final Logger log = LoggerFactory.getLogger(AssignmentGradeService.class);
 
@@ -65,7 +73,24 @@ public class AssignmentGradeService {
     }
 
     public List<GradeBoard> getGradeBoardsByCourseId(Long courseId) {
+        String userLogin = SecurityUtils
+            .getCurrentUserLogin()
+            .orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        Optional<User> currentUser = userRepository.findOneByLogin(userLogin);
+        if (!currentUser.isPresent()) {
+            throw new AccountResourceException("User could not be found");
+        }
+
         List<UserCourse> userCourses = userCourseRepository.findAllByCourseId(courseId);
+        if (!currentUser.get().getAuthorities().contains(authorityRepository.findOneByName("ROLE_TEACHER"))) {
+            userCourses =
+                userCourses
+                    .stream()
+                    .filter(userCourse -> userCourse.getUserId().equals(currentUser.get().getId()))
+                    .collect(Collectors.toList());
+        }
+
         List<Long> userIds = userCourses.stream().map(userCourse -> userCourse.getUserId()).collect(Collectors.toList());
         List<User> users = userRepository
             .findAllByIdIn(userIds)
@@ -73,14 +98,26 @@ public class AssignmentGradeService {
             .filter(user -> !user.getAuthorities().contains(authorityRepository.findOneByName("ROLE_TEACHER")))
             .collect(Collectors.toList());
         Course course = courseRepository.findOneById(courseId);
-        List<Assignment> assignmentsInCourse = assignmentRepository.findAllByCourseId(courseId);
+        List<Assignment> assignmentsInCourse = assignmentRepository
+            .findAllByCourseId(courseId)
+            .stream()
+            .filter(assignment -> {
+                log.debug("assignment.getGradeComposition().getIsPublic() {}", assignment.getGradeComposition().getIsPublic());
+                return assignment.getGradeComposition().getIsPublic();
+            })
+            .collect(Collectors.toList());
         List<Long> assignmentsIdInCourse = assignmentsInCourse.stream().map(assignment -> assignment.getId()).collect(Collectors.toList());
 
         List<GradeBoard> gradeBoards = new ArrayList();
         users
             .stream()
             .forEach(user -> {
-                List<AssignmentGrade> userAssignmentGrades = assignmentGradeRepository.findAllByStudentId(user.getStudentId());
+                List<AssignmentGrade> userAssignmentGrades = assignmentGradeRepository
+                    .findAllByStudentId(user.getStudentId())
+                    .stream()
+                    .filter(grade -> grade.getAssignment().getGradeComposition().getIsPublic())
+                    .collect(Collectors.toList());
+
                 List<AssignmentGrade> userAssignmentGradesInCourse = userAssignmentGrades
                     .stream()
                     .filter(assignmentGrade -> assignmentsIdInCourse.contains(assignmentGrade.getAssignment().getId()))
