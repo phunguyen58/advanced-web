@@ -11,10 +11,10 @@ import AssignmentGradeDeleteDialog from './assignment-grade-delete-dialog';
 const AssignmentGradeRoutes = () => (
   <ErrorBoundaryRoutes>
     <Route index element={<AssignmentGrade />} />
-    <Route path="new" element={<AssignmentGradeUpdate />} />
+    {/* <Route path="new" element={<AssignmentGradeUpdate />} /> */}
     <Route path=":id">
       <Route index element={<AssignmentGradeDetail />} />
-      <Route path="edit" element={<AssignmentGradeUpdate />} />
+      {/* <Route path="edit" element={<AssignmentGradeUpdate />} /> */}
       <Route path="delete" element={<AssignmentGradeDeleteDialog />} />
     </Route>
   </ErrorBoundaryRoutes>

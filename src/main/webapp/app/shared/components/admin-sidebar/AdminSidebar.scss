@@ -1,0 +1,48 @@
+.admin-sidebar-container {
+  position: fixed;
+  width: 300px;
+  height: max-content;
+  z-index: 999;
+  overflow-y: auto;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  top: 6rem;
+  left: 2rem;
+  transition: transform 0.2s, left 0.2s;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 0.5rem 1.5rem;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.08);
+
+  .admin-menu-header {
+    font-size: 0.857rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #212121;
+    margin: 0.75rem 0;
+  }
+
+  .admin-menu-item {
+    display: flex;
+    align-items: center;
+    position: relative;
+    outline: 0 none;
+    color: #495057;
+    cursor: pointer;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    font-size: 14px;
+
+    &:hover {
+      background-color: #f6f9fc;
+    }
+  }
+
+  .active {
+    font-weight: 700;
+    color: #6366f1;
+  }
+}

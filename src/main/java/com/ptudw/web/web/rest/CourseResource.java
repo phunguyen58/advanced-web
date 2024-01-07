@@ -1,16 +1,29 @@
 package com.ptudw.web.web.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.ptudw.web.domain.Course;
+import com.ptudw.web.domain.User;
+import com.ptudw.web.domain.UserCourse;
 import com.ptudw.web.repository.CourseRepository;
 import com.ptudw.web.service.CourseQueryService;
 import com.ptudw.web.service.CourseService;
+import com.ptudw.web.service.MailService;
+import com.ptudw.web.service.UserCourseQueryService;
+import com.ptudw.web.service.UserCourseService;
+import com.ptudw.web.service.UserService;
 import com.ptudw.web.service.criteria.CourseCriteria;
+import com.ptudw.web.service.criteria.UserCourseCriteria;
+import com.ptudw.web.service.dto.AdminUserDTO;
 import com.ptudw.web.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -19,9 +32,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import tech.jhipster.service.filter.LongFilter;
+import tech.jhipster.service.filter.StringFilter;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -46,10 +70,30 @@ public class CourseResource {
 
     private final CourseQueryService courseQueryService;
 
-    public CourseResource(CourseService courseService, CourseRepository courseRepository, CourseQueryService courseQueryService) {
+    private final UserService userService;
+
+    private final UserCourseQueryService userCourseQueryService;
+
+    private final MailService mailService;
+
+    private final UserCourseService userCourseService;
+
+    public CourseResource(
+        CourseService courseService,
+        CourseRepository courseRepository,
+        CourseQueryService courseQueryService,
+        UserService userService,
+        UserCourseQueryService userCourseQueryService,
+        MailService mailService,
+        UserCourseService userCourseService
+    ) {
         this.courseService = courseService;
         this.courseRepository = courseRepository;
         this.courseQueryService = courseQueryService;
+        this.userService = userService;
+        this.userCourseQueryService = userCourseQueryService;
+        this.mailService = mailService;
+        this.userCourseService = userCourseService;
     }
 
     /**
@@ -60,12 +104,22 @@ public class CourseResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/courses")
-    public ResponseEntity<Course> createCourse(@Valid @RequestBody Course course) throws URISyntaxException {
+    public ResponseEntity<Course> createCourse(@RequestBody Course course) throws URISyntaxException {
         log.debug("REST request to save Course : {}", course);
         if (course.getId() != null) {
             throw new BadRequestAlertException("A new course cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Course result = courseService.save(course);
+        if (courseService.findOneByCode(course.getCode()).isPresent()) {
+            throw new BadRequestAlertException("A new course cannot already have an code", ENTITY_NAME, "codeexists");
+        }
+
+        Optional<User> user = userService.getUserWithAuthorities();
+        if (!user.isPresent()) {
+            throw new BadRequestAlertException("Invalid user", ENTITY_NAME, "userinvalid");
+        }
+
+        Course result = courseService.createCourse(course, user.get());
+
         return ResponseEntity
             .created(new URI("/api/courses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -186,6 +240,47 @@ public class CourseResource {
     }
 
     /**
+     * {@code GET  /courses/:id} : get the "id" course.
+     *
+     * @param id the id of the course to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the course, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/courses/joined-course/{userId}")
+    //TODO: get all joined courses by userId
+    public ResponseEntity<Course> getJoinedCoursesByUserId(@PathVariable Long userId) {
+        log.debug("REST request to get all joined courses by userId : {}", userId);
+        Optional<Course> course = courseService.findOne(userId);
+        return ResponseUtil.wrapOrNotFound(course);
+    }
+
+    @GetMapping("/courses/my-courses")
+    public ResponseEntity<List<Course>> getJoinedCoursesOfCurrentUser(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+        User user = userService
+            .getUserWithAuthorities()
+            .orElseThrow(() -> new BadRequestAlertException("Invalid user", ENTITY_NAME, "userinvalid"));
+
+        Long userId = user.getId();
+        log.debug("REST request to get all joined courses by userId : {}", userId);
+
+        UserCourseCriteria userCourseCriteria = new UserCourseCriteria();
+        LongFilter userIdFilter = new LongFilter();
+        userIdFilter.setEquals(userId);
+        userCourseCriteria.setUserId(userIdFilter);
+
+        List<UserCourse> userCourses = userCourseQueryService.findByCriteria(userCourseCriteria);
+
+        List<Long> joinedCourseIds = userCourses.stream().map(UserCourse::getCourseId).collect(Collectors.toList());
+
+        Page<Course> joinedCoursesPage = courseService.findAllByIds(joinedCourseIds, pageable);
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(
+            ServletUriComponentsBuilder.fromCurrentRequest(),
+            joinedCoursesPage
+        );
+        return ResponseEntity.ok().headers(headers).body(joinedCoursesPage.getContent());
+    }
+
+    /**
      * {@code DELETE  /courses/:id} : delete the "id" course.
      *
      * @param id the id of the course to delete.
@@ -199,5 +294,92 @@ public class CourseResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PostMapping("/courses/invitation/{invitationCode}")
+    public ResponseEntity<Course> joinCourseByInvitationCode(@PathVariable String invitationCode) throws URISyntaxException {
+        log.debug("REST request to join Course by invitation code: {}", invitationCode);
+        CourseCriteria criteria = new CourseCriteria();
+        StringFilter invitationCodeFilter = new StringFilter();
+        invitationCodeFilter.setEquals(invitationCode);
+        criteria.setInvitationCode(invitationCodeFilter);
+
+        Optional<User> user = userService.getUserWithAuthorities();
+        if (!user.isPresent()) {
+            throw new BadRequestAlertException("Invalid user", ENTITY_NAME, "userinvalid");
+        }
+
+        Course course = Optional
+            .ofNullable(courseQueryService.findByCriteria(criteria))
+            .orElse(Collections.emptyList())
+            .stream()
+            .findFirst()
+            .orElse(null);
+        if (course == null) {
+            throw new BadRequestAlertException("Invalid invitation code", ENTITY_NAME, "invitationcodeinvalid");
+        }
+
+        boolean isExpiredInvitation = course.getExpirationDate().isBefore(ZonedDateTime.now());
+        if (isExpiredInvitation) {
+            throw new BadRequestAlertException("Invitation code is expired", ENTITY_NAME, "invitationcodeexpired");
+        }
+
+        UserCourseCriteria userCourseCriteria = new UserCourseCriteria();
+        LongFilter userIdFilter = new LongFilter();
+        userIdFilter.setEquals(user.get().getId());
+        userCourseCriteria.setUserId(userIdFilter);
+        LongFilter courseIdFilter = new LongFilter();
+        courseIdFilter.setEquals(course.getId());
+        userCourseCriteria.setCourseId(courseIdFilter);
+
+        Optional<UserCourse> userCourse = userCourseQueryService.findByCriteria(userCourseCriteria).stream().findFirst();
+        if (userCourse.isPresent()) {
+            throw new BadRequestAlertException("User already joined this course", ENTITY_NAME, "useralreadyjoined");
+        }
+
+        this.courseService.joinCourseByInvitationCode(course, user.get());
+
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createAlert(applicationName, "webApp.course.coursejoinedsuccessfully", course.getId().toString()))
+            .body(course);
+    }
+
+    @PostMapping("/courses/send-invitation/{invitationCode}")
+    public ResponseEntity<Void> sendInvitation(@PathVariable String invitationCode, @RequestBody List<String> emails)
+        throws URISyntaxException, JsonMappingException, JsonProcessingException {
+        log.debug("REST request to send invitation: {}", invitationCode);
+
+        Optional
+            .ofNullable(emails)
+            .orElse(Collections.emptyList())
+            .forEach(email -> {
+                mailService.sendInviteToClassMail(userService.getUserWithAuthorities().orElse(null), email, invitationCode);
+            });
+
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createAlert(applicationName, "webApp.course.inviteSuccess", invitationCode))
+            .body(null);
+    }
+
+    @GetMapping("/users/course/{courseId}")
+    public ResponseEntity<List<AdminUserDTO>> getAllUsersByCourseId(
+        @PathVariable Long courseId,
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get all User in a course: {}", courseId);
+
+        UserCourseCriteria userCourseCriteria = new UserCourseCriteria();
+        LongFilter courseIdFilter = new LongFilter();
+        courseIdFilter.setEquals(courseId);
+        userCourseCriteria.setCourseId(courseIdFilter);
+        List<UserCourse> userCourses = userCourseQueryService.findByCriteria(userCourseCriteria);
+
+        List<Long> userIds = userCourses.stream().map(UserCourse::getUserId).collect(Collectors.toList());
+
+        final Page<AdminUserDTO> page = userService.findAllByIds(userIds, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 }

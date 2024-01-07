@@ -13,17 +13,19 @@ export const ProfilePage = () => {
   return (
     <div className="container-lg mt-4">
       <div className="aw-account-info d-flex flex-row gap-1 mb-3 ps-3">
-        <img src="../../../../content/images/default_profile.svg" alt="" />
+        <i className="pi pi-user align-self-center"></i>
         <div className="d-flex flex-column gap-1 ms-2">
-          <span className="aw-account-text">{account.firstName}</span>
+          <span className="aw-account-text">
+            {account.firstName} {account.lastName}
+          </span>
           <span className="aw-account-sub-text">
             <Translate contentKey="settings.description">Update your username and manage your account</Translate>
           </span>
         </div>
       </div>
-      <div className="d-flex container-lg flex-row">
+      <div className="d-flex container-lg flex-row p-0">
         <div className="d-flex col-4">
-          <div className="aw-list container-fluid d-flex flex-column">
+          <div className="aw-list container-fluid d-flex flex-column p-0">
             <div className={'aw-menu-item-text aw-item ' + (selectedItem === 0 ? 'aw-bold' : '')} onClick={() => setSelectedItem(0)}>
               <Translate contentKey="settings.general">Gereral</Translate>
             </div>

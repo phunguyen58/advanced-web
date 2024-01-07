@@ -23,7 +23,7 @@ application {
     languages [vi, en]
     messageBroker false
     nativeLanguage en
-    otherModules []
+    // otherModules []
     packageName com.ptudw.web
     prodDatabaseType postgresql
     reactive false
@@ -42,9 +42,10 @@ application {
 entity Course {
     code String required
     name String required
+    ownerId Long required
+    description String
     invitationCode String required
     expirationDate ZonedDateTime
-    gradeStructureId Long required
     isDeleted Boolean
     createdBy String required
     createdDate ZonedDateTime required
@@ -52,29 +53,28 @@ entity Course {
     lastModifiedDate ZonedDateTime required
 }
 
-entity GradeStructure {
-    courseId Long required
-    isDeleted Boolean
-    createdBy String required
-    createdDate ZonedDateTime required
-    lastModifiedBy String required
-    lastModifiedDate ZonedDateTime required
+
+enum GradeType{
+	PERCENTAGE,
+    POINT,
+    NONE
 }
 
 entity GradeComposition {
     name String required
-    minGradeScale Long required
-    maxGradeScale Long required
-    position Long required
+    scale Long
     isDeleted Boolean
     createdBy String required
     createdDate ZonedDateTime required
     lastModifiedBy String required
     lastModifiedDate ZonedDateTime required
+    type GradeType required
+    isPublic Boolean
 }
 
 entity Assignment {
     name String required
+    description String
     weight Long
     isDeleted Boolean
     createdBy String required
@@ -106,13 +106,38 @@ entity CourseGrade {
 
 entity UserCourse {
     courseId Long required
-    userId String required
+    userId Long required
+}
+
+entity GradeReview{
+	gradeCompositionId Long required
+    studentId String required
+    courseId Long required
+    reviewerId Long
+    assigmentId Long
+    assimentGradeId Long
+    currentGrade Long
+    expectationGrade Long
+    studentExplanation String
+    teacherComment String
+    isFinal Boolean
+}
+
+entity Notification{
+	message String
+    topic String
+    receivers String
+    sender String
+    role String
+    link String
+    gradeReviewId Long
 }
 
 relationship OneToMany {
-    Assignment{course} to Course{assignments}
-    GradeComposition{gradeStructure} to GradeStructure{gradeCompositions}
-    AssignmentGrade{assignment} to Assignment{assignmentGrades}
+    Course{assignments} to Assignment{course}
+    Course{gradeCompositions} to GradeComposition{course}
+    Assignment{assignmentGrades} to AssignmentGrade{assignment}
+    GradeComposition{assignments} to Assignment{gradeComposition}
 }
 
 filter *

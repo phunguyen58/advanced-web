@@ -1,0 +1,53 @@
+.grade-review-container {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 0.5rem 1.5rem;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.08);
+  margin: 16px 300px;
+
+  .assignment-info {
+    background-color: #e4e6eb;
+    border-radius: 12px;
+    padding: 0.5rem 1.5rem;
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.08);
+    width: fit-content;
+    margin-left: 12px;
+  }
+}
+
+.comment-container {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 0.5rem 1.5rem;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.08);
+  margin: 16px 300px;
+
+  .comments-container {
+    max-height: 20vh;
+    overflow-y: scroll;
+
+    .comment-item {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 0.5rem 1.5rem;
+      box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.08);
+      margin: 4px 8px;
+      width: fit-content;
+
+      &:hover {
+        background-color: #e4e6eb;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.btn-action {
+  border: none;
+  background-color: transparent;
+  color: #000;
+
+  &:disabled {
+    background-color: transparent !important;
+  }
+}

@@ -2,10 +2,13 @@ package com.ptudw.web.web.rest;
 
 import com.ptudw.web.config.Constants;
 import com.ptudw.web.domain.User;
+import com.ptudw.web.domain.UserCourse;
 import com.ptudw.web.repository.UserRepository;
 import com.ptudw.web.security.AuthoritiesConstants;
 import com.ptudw.web.service.MailService;
+import com.ptudw.web.service.UserCourseQueryService;
 import com.ptudw.web.service.UserService;
+import com.ptudw.web.service.criteria.UserCourseCriteria;
 import com.ptudw.web.service.dto.AdminUserDTO;
 import com.ptudw.web.web.rest.errors.BadRequestAlertException;
 import com.ptudw.web.web.rest.errors.EmailAlreadyUsedException;
@@ -13,9 +16,10 @@ import com.ptudw.web.web.rest.errors.LoginAlreadyUsedException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.Collections;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +32,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import tech.jhipster.service.filter.LongFilter;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -87,10 +92,18 @@ public class UserResource {
 
     private final MailService mailService;
 
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
+    private final UserCourseQueryService userCourseQueryService;
+
+    public UserResource(
+        UserService userService,
+        UserRepository userRepository,
+        MailService mailService,
+        UserCourseQueryService userCourseQueryService
+    ) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.mailService = mailService;
+        this.userCourseQueryService = userCourseQueryService;
     }
 
     /**
@@ -117,6 +130,10 @@ public class UserResource {
             throw new LoginAlreadyUsedException();
         } else if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
             throw new EmailAlreadyUsedException();
+        } else if (
+            StringUtils.isNotBlank(userDTO.getStudentId()) && userRepository.findOneByStudentId(userDTO.getStudentId()).isPresent()
+        ) {
+            throw new BadRequestAlertException("Student ID already existed", applicationName, "studentIdExisted");
         } else {
             User newUser = userService.createUser(userDTO);
             mailService.sendCreationEmail(newUser);
@@ -146,6 +163,13 @@ public class UserResource {
         existingUser = userRepository.findOneByLogin(userDTO.getLogin().toLowerCase());
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
             throw new LoginAlreadyUsedException();
+        }
+
+        if (StringUtils.isNotBlank(userDTO.getStudentId())) {
+            existingUser = userRepository.findOneByStudentId(userDTO.getStudentId());
+            if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
+                throw new BadRequestAlertException("Student ID already existed", applicationName, "studentIdExisted");
+            }
         }
         Optional<AdminUserDTO> updatedUser = userService.updateUser(userDTO);
 
@@ -189,6 +213,27 @@ public class UserResource {
     public ResponseEntity<AdminUserDTO> getUser(@PathVariable @Pattern(regexp = Constants.LOGIN_REGEX) String login) {
         log.debug("REST request to get User : {}", login);
         return ResponseUtil.wrapOrNotFound(userService.getUserWithAuthoritiesByLogin(login).map(AdminUserDTO::new));
+    }
+
+    /**
+     * {@code GET /admin/users/:id} : get the "login" user.
+     *
+     * @param id the id of the user to find.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "login" user, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/users/user-id/{id}")
+    @PreAuthorize(
+        "hasAnyAuthority('" +
+        AuthoritiesConstants.TEACHER +
+        "', '" +
+        AuthoritiesConstants.ADMIN +
+        "', '" +
+        AuthoritiesConstants.STUDENT +
+        "')"
+    )
+    public ResponseEntity<AdminUserDTO> getUser(@PathVariable @Pattern(regexp = Constants.LOGIN_REGEX) Long id) {
+        log.debug("REST request to get User : {}", id);
+        return ResponseUtil.wrapOrNotFound(userService.getUserById(id).map(AdminUserDTO::new));
     }
 
     /**

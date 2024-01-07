@@ -1,0 +1,33 @@
+.aw-create-class-dialog-container {
+  display: flex;
+
+  .p-dialog-header {
+    border-radius: 10px 10px 0 0;
+  }
+  .p-dialog-footer {
+    border-radius: 0 0 10px 10px;
+  }
+
+  .aw-dialog {
+    padding-top: 20px;
+    .aw-dialog-content {
+      gap: 25px;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  .aw-footer-container {
+    button {
+      border: none;
+      box-shadow: none;
+      border-radius: 5px;
+    }
+    .aw-cancel-btn {
+      color: #9c4df4;
+    }
+    .aw-create-btn {
+      background-color: #9c4df4;
+      color: white;
+    }
+  }
+}

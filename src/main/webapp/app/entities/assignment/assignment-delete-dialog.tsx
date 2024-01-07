@@ -12,12 +12,12 @@ export const AssignmentDeleteDialog = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { id } = useParams<'id'>();
+  const { asignmentId } = useParams<'asignmentId'>();
 
   const [loadModal, setLoadModal] = useState(false);
 
   useEffect(() => {
-    dispatch(getEntity(id));
+    dispatch(getEntity(asignmentId));
     setLoadModal(true);
   }, []);
 
@@ -25,7 +25,7 @@ export const AssignmentDeleteDialog = () => {
   const updateSuccess = useAppSelector(state => state.assignment.updateSuccess);
 
   const handleClose = () => {
-    navigate('/assignment' + location.search);
+    navigate(-2);
   };
 
   useEffect(() => {

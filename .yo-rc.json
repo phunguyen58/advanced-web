@@ -29,7 +29,9 @@
       "Assignment",
       "AssignmentGrade",
       "CourseGrade",
-      "UserCourse"
+      "UserCourse",
+      "GradeReview",
+      "Notification"
     ],
     "entitySuffix": "",
     "gradleEnterpriseHost": "",
@@ -37,7 +39,7 @@
     "jhipsterVersion": "7.9.3",
     "jwtSecretKey": "NDYxODMwY2ZjMTlmZjJiYjI0Y2ZmODczNWI3N2Q4ZDg3ZGY0ZWUwYzI5YWM5ZGRjNDA5MTIwMTkwMWU3ODg0OWQ5ODc1MjMxODEyZmZjNzk5OTNiZTRiOTQ4ZGFmYmQ2OGM2NmI3YjMzZTFiZWY4ZTk0ZGRiNDMyYzY5ZTA4MGY=",
     "languages": ["en", "vi"],
-    "lastLiquibaseTimestamp": 1702186465000,
+    "lastLiquibaseTimestamp": 1704472703000,
     "messageBroker": false,
     "monorepository": true,
     "nativeLanguage": "en",

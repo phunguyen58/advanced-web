@@ -62,14 +62,8 @@ public class GradeCompositionService {
                 if (gradeComposition.getName() != null) {
                     existingGradeComposition.setName(gradeComposition.getName());
                 }
-                if (gradeComposition.getMinGradeScale() != null) {
-                    existingGradeComposition.setMinGradeScale(gradeComposition.getMinGradeScale());
-                }
-                if (gradeComposition.getMaxGradeScale() != null) {
-                    existingGradeComposition.setMaxGradeScale(gradeComposition.getMaxGradeScale());
-                }
-                if (gradeComposition.getPosition() != null) {
-                    existingGradeComposition.setPosition(gradeComposition.getPosition());
+                if (gradeComposition.getScale() != null) {
+                    existingGradeComposition.setScale(gradeComposition.getScale());
                 }
                 if (gradeComposition.getIsDeleted() != null) {
                     existingGradeComposition.setIsDeleted(gradeComposition.getIsDeleted());
@@ -85,6 +79,15 @@ public class GradeCompositionService {
                 }
                 if (gradeComposition.getLastModifiedDate() != null) {
                     existingGradeComposition.setLastModifiedDate(gradeComposition.getLastModifiedDate());
+                }
+                if (gradeComposition.getType() != null) {
+                    existingGradeComposition.setType(gradeComposition.getType());
+                }
+                if (gradeComposition.getIsPublic() != null) {
+                    existingGradeComposition.setIsPublic(gradeComposition.getIsPublic());
+                }
+                if (gradeComposition.getPosition() != null) {
+                    existingGradeComposition.setPosition(gradeComposition.getPosition());
                 }
 
                 return existingGradeComposition;

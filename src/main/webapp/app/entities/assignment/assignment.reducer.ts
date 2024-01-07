@@ -15,6 +15,11 @@ const initialState: EntityState<IAssignment> = {
   updateSuccess: false,
 };
 
+interface FetchAssignmentsByCourseIdParams {
+  queryParams: IQueryParams;
+  courseId: number;
+}
+
 const apiUrl = 'api/assignments';
 
 // Actions
@@ -23,6 +28,24 @@ export const getEntities = createAsyncThunk('assignment/fetch_entity_list', asyn
   const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`;
   return axios.get<IAssignment[]>(requestUrl);
 });
+
+// TO_USE: dispatch(getEntitiesByCourseId({ queryParams: { page: 1, size: 10, sort: 'asc' }, courseId: 123 });
+export const getEntitiesByCourseId = createAsyncThunk(
+  'assignment/fetch_entity_list_by_course_id',
+  async ({ queryParams, courseId }: FetchAssignmentsByCourseIdParams) => {
+    const { page, size, sort } = queryParams;
+
+    const searchParams = new URLSearchParams();
+    searchParams.append('page', page.toString());
+    searchParams.append('size', size.toString());
+    if (sort) {
+      searchParams.append('sort', sort);
+    }
+
+    const requestUrl = `${apiUrl}/course/${courseId}?${searchParams.toString()}&cacheBuster=${new Date().getTime()}`;
+    return axios.get<IAssignment[]>(requestUrl);
+  }
+);
 
 export const getEntity = createAsyncThunk(
   'assignment/fetch_entity',
@@ -90,7 +113,7 @@ export const AssignmentSlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = {};
       })
-      .addMatcher(isFulfilled(getEntities), (state, action) => {
+      .addMatcher(isFulfilled(getEntities, getEntitiesByCourseId), (state, action) => {
         const { data, headers } = action.payload;
 
         return {
@@ -106,7 +129,7 @@ export const AssignmentSlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = action.payload.data;
       })
-      .addMatcher(isPending(getEntities, getEntity), state => {
+      .addMatcher(isPending(getEntities, getEntitiesByCourseId, getEntity), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;

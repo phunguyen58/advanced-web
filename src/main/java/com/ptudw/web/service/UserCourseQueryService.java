@@ -89,7 +89,7 @@ public class UserCourseQueryService extends QueryService<UserCourse> {
                 specification = specification.and(buildRangeSpecification(criteria.getCourseId(), UserCourse_.courseId));
             }
             if (criteria.getUserId() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getUserId(), UserCourse_.userId));
+                specification = specification.and(buildRangeSpecification(criteria.getUserId(), UserCourse_.userId));
             }
         }
         return specification;

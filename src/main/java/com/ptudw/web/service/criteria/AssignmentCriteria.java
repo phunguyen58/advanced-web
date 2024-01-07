@@ -25,6 +25,8 @@ public class AssignmentCriteria implements Serializable, Criteria {
 
     private StringFilter name;
 
+    private StringFilter description;
+
     private LongFilter weight;
 
     private BooleanFilter isDeleted;
@@ -37,9 +39,11 @@ public class AssignmentCriteria implements Serializable, Criteria {
 
     private ZonedDateTimeFilter lastModifiedDate;
 
+    private LongFilter assignmentGradesId;
+
     private LongFilter courseId;
 
-    private LongFilter assignmentGradesId;
+    private LongFilter gradeCompositionId;
 
     private Boolean distinct;
 
@@ -48,14 +52,16 @@ public class AssignmentCriteria implements Serializable, Criteria {
     public AssignmentCriteria(AssignmentCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
         this.name = other.name == null ? null : other.name.copy();
+        this.description = other.description == null ? null : other.description.copy();
         this.weight = other.weight == null ? null : other.weight.copy();
         this.isDeleted = other.isDeleted == null ? null : other.isDeleted.copy();
         this.createdBy = other.createdBy == null ? null : other.createdBy.copy();
         this.createdDate = other.createdDate == null ? null : other.createdDate.copy();
         this.lastModifiedBy = other.lastModifiedBy == null ? null : other.lastModifiedBy.copy();
         this.lastModifiedDate = other.lastModifiedDate == null ? null : other.lastModifiedDate.copy();
-        this.courseId = other.courseId == null ? null : other.courseId.copy();
         this.assignmentGradesId = other.assignmentGradesId == null ? null : other.assignmentGradesId.copy();
+        this.courseId = other.courseId == null ? null : other.courseId.copy();
+        this.gradeCompositionId = other.gradeCompositionId == null ? null : other.gradeCompositionId.copy();
         this.distinct = other.distinct;
     }
 
@@ -92,6 +98,21 @@ public class AssignmentCriteria implements Serializable, Criteria {
 
     public void setName(StringFilter name) {
         this.name = name;
+    }
+
+    public StringFilter getDescription() {
+        return description;
+    }
+
+    public StringFilter description() {
+        if (description == null) {
+            description = new StringFilter();
+        }
+        return description;
+    }
+
+    public void setDescription(StringFilter description) {
+        this.description = description;
     }
 
     public LongFilter getWeight() {
@@ -184,6 +205,21 @@ public class AssignmentCriteria implements Serializable, Criteria {
         this.lastModifiedDate = lastModifiedDate;
     }
 
+    public LongFilter getAssignmentGradesId() {
+        return assignmentGradesId;
+    }
+
+    public LongFilter assignmentGradesId() {
+        if (assignmentGradesId == null) {
+            assignmentGradesId = new LongFilter();
+        }
+        return assignmentGradesId;
+    }
+
+    public void setAssignmentGradesId(LongFilter assignmentGradesId) {
+        this.assignmentGradesId = assignmentGradesId;
+    }
+
     public LongFilter getCourseId() {
         return courseId;
     }
@@ -199,19 +235,19 @@ public class AssignmentCriteria implements Serializable, Criteria {
         this.courseId = courseId;
     }
 
-    public LongFilter getAssignmentGradesId() {
-        return assignmentGradesId;
+    public LongFilter getGradeCompositionId() {
+        return gradeCompositionId;
     }
 
-    public LongFilter assignmentGradesId() {
-        if (assignmentGradesId == null) {
-            assignmentGradesId = new LongFilter();
+    public LongFilter gradeCompositionId() {
+        if (gradeCompositionId == null) {
+            gradeCompositionId = new LongFilter();
         }
-        return assignmentGradesId;
+        return gradeCompositionId;
     }
 
-    public void setAssignmentGradesId(LongFilter assignmentGradesId) {
-        this.assignmentGradesId = assignmentGradesId;
+    public void setGradeCompositionId(LongFilter gradeCompositionId) {
+        this.gradeCompositionId = gradeCompositionId;
     }
 
     public Boolean getDistinct() {
@@ -234,14 +270,16 @@ public class AssignmentCriteria implements Serializable, Criteria {
         return (
             Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description) &&
             Objects.equals(weight, that.weight) &&
             Objects.equals(isDeleted, that.isDeleted) &&
             Objects.equals(createdBy, that.createdBy) &&
             Objects.equals(createdDate, that.createdDate) &&
             Objects.equals(lastModifiedBy, that.lastModifiedBy) &&
             Objects.equals(lastModifiedDate, that.lastModifiedDate) &&
-            Objects.equals(courseId, that.courseId) &&
             Objects.equals(assignmentGradesId, that.assignmentGradesId) &&
+            Objects.equals(courseId, that.courseId) &&
+            Objects.equals(gradeCompositionId, that.gradeCompositionId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -251,14 +289,16 @@ public class AssignmentCriteria implements Serializable, Criteria {
         return Objects.hash(
             id,
             name,
+            description,
             weight,
             isDeleted,
             createdBy,
             createdDate,
             lastModifiedBy,
             lastModifiedDate,
-            courseId,
             assignmentGradesId,
+            courseId,
+            gradeCompositionId,
             distinct
         );
     }
@@ -269,14 +309,16 @@ public class AssignmentCriteria implements Serializable, Criteria {
         return "AssignmentCriteria{" +
             (id != null ? "id=" + id + ", " : "") +
             (name != null ? "name=" + name + ", " : "") +
+            (description != null ? "description=" + description + ", " : "") +
             (weight != null ? "weight=" + weight + ", " : "") +
             (isDeleted != null ? "isDeleted=" + isDeleted + ", " : "") +
             (createdBy != null ? "createdBy=" + createdBy + ", " : "") +
             (createdDate != null ? "createdDate=" + createdDate + ", " : "") +
             (lastModifiedBy != null ? "lastModifiedBy=" + lastModifiedBy + ", " : "") +
             (lastModifiedDate != null ? "lastModifiedDate=" + lastModifiedDate + ", " : "") +
-            (courseId != null ? "courseId=" + courseId + ", " : "") +
             (assignmentGradesId != null ? "assignmentGradesId=" + assignmentGradesId + ", " : "") +
+            (courseId != null ? "courseId=" + courseId + ", " : "") +
+            (gradeCompositionId != null ? "gradeCompositionId=" + gradeCompositionId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

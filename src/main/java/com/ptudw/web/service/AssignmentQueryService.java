@@ -88,6 +88,9 @@ public class AssignmentQueryService extends QueryService<Assignment> {
             if (criteria.getName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getName(), Assignment_.name));
             }
+            if (criteria.getDescription() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getDescription(), Assignment_.description));
+            }
             if (criteria.getWeight() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getWeight(), Assignment_.weight));
             }
@@ -106,18 +109,27 @@ public class AssignmentQueryService extends QueryService<Assignment> {
             if (criteria.getLastModifiedDate() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getLastModifiedDate(), Assignment_.lastModifiedDate));
             }
-            if (criteria.getCourseId() != null) {
-                specification =
-                    specification.and(
-                        buildSpecification(criteria.getCourseId(), root -> root.join(Assignment_.courses, JoinType.LEFT).get(Course_.id))
-                    );
-            }
             if (criteria.getAssignmentGradesId() != null) {
                 specification =
                     specification.and(
                         buildSpecification(
                             criteria.getAssignmentGradesId(),
                             root -> root.join(Assignment_.assignmentGrades, JoinType.LEFT).get(AssignmentGrade_.id)
+                        )
+                    );
+            }
+            if (criteria.getCourseId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(criteria.getCourseId(), root -> root.join(Assignment_.course, JoinType.LEFT).get(Course_.id))
+                    );
+            }
+            if (criteria.getGradeCompositionId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(
+                            criteria.getGradeCompositionId(),
+                            root -> root.join(Assignment_.gradeComposition, JoinType.LEFT).get(GradeComposition_.id)
                         )
                     );
             }

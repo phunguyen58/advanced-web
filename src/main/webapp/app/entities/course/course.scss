@@ -1,0 +1,32 @@
+.course-management-container {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 0.5rem 1.5rem;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.08);
+  margin-top: 2rem;
+  margin-right: 2rem;
+}
+
+.btn-active {
+  min-width: 90px;
+}
+
+.p-inputtext {
+  height: 38px;
+  border-radius: 0.375rem;
+  border: 1px solid #ced4da;
+  margin-bottom: 0;
+  width: 100%;
+  padding: 0.375rem 0.5rem;
+}
+
+.p-dropdown {
+  height: 38px;
+  border-radius: 0.375rem;
+  border: 1px solid #ced4da;
+}
+
+.p-dropdown-panel .p-dropdown-items {
+  margin-bottom: 0 !important;
+  padding-left: 0 !important;
+}

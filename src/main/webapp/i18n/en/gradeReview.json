@@ -1,0 +1,39 @@
+{
+  "webApp": {
+    "gradeReview": {
+      "home": {
+        "title": "Grade Reviews",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Grade Review",
+        "createOrEditLabel": "Create or edit a Grade Review",
+        "notFound": "No Grade Reviews found"
+      },
+      "created": "A new Grade Review is created with identifier {{ param }}",
+      "updated": "A Grade Review is updated with identifier {{ param }}",
+      "deleted": "A Grade Review is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Grade Review {{ id }}?"
+      },
+      "detail": {
+        "title": "Grade Review"
+      },
+      "id": "ID",
+      "gradeCompositionId": "Grade Composition Id",
+      "studentId": "Student ID",
+      "courseId": "Course Id",
+      "reviewerId": "Reviewer Id",
+      "assigmentId": "Assigment Id",
+      "assimentGradeId": "Assiment Grade Id",
+      "currentGrade": "Current Grade",
+      "expectationGrade": "Expectation Grade",
+      "studentExplanation": "Explanation",
+      "teacherComment": "Teacher Comment",
+      "isFinal": "Is Final",
+      "send": "Send",
+      "submit": "Submit",
+      "finalGrade": "Final Grade",
+      "oldGrade": "Old Grade",
+      "comment": "Comment"
+      }
+    }
+}

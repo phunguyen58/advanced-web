@@ -7,8 +7,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.ptudw.web.IntegrationTest;
+import com.ptudw.web.domain.Assignment;
+import com.ptudw.web.domain.Course;
 import com.ptudw.web.domain.GradeComposition;
-import com.ptudw.web.domain.GradeStructure;
+import com.ptudw.web.domain.enumeration.GradeType;
 import com.ptudw.web.repository.GradeCompositionRepository;
 import com.ptudw.web.service.criteria.GradeCompositionCriteria;
 import java.time.Instant;
@@ -39,17 +41,9 @@ class GradeCompositionResourceIT {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
-    private static final Long DEFAULT_MIN_GRADE_SCALE = 1L;
-    private static final Long UPDATED_MIN_GRADE_SCALE = 2L;
-    private static final Long SMALLER_MIN_GRADE_SCALE = 1L - 1L;
-
-    private static final Long DEFAULT_MAX_GRADE_SCALE = 1L;
-    private static final Long UPDATED_MAX_GRADE_SCALE = 2L;
-    private static final Long SMALLER_MAX_GRADE_SCALE = 1L - 1L;
-
-    private static final Long DEFAULT_POSITION = 1L;
-    private static final Long UPDATED_POSITION = 2L;
-    private static final Long SMALLER_POSITION = 1L - 1L;
+    private static final Long DEFAULT_SCALE = 1L;
+    private static final Long UPDATED_SCALE = 2L;
+    private static final Long SMALLER_SCALE = 1L - 1L;
 
     private static final Boolean DEFAULT_IS_DELETED = false;
     private static final Boolean UPDATED_IS_DELETED = true;
@@ -67,6 +61,12 @@ class GradeCompositionResourceIT {
     private static final ZonedDateTime DEFAULT_LAST_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_LAST_MODIFIED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
     private static final ZonedDateTime SMALLER_LAST_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
+
+    private static final GradeType DEFAULT_TYPE = GradeType.PERCENTAGE;
+    private static final GradeType UPDATED_TYPE = GradeType.POINT;
+
+    private static final Boolean DEFAULT_IS_PUBLIC = false;
+    private static final Boolean UPDATED_IS_PUBLIC = true;
 
     private static final String ENTITY_API_URL = "/api/grade-compositions";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -94,14 +94,14 @@ class GradeCompositionResourceIT {
     public static GradeComposition createEntity(EntityManager em) {
         GradeComposition gradeComposition = new GradeComposition()
             .name(DEFAULT_NAME)
-            .minGradeScale(DEFAULT_MIN_GRADE_SCALE)
-            .maxGradeScale(DEFAULT_MAX_GRADE_SCALE)
-            .position(DEFAULT_POSITION)
+            .scale(DEFAULT_SCALE)
             .isDeleted(DEFAULT_IS_DELETED)
             .createdBy(DEFAULT_CREATED_BY)
             .createdDate(DEFAULT_CREATED_DATE)
             .lastModifiedBy(DEFAULT_LAST_MODIFIED_BY)
-            .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE);
+            .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE)
+            .type(DEFAULT_TYPE)
+            .isPublic(DEFAULT_IS_PUBLIC);
         return gradeComposition;
     }
 
@@ -114,14 +114,14 @@ class GradeCompositionResourceIT {
     public static GradeComposition createUpdatedEntity(EntityManager em) {
         GradeComposition gradeComposition = new GradeComposition()
             .name(UPDATED_NAME)
-            .minGradeScale(UPDATED_MIN_GRADE_SCALE)
-            .maxGradeScale(UPDATED_MAX_GRADE_SCALE)
-            .position(UPDATED_POSITION)
+            .scale(UPDATED_SCALE)
             .isDeleted(UPDATED_IS_DELETED)
             .createdBy(UPDATED_CREATED_BY)
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
-            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
+            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE)
+            .type(UPDATED_TYPE)
+            .isPublic(UPDATED_IS_PUBLIC);
         return gradeComposition;
     }
 
@@ -146,14 +146,14 @@ class GradeCompositionResourceIT {
         assertThat(gradeCompositionList).hasSize(databaseSizeBeforeCreate + 1);
         GradeComposition testGradeComposition = gradeCompositionList.get(gradeCompositionList.size() - 1);
         assertThat(testGradeComposition.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testGradeComposition.getMinGradeScale()).isEqualTo(DEFAULT_MIN_GRADE_SCALE);
-        assertThat(testGradeComposition.getMaxGradeScale()).isEqualTo(DEFAULT_MAX_GRADE_SCALE);
-        assertThat(testGradeComposition.getPosition()).isEqualTo(DEFAULT_POSITION);
+        assertThat(testGradeComposition.getScale()).isEqualTo(DEFAULT_SCALE);
         assertThat(testGradeComposition.getIsDeleted()).isEqualTo(DEFAULT_IS_DELETED);
         assertThat(testGradeComposition.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
         assertThat(testGradeComposition.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
         assertThat(testGradeComposition.getLastModifiedBy()).isEqualTo(DEFAULT_LAST_MODIFIED_BY);
         assertThat(testGradeComposition.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
+        assertThat(testGradeComposition.getType()).isEqualTo(DEFAULT_TYPE);
+        assertThat(testGradeComposition.getIsPublic()).isEqualTo(DEFAULT_IS_PUBLIC);
     }
 
     @Test
@@ -182,63 +182,6 @@ class GradeCompositionResourceIT {
         int databaseSizeBeforeTest = gradeCompositionRepository.findAll().size();
         // set the field null
         gradeComposition.setName(null);
-
-        // Create the GradeComposition, which fails.
-
-        restGradeCompositionMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(gradeComposition))
-            )
-            .andExpect(status().isBadRequest());
-
-        List<GradeComposition> gradeCompositionList = gradeCompositionRepository.findAll();
-        assertThat(gradeCompositionList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkMinGradeScaleIsRequired() throws Exception {
-        int databaseSizeBeforeTest = gradeCompositionRepository.findAll().size();
-        // set the field null
-        gradeComposition.setMinGradeScale(null);
-
-        // Create the GradeComposition, which fails.
-
-        restGradeCompositionMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(gradeComposition))
-            )
-            .andExpect(status().isBadRequest());
-
-        List<GradeComposition> gradeCompositionList = gradeCompositionRepository.findAll();
-        assertThat(gradeCompositionList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkMaxGradeScaleIsRequired() throws Exception {
-        int databaseSizeBeforeTest = gradeCompositionRepository.findAll().size();
-        // set the field null
-        gradeComposition.setMaxGradeScale(null);
-
-        // Create the GradeComposition, which fails.
-
-        restGradeCompositionMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(gradeComposition))
-            )
-            .andExpect(status().isBadRequest());
-
-        List<GradeComposition> gradeCompositionList = gradeCompositionRepository.findAll();
-        assertThat(gradeCompositionList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkPositionIsRequired() throws Exception {
-        int databaseSizeBeforeTest = gradeCompositionRepository.findAll().size();
-        // set the field null
-        gradeComposition.setPosition(null);
 
         // Create the GradeComposition, which fails.
 
@@ -330,6 +273,25 @@ class GradeCompositionResourceIT {
 
     @Test
     @Transactional
+    void checkTypeIsRequired() throws Exception {
+        int databaseSizeBeforeTest = gradeCompositionRepository.findAll().size();
+        // set the field null
+        gradeComposition.setType(null);
+
+        // Create the GradeComposition, which fails.
+
+        restGradeCompositionMockMvc
+            .perform(
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(gradeComposition))
+            )
+            .andExpect(status().isBadRequest());
+
+        List<GradeComposition> gradeCompositionList = gradeCompositionRepository.findAll();
+        assertThat(gradeCompositionList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     void getAllGradeCompositions() throws Exception {
         // Initialize the database
         gradeCompositionRepository.saveAndFlush(gradeComposition);
@@ -341,14 +303,14 @@ class GradeCompositionResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(gradeComposition.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-            .andExpect(jsonPath("$.[*].minGradeScale").value(hasItem(DEFAULT_MIN_GRADE_SCALE.intValue())))
-            .andExpect(jsonPath("$.[*].maxGradeScale").value(hasItem(DEFAULT_MAX_GRADE_SCALE.intValue())))
-            .andExpect(jsonPath("$.[*].position").value(hasItem(DEFAULT_POSITION.intValue())))
+            .andExpect(jsonPath("$.[*].scale").value(hasItem(DEFAULT_SCALE.intValue())))
             .andExpect(jsonPath("$.[*].isDeleted").value(hasItem(DEFAULT_IS_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY)))
-            .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
+            .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].isPublic").value(hasItem(DEFAULT_IS_PUBLIC.booleanValue())));
     }
 
     @Test
@@ -364,14 +326,14 @@ class GradeCompositionResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(gradeComposition.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
-            .andExpect(jsonPath("$.minGradeScale").value(DEFAULT_MIN_GRADE_SCALE.intValue()))
-            .andExpect(jsonPath("$.maxGradeScale").value(DEFAULT_MAX_GRADE_SCALE.intValue()))
-            .andExpect(jsonPath("$.position").value(DEFAULT_POSITION.intValue()))
+            .andExpect(jsonPath("$.scale").value(DEFAULT_SCALE.intValue()))
             .andExpect(jsonPath("$.isDeleted").value(DEFAULT_IS_DELETED.booleanValue()))
             .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.lastModifiedBy").value(DEFAULT_LAST_MODIFIED_BY))
-            .andExpect(jsonPath("$.lastModifiedDate").value(sameInstant(DEFAULT_LAST_MODIFIED_DATE)));
+            .andExpect(jsonPath("$.lastModifiedDate").value(sameInstant(DEFAULT_LAST_MODIFIED_DATE)))
+            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
+            .andExpect(jsonPath("$.isPublic").value(DEFAULT_IS_PUBLIC.booleanValue()));
     }
 
     @Test
@@ -459,275 +421,93 @@ class GradeCompositionResourceIT {
 
     @Test
     @Transactional
-    void getAllGradeCompositionsByMinGradeScaleIsEqualToSomething() throws Exception {
+    void getAllGradeCompositionsByScaleIsEqualToSomething() throws Exception {
         // Initialize the database
         gradeCompositionRepository.saveAndFlush(gradeComposition);
 
-        // Get all the gradeCompositionList where minGradeScale equals to DEFAULT_MIN_GRADE_SCALE
-        defaultGradeCompositionShouldBeFound("minGradeScale.equals=" + DEFAULT_MIN_GRADE_SCALE);
+        // Get all the gradeCompositionList where scale equals to DEFAULT_SCALE
+        defaultGradeCompositionShouldBeFound("scale.equals=" + DEFAULT_SCALE);
 
-        // Get all the gradeCompositionList where minGradeScale equals to UPDATED_MIN_GRADE_SCALE
-        defaultGradeCompositionShouldNotBeFound("minGradeScale.equals=" + UPDATED_MIN_GRADE_SCALE);
+        // Get all the gradeCompositionList where scale equals to UPDATED_SCALE
+        defaultGradeCompositionShouldNotBeFound("scale.equals=" + UPDATED_SCALE);
     }
 
     @Test
     @Transactional
-    void getAllGradeCompositionsByMinGradeScaleIsInShouldWork() throws Exception {
+    void getAllGradeCompositionsByScaleIsInShouldWork() throws Exception {
         // Initialize the database
         gradeCompositionRepository.saveAndFlush(gradeComposition);
 
-        // Get all the gradeCompositionList where minGradeScale in DEFAULT_MIN_GRADE_SCALE or UPDATED_MIN_GRADE_SCALE
-        defaultGradeCompositionShouldBeFound("minGradeScale.in=" + DEFAULT_MIN_GRADE_SCALE + "," + UPDATED_MIN_GRADE_SCALE);
+        // Get all the gradeCompositionList where scale in DEFAULT_SCALE or UPDATED_SCALE
+        defaultGradeCompositionShouldBeFound("scale.in=" + DEFAULT_SCALE + "," + UPDATED_SCALE);
 
-        // Get all the gradeCompositionList where minGradeScale equals to UPDATED_MIN_GRADE_SCALE
-        defaultGradeCompositionShouldNotBeFound("minGradeScale.in=" + UPDATED_MIN_GRADE_SCALE);
+        // Get all the gradeCompositionList where scale equals to UPDATED_SCALE
+        defaultGradeCompositionShouldNotBeFound("scale.in=" + UPDATED_SCALE);
     }
 
     @Test
     @Transactional
-    void getAllGradeCompositionsByMinGradeScaleIsNullOrNotNull() throws Exception {
+    void getAllGradeCompositionsByScaleIsNullOrNotNull() throws Exception {
         // Initialize the database
         gradeCompositionRepository.saveAndFlush(gradeComposition);
 
-        // Get all the gradeCompositionList where minGradeScale is not null
-        defaultGradeCompositionShouldBeFound("minGradeScale.specified=true");
+        // Get all the gradeCompositionList where scale is not null
+        defaultGradeCompositionShouldBeFound("scale.specified=true");
 
-        // Get all the gradeCompositionList where minGradeScale is null
-        defaultGradeCompositionShouldNotBeFound("minGradeScale.specified=false");
+        // Get all the gradeCompositionList where scale is null
+        defaultGradeCompositionShouldNotBeFound("scale.specified=false");
     }
 
     @Test
     @Transactional
-    void getAllGradeCompositionsByMinGradeScaleIsGreaterThanOrEqualToSomething() throws Exception {
+    void getAllGradeCompositionsByScaleIsGreaterThanOrEqualToSomething() throws Exception {
         // Initialize the database
         gradeCompositionRepository.saveAndFlush(gradeComposition);
 
-        // Get all the gradeCompositionList where minGradeScale is greater than or equal to DEFAULT_MIN_GRADE_SCALE
-        defaultGradeCompositionShouldBeFound("minGradeScale.greaterThanOrEqual=" + DEFAULT_MIN_GRADE_SCALE);
+        // Get all the gradeCompositionList where scale is greater than or equal to DEFAULT_SCALE
+        defaultGradeCompositionShouldBeFound("scale.greaterThanOrEqual=" + DEFAULT_SCALE);
 
-        // Get all the gradeCompositionList where minGradeScale is greater than or equal to UPDATED_MIN_GRADE_SCALE
-        defaultGradeCompositionShouldNotBeFound("minGradeScale.greaterThanOrEqual=" + UPDATED_MIN_GRADE_SCALE);
+        // Get all the gradeCompositionList where scale is greater than or equal to UPDATED_SCALE
+        defaultGradeCompositionShouldNotBeFound("scale.greaterThanOrEqual=" + UPDATED_SCALE);
     }
 
     @Test
     @Transactional
-    void getAllGradeCompositionsByMinGradeScaleIsLessThanOrEqualToSomething() throws Exception {
+    void getAllGradeCompositionsByScaleIsLessThanOrEqualToSomething() throws Exception {
         // Initialize the database
         gradeCompositionRepository.saveAndFlush(gradeComposition);
 
-        // Get all the gradeCompositionList where minGradeScale is less than or equal to DEFAULT_MIN_GRADE_SCALE
-        defaultGradeCompositionShouldBeFound("minGradeScale.lessThanOrEqual=" + DEFAULT_MIN_GRADE_SCALE);
+        // Get all the gradeCompositionList where scale is less than or equal to DEFAULT_SCALE
+        defaultGradeCompositionShouldBeFound("scale.lessThanOrEqual=" + DEFAULT_SCALE);
 
-        // Get all the gradeCompositionList where minGradeScale is less than or equal to SMALLER_MIN_GRADE_SCALE
-        defaultGradeCompositionShouldNotBeFound("minGradeScale.lessThanOrEqual=" + SMALLER_MIN_GRADE_SCALE);
+        // Get all the gradeCompositionList where scale is less than or equal to SMALLER_SCALE
+        defaultGradeCompositionShouldNotBeFound("scale.lessThanOrEqual=" + SMALLER_SCALE);
     }
 
     @Test
     @Transactional
-    void getAllGradeCompositionsByMinGradeScaleIsLessThanSomething() throws Exception {
+    void getAllGradeCompositionsByScaleIsLessThanSomething() throws Exception {
         // Initialize the database
         gradeCompositionRepository.saveAndFlush(gradeComposition);
 
-        // Get all the gradeCompositionList where minGradeScale is less than DEFAULT_MIN_GRADE_SCALE
-        defaultGradeCompositionShouldNotBeFound("minGradeScale.lessThan=" + DEFAULT_MIN_GRADE_SCALE);
+        // Get all the gradeCompositionList where scale is less than DEFAULT_SCALE
+        defaultGradeCompositionShouldNotBeFound("scale.lessThan=" + DEFAULT_SCALE);
 
-        // Get all the gradeCompositionList where minGradeScale is less than UPDATED_MIN_GRADE_SCALE
-        defaultGradeCompositionShouldBeFound("minGradeScale.lessThan=" + UPDATED_MIN_GRADE_SCALE);
+        // Get all the gradeCompositionList where scale is less than UPDATED_SCALE
+        defaultGradeCompositionShouldBeFound("scale.lessThan=" + UPDATED_SCALE);
     }
 
     @Test
     @Transactional
-    void getAllGradeCompositionsByMinGradeScaleIsGreaterThanSomething() throws Exception {
+    void getAllGradeCompositionsByScaleIsGreaterThanSomething() throws Exception {
         // Initialize the database
         gradeCompositionRepository.saveAndFlush(gradeComposition);
 
-        // Get all the gradeCompositionList where minGradeScale is greater than DEFAULT_MIN_GRADE_SCALE
-        defaultGradeCompositionShouldNotBeFound("minGradeScale.greaterThan=" + DEFAULT_MIN_GRADE_SCALE);
+        // Get all the gradeCompositionList where scale is greater than DEFAULT_SCALE
+        defaultGradeCompositionShouldNotBeFound("scale.greaterThan=" + DEFAULT_SCALE);
 
-        // Get all the gradeCompositionList where minGradeScale is greater than SMALLER_MIN_GRADE_SCALE
-        defaultGradeCompositionShouldBeFound("minGradeScale.greaterThan=" + SMALLER_MIN_GRADE_SCALE);
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByMaxGradeScaleIsEqualToSomething() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where maxGradeScale equals to DEFAULT_MAX_GRADE_SCALE
-        defaultGradeCompositionShouldBeFound("maxGradeScale.equals=" + DEFAULT_MAX_GRADE_SCALE);
-
-        // Get all the gradeCompositionList where maxGradeScale equals to UPDATED_MAX_GRADE_SCALE
-        defaultGradeCompositionShouldNotBeFound("maxGradeScale.equals=" + UPDATED_MAX_GRADE_SCALE);
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByMaxGradeScaleIsInShouldWork() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where maxGradeScale in DEFAULT_MAX_GRADE_SCALE or UPDATED_MAX_GRADE_SCALE
-        defaultGradeCompositionShouldBeFound("maxGradeScale.in=" + DEFAULT_MAX_GRADE_SCALE + "," + UPDATED_MAX_GRADE_SCALE);
-
-        // Get all the gradeCompositionList where maxGradeScale equals to UPDATED_MAX_GRADE_SCALE
-        defaultGradeCompositionShouldNotBeFound("maxGradeScale.in=" + UPDATED_MAX_GRADE_SCALE);
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByMaxGradeScaleIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where maxGradeScale is not null
-        defaultGradeCompositionShouldBeFound("maxGradeScale.specified=true");
-
-        // Get all the gradeCompositionList where maxGradeScale is null
-        defaultGradeCompositionShouldNotBeFound("maxGradeScale.specified=false");
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByMaxGradeScaleIsGreaterThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where maxGradeScale is greater than or equal to DEFAULT_MAX_GRADE_SCALE
-        defaultGradeCompositionShouldBeFound("maxGradeScale.greaterThanOrEqual=" + DEFAULT_MAX_GRADE_SCALE);
-
-        // Get all the gradeCompositionList where maxGradeScale is greater than or equal to UPDATED_MAX_GRADE_SCALE
-        defaultGradeCompositionShouldNotBeFound("maxGradeScale.greaterThanOrEqual=" + UPDATED_MAX_GRADE_SCALE);
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByMaxGradeScaleIsLessThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where maxGradeScale is less than or equal to DEFAULT_MAX_GRADE_SCALE
-        defaultGradeCompositionShouldBeFound("maxGradeScale.lessThanOrEqual=" + DEFAULT_MAX_GRADE_SCALE);
-
-        // Get all the gradeCompositionList where maxGradeScale is less than or equal to SMALLER_MAX_GRADE_SCALE
-        defaultGradeCompositionShouldNotBeFound("maxGradeScale.lessThanOrEqual=" + SMALLER_MAX_GRADE_SCALE);
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByMaxGradeScaleIsLessThanSomething() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where maxGradeScale is less than DEFAULT_MAX_GRADE_SCALE
-        defaultGradeCompositionShouldNotBeFound("maxGradeScale.lessThan=" + DEFAULT_MAX_GRADE_SCALE);
-
-        // Get all the gradeCompositionList where maxGradeScale is less than UPDATED_MAX_GRADE_SCALE
-        defaultGradeCompositionShouldBeFound("maxGradeScale.lessThan=" + UPDATED_MAX_GRADE_SCALE);
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByMaxGradeScaleIsGreaterThanSomething() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where maxGradeScale is greater than DEFAULT_MAX_GRADE_SCALE
-        defaultGradeCompositionShouldNotBeFound("maxGradeScale.greaterThan=" + DEFAULT_MAX_GRADE_SCALE);
-
-        // Get all the gradeCompositionList where maxGradeScale is greater than SMALLER_MAX_GRADE_SCALE
-        defaultGradeCompositionShouldBeFound("maxGradeScale.greaterThan=" + SMALLER_MAX_GRADE_SCALE);
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByPositionIsEqualToSomething() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where position equals to DEFAULT_POSITION
-        defaultGradeCompositionShouldBeFound("position.equals=" + DEFAULT_POSITION);
-
-        // Get all the gradeCompositionList where position equals to UPDATED_POSITION
-        defaultGradeCompositionShouldNotBeFound("position.equals=" + UPDATED_POSITION);
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByPositionIsInShouldWork() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where position in DEFAULT_POSITION or UPDATED_POSITION
-        defaultGradeCompositionShouldBeFound("position.in=" + DEFAULT_POSITION + "," + UPDATED_POSITION);
-
-        // Get all the gradeCompositionList where position equals to UPDATED_POSITION
-        defaultGradeCompositionShouldNotBeFound("position.in=" + UPDATED_POSITION);
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByPositionIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where position is not null
-        defaultGradeCompositionShouldBeFound("position.specified=true");
-
-        // Get all the gradeCompositionList where position is null
-        defaultGradeCompositionShouldNotBeFound("position.specified=false");
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByPositionIsGreaterThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where position is greater than or equal to DEFAULT_POSITION
-        defaultGradeCompositionShouldBeFound("position.greaterThanOrEqual=" + DEFAULT_POSITION);
-
-        // Get all the gradeCompositionList where position is greater than or equal to UPDATED_POSITION
-        defaultGradeCompositionShouldNotBeFound("position.greaterThanOrEqual=" + UPDATED_POSITION);
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByPositionIsLessThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where position is less than or equal to DEFAULT_POSITION
-        defaultGradeCompositionShouldBeFound("position.lessThanOrEqual=" + DEFAULT_POSITION);
-
-        // Get all the gradeCompositionList where position is less than or equal to SMALLER_POSITION
-        defaultGradeCompositionShouldNotBeFound("position.lessThanOrEqual=" + SMALLER_POSITION);
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByPositionIsLessThanSomething() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where position is less than DEFAULT_POSITION
-        defaultGradeCompositionShouldNotBeFound("position.lessThan=" + DEFAULT_POSITION);
-
-        // Get all the gradeCompositionList where position is less than UPDATED_POSITION
-        defaultGradeCompositionShouldBeFound("position.lessThan=" + UPDATED_POSITION);
-    }
-
-    @Test
-    @Transactional
-    void getAllGradeCompositionsByPositionIsGreaterThanSomething() throws Exception {
-        // Initialize the database
-        gradeCompositionRepository.saveAndFlush(gradeComposition);
-
-        // Get all the gradeCompositionList where position is greater than DEFAULT_POSITION
-        defaultGradeCompositionShouldNotBeFound("position.greaterThan=" + DEFAULT_POSITION);
-
-        // Get all the gradeCompositionList where position is greater than SMALLER_POSITION
-        defaultGradeCompositionShouldBeFound("position.greaterThan=" + SMALLER_POSITION);
+        // Get all the gradeCompositionList where scale is greater than SMALLER_SCALE
+        defaultGradeCompositionShouldBeFound("scale.greaterThan=" + SMALLER_SCALE);
     }
 
     @Test
@@ -1083,25 +863,126 @@ class GradeCompositionResourceIT {
 
     @Test
     @Transactional
-    void getAllGradeCompositionsByGradeStructureIsEqualToSomething() throws Exception {
-        GradeStructure gradeStructure;
-        if (TestUtil.findAll(em, GradeStructure.class).isEmpty()) {
-            gradeCompositionRepository.saveAndFlush(gradeComposition);
-            gradeStructure = GradeStructureResourceIT.createEntity(em);
-        } else {
-            gradeStructure = TestUtil.findAll(em, GradeStructure.class).get(0);
-        }
-        em.persist(gradeStructure);
-        em.flush();
-        gradeComposition.addGradeStructure(gradeStructure);
+    void getAllGradeCompositionsByTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
         gradeCompositionRepository.saveAndFlush(gradeComposition);
-        Long gradeStructureId = gradeStructure.getId();
 
-        // Get all the gradeCompositionList where gradeStructure equals to gradeStructureId
-        defaultGradeCompositionShouldBeFound("gradeStructureId.equals=" + gradeStructureId);
+        // Get all the gradeCompositionList where type equals to DEFAULT_TYPE
+        defaultGradeCompositionShouldBeFound("type.equals=" + DEFAULT_TYPE);
 
-        // Get all the gradeCompositionList where gradeStructure equals to (gradeStructureId + 1)
-        defaultGradeCompositionShouldNotBeFound("gradeStructureId.equals=" + (gradeStructureId + 1));
+        // Get all the gradeCompositionList where type equals to UPDATED_TYPE
+        defaultGradeCompositionShouldNotBeFound("type.equals=" + UPDATED_TYPE);
+    }
+
+    @Test
+    @Transactional
+    void getAllGradeCompositionsByTypeIsInShouldWork() throws Exception {
+        // Initialize the database
+        gradeCompositionRepository.saveAndFlush(gradeComposition);
+
+        // Get all the gradeCompositionList where type in DEFAULT_TYPE or UPDATED_TYPE
+        defaultGradeCompositionShouldBeFound("type.in=" + DEFAULT_TYPE + "," + UPDATED_TYPE);
+
+        // Get all the gradeCompositionList where type equals to UPDATED_TYPE
+        defaultGradeCompositionShouldNotBeFound("type.in=" + UPDATED_TYPE);
+    }
+
+    @Test
+    @Transactional
+    void getAllGradeCompositionsByTypeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        gradeCompositionRepository.saveAndFlush(gradeComposition);
+
+        // Get all the gradeCompositionList where type is not null
+        defaultGradeCompositionShouldBeFound("type.specified=true");
+
+        // Get all the gradeCompositionList where type is null
+        defaultGradeCompositionShouldNotBeFound("type.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllGradeCompositionsByIsPublicIsEqualToSomething() throws Exception {
+        // Initialize the database
+        gradeCompositionRepository.saveAndFlush(gradeComposition);
+
+        // Get all the gradeCompositionList where isPublic equals to DEFAULT_IS_PUBLIC
+        defaultGradeCompositionShouldBeFound("isPublic.equals=" + DEFAULT_IS_PUBLIC);
+
+        // Get all the gradeCompositionList where isPublic equals to UPDATED_IS_PUBLIC
+        defaultGradeCompositionShouldNotBeFound("isPublic.equals=" + UPDATED_IS_PUBLIC);
+    }
+
+    @Test
+    @Transactional
+    void getAllGradeCompositionsByIsPublicIsInShouldWork() throws Exception {
+        // Initialize the database
+        gradeCompositionRepository.saveAndFlush(gradeComposition);
+
+        // Get all the gradeCompositionList where isPublic in DEFAULT_IS_PUBLIC or UPDATED_IS_PUBLIC
+        defaultGradeCompositionShouldBeFound("isPublic.in=" + DEFAULT_IS_PUBLIC + "," + UPDATED_IS_PUBLIC);
+
+        // Get all the gradeCompositionList where isPublic equals to UPDATED_IS_PUBLIC
+        defaultGradeCompositionShouldNotBeFound("isPublic.in=" + UPDATED_IS_PUBLIC);
+    }
+
+    @Test
+    @Transactional
+    void getAllGradeCompositionsByIsPublicIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        gradeCompositionRepository.saveAndFlush(gradeComposition);
+
+        // Get all the gradeCompositionList where isPublic is not null
+        defaultGradeCompositionShouldBeFound("isPublic.specified=true");
+
+        // Get all the gradeCompositionList where isPublic is null
+        defaultGradeCompositionShouldNotBeFound("isPublic.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllGradeCompositionsByAssignmentsIsEqualToSomething() throws Exception {
+        Assignment assignments;
+        if (TestUtil.findAll(em, Assignment.class).isEmpty()) {
+            gradeCompositionRepository.saveAndFlush(gradeComposition);
+            assignments = AssignmentResourceIT.createEntity(em);
+        } else {
+            assignments = TestUtil.findAll(em, Assignment.class).get(0);
+        }
+        em.persist(assignments);
+        em.flush();
+        gradeComposition.addAssignments(assignments);
+        gradeCompositionRepository.saveAndFlush(gradeComposition);
+        Long assignmentsId = assignments.getId();
+
+        // Get all the gradeCompositionList where assignments equals to assignmentsId
+        defaultGradeCompositionShouldBeFound("assignmentsId.equals=" + assignmentsId);
+
+        // Get all the gradeCompositionList where assignments equals to (assignmentsId + 1)
+        defaultGradeCompositionShouldNotBeFound("assignmentsId.equals=" + (assignmentsId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllGradeCompositionsByCourseIsEqualToSomething() throws Exception {
+        Course course;
+        if (TestUtil.findAll(em, Course.class).isEmpty()) {
+            gradeCompositionRepository.saveAndFlush(gradeComposition);
+            course = CourseResourceIT.createEntity(em);
+        } else {
+            course = TestUtil.findAll(em, Course.class).get(0);
+        }
+        em.persist(course);
+        em.flush();
+        gradeComposition.setCourse(course);
+        gradeCompositionRepository.saveAndFlush(gradeComposition);
+        Long courseId = course.getId();
+
+        // Get all the gradeCompositionList where course equals to courseId
+        defaultGradeCompositionShouldBeFound("courseId.equals=" + courseId);
+
+        // Get all the gradeCompositionList where course equals to (courseId + 1)
+        defaultGradeCompositionShouldNotBeFound("courseId.equals=" + (courseId + 1));
     }
 
     /**
@@ -1114,14 +995,14 @@ class GradeCompositionResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(gradeComposition.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-            .andExpect(jsonPath("$.[*].minGradeScale").value(hasItem(DEFAULT_MIN_GRADE_SCALE.intValue())))
-            .andExpect(jsonPath("$.[*].maxGradeScale").value(hasItem(DEFAULT_MAX_GRADE_SCALE.intValue())))
-            .andExpect(jsonPath("$.[*].position").value(hasItem(DEFAULT_POSITION.intValue())))
+            .andExpect(jsonPath("$.[*].scale").value(hasItem(DEFAULT_SCALE.intValue())))
             .andExpect(jsonPath("$.[*].isDeleted").value(hasItem(DEFAULT_IS_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY)))
-            .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
+            .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].isPublic").value(hasItem(DEFAULT_IS_PUBLIC.booleanValue())));
 
         // Check, that the count call also returns 1
         restGradeCompositionMockMvc
@@ -1171,14 +1052,14 @@ class GradeCompositionResourceIT {
         em.detach(updatedGradeComposition);
         updatedGradeComposition
             .name(UPDATED_NAME)
-            .minGradeScale(UPDATED_MIN_GRADE_SCALE)
-            .maxGradeScale(UPDATED_MAX_GRADE_SCALE)
-            .position(UPDATED_POSITION)
+            .scale(UPDATED_SCALE)
             .isDeleted(UPDATED_IS_DELETED)
             .createdBy(UPDATED_CREATED_BY)
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
-            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
+            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE)
+            .type(UPDATED_TYPE)
+            .isPublic(UPDATED_IS_PUBLIC);
 
         restGradeCompositionMockMvc
             .perform(
@@ -1193,14 +1074,14 @@ class GradeCompositionResourceIT {
         assertThat(gradeCompositionList).hasSize(databaseSizeBeforeUpdate);
         GradeComposition testGradeComposition = gradeCompositionList.get(gradeCompositionList.size() - 1);
         assertThat(testGradeComposition.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testGradeComposition.getMinGradeScale()).isEqualTo(UPDATED_MIN_GRADE_SCALE);
-        assertThat(testGradeComposition.getMaxGradeScale()).isEqualTo(UPDATED_MAX_GRADE_SCALE);
-        assertThat(testGradeComposition.getPosition()).isEqualTo(UPDATED_POSITION);
+        assertThat(testGradeComposition.getScale()).isEqualTo(UPDATED_SCALE);
         assertThat(testGradeComposition.getIsDeleted()).isEqualTo(UPDATED_IS_DELETED);
         assertThat(testGradeComposition.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
         assertThat(testGradeComposition.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
         assertThat(testGradeComposition.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
         assertThat(testGradeComposition.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
+        assertThat(testGradeComposition.getType()).isEqualTo(UPDATED_TYPE);
+        assertThat(testGradeComposition.getIsPublic()).isEqualTo(UPDATED_IS_PUBLIC);
     }
 
     @Test
@@ -1275,11 +1156,11 @@ class GradeCompositionResourceIT {
 
         partialUpdatedGradeComposition
             .name(UPDATED_NAME)
-            .minGradeScale(UPDATED_MIN_GRADE_SCALE)
-            .maxGradeScale(UPDATED_MAX_GRADE_SCALE)
+            .scale(UPDATED_SCALE)
             .isDeleted(UPDATED_IS_DELETED)
-            .createdBy(UPDATED_CREATED_BY)
-            .lastModifiedBy(UPDATED_LAST_MODIFIED_BY);
+            .createdDate(UPDATED_CREATED_DATE)
+            .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
+            .type(UPDATED_TYPE);
 
         restGradeCompositionMockMvc
             .perform(
@@ -1294,14 +1175,14 @@ class GradeCompositionResourceIT {
         assertThat(gradeCompositionList).hasSize(databaseSizeBeforeUpdate);
         GradeComposition testGradeComposition = gradeCompositionList.get(gradeCompositionList.size() - 1);
         assertThat(testGradeComposition.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testGradeComposition.getMinGradeScale()).isEqualTo(UPDATED_MIN_GRADE_SCALE);
-        assertThat(testGradeComposition.getMaxGradeScale()).isEqualTo(UPDATED_MAX_GRADE_SCALE);
-        assertThat(testGradeComposition.getPosition()).isEqualTo(DEFAULT_POSITION);
+        assertThat(testGradeComposition.getScale()).isEqualTo(UPDATED_SCALE);
         assertThat(testGradeComposition.getIsDeleted()).isEqualTo(UPDATED_IS_DELETED);
-        assertThat(testGradeComposition.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testGradeComposition.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
+        assertThat(testGradeComposition.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
+        assertThat(testGradeComposition.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
         assertThat(testGradeComposition.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
         assertThat(testGradeComposition.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
+        assertThat(testGradeComposition.getType()).isEqualTo(UPDATED_TYPE);
+        assertThat(testGradeComposition.getIsPublic()).isEqualTo(DEFAULT_IS_PUBLIC);
     }
 
     @Test
@@ -1318,14 +1199,14 @@ class GradeCompositionResourceIT {
 
         partialUpdatedGradeComposition
             .name(UPDATED_NAME)
-            .minGradeScale(UPDATED_MIN_GRADE_SCALE)
-            .maxGradeScale(UPDATED_MAX_GRADE_SCALE)
-            .position(UPDATED_POSITION)
+            .scale(UPDATED_SCALE)
             .isDeleted(UPDATED_IS_DELETED)
             .createdBy(UPDATED_CREATED_BY)
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
-            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
+            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE)
+            .type(UPDATED_TYPE)
+            .isPublic(UPDATED_IS_PUBLIC);
 
         restGradeCompositionMockMvc
             .perform(
@@ -1340,14 +1221,14 @@ class GradeCompositionResourceIT {
         assertThat(gradeCompositionList).hasSize(databaseSizeBeforeUpdate);
         GradeComposition testGradeComposition = gradeCompositionList.get(gradeCompositionList.size() - 1);
         assertThat(testGradeComposition.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testGradeComposition.getMinGradeScale()).isEqualTo(UPDATED_MIN_GRADE_SCALE);
-        assertThat(testGradeComposition.getMaxGradeScale()).isEqualTo(UPDATED_MAX_GRADE_SCALE);
-        assertThat(testGradeComposition.getPosition()).isEqualTo(UPDATED_POSITION);
+        assertThat(testGradeComposition.getScale()).isEqualTo(UPDATED_SCALE);
         assertThat(testGradeComposition.getIsDeleted()).isEqualTo(UPDATED_IS_DELETED);
         assertThat(testGradeComposition.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
         assertThat(testGradeComposition.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
         assertThat(testGradeComposition.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
         assertThat(testGradeComposition.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
+        assertThat(testGradeComposition.getType()).isEqualTo(UPDATED_TYPE);
+        assertThat(testGradeComposition.getIsPublic()).isEqualTo(UPDATED_IS_PUBLIC);
     }
 
     @Test

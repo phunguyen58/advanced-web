@@ -77,9 +77,11 @@ export const GradeStructureDetail = () => {
             ) : null}
           </dd>
           <dt>
-            <Translate contentKey="webApp.gradeStructure.gradeCompositions">Grade Compositions</Translate>
+            <span id="type">
+              <Translate contentKey="webApp.gradeStructure.type">Type</Translate>
+            </span>
           </dt>
-          <dd>{gradeStructureEntity.gradeCompositions ? gradeStructureEntity.gradeCompositions.id : ''}</dd>
+          <dd>{gradeStructureEntity.type}</dd>
         </dl>
         <Button tag={Link} to="/grade-structure" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

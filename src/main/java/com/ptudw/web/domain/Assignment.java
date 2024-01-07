@@ -31,6 +31,9 @@ public class Assignment implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "weight")
     private Long weight;
 
@@ -53,14 +56,18 @@ public class Assignment implements Serializable {
     @Column(name = "last_modified_date", nullable = false)
     private ZonedDateTime lastModifiedDate;
 
-    @OneToMany(mappedBy = "assignments")
+    @OneToMany(mappedBy = "assignment")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "assignments" }, allowSetters = true)
-    private Set<Course> courses = new HashSet<>();
+    @JsonIgnoreProperties(value = { "assignment" }, allowSetters = true)
+    private Set<AssignmentGrade> assignmentGrades = new HashSet<>();
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "assignments" }, allowSetters = true)
-    private AssignmentGrade assignmentGrades;
+    @JsonIgnoreProperties(value = { "assignments", "gradeCompositions" }, allowSetters = true)
+    private Course course;
+
+    @ManyToOne
+    @JsonIgnoreProperties(value = { "assignments", "course" }, allowSetters = true)
+    private GradeComposition gradeComposition;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -88,6 +95,19 @@ public class Assignment implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public Assignment description(String description) {
+        this.setDescription(description);
+        return this;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getWeight() {
@@ -168,47 +188,60 @@ public class Assignment implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public Set<Course> getCourses() {
-        return this.courses;
-    }
-
-    public void setCourses(Set<Course> courses) {
-        if (this.courses != null) {
-            this.courses.forEach(i -> i.setAssignments(null));
-        }
-        if (courses != null) {
-            courses.forEach(i -> i.setAssignments(this));
-        }
-        this.courses = courses;
-    }
-
-    public Assignment courses(Set<Course> courses) {
-        this.setCourses(courses);
-        return this;
-    }
-
-    public Assignment addCourse(Course course) {
-        this.courses.add(course);
-        course.setAssignments(this);
-        return this;
-    }
-
-    public Assignment removeCourse(Course course) {
-        this.courses.remove(course);
-        course.setAssignments(null);
-        return this;
-    }
-
-    public AssignmentGrade getAssignmentGrades() {
+    public Set<AssignmentGrade> getAssignmentGrades() {
         return this.assignmentGrades;
     }
 
-    public void setAssignmentGrades(AssignmentGrade assignmentGrade) {
-        this.assignmentGrades = assignmentGrade;
+    public void setAssignmentGrades(Set<AssignmentGrade> assignmentGrades) {
+        if (this.assignmentGrades != null) {
+            this.assignmentGrades.forEach(i -> i.setAssignment(null));
+        }
+        if (assignmentGrades != null) {
+            assignmentGrades.forEach(i -> i.setAssignment(this));
+        }
+        this.assignmentGrades = assignmentGrades;
     }
 
-    public Assignment assignmentGrades(AssignmentGrade assignmentGrade) {
-        this.setAssignmentGrades(assignmentGrade);
+    public Assignment assignmentGrades(Set<AssignmentGrade> assignmentGrades) {
+        this.setAssignmentGrades(assignmentGrades);
+        return this;
+    }
+
+    public Assignment addAssignmentGrades(AssignmentGrade assignmentGrade) {
+        this.assignmentGrades.add(assignmentGrade);
+        assignmentGrade.setAssignment(this);
+        return this;
+    }
+
+    public Assignment removeAssignmentGrades(AssignmentGrade assignmentGrade) {
+        this.assignmentGrades.remove(assignmentGrade);
+        assignmentGrade.setAssignment(null);
+        return this;
+    }
+
+    public Course getCourse() {
+        return this.course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public Assignment course(Course course) {
+        this.setCourse(course);
+        return this;
+    }
+
+    public GradeComposition getGradeComposition() {
+        return this.gradeComposition;
+    }
+
+    public void setGradeComposition(GradeComposition gradeComposition) {
+        this.gradeComposition = gradeComposition;
+    }
+
+    public Assignment gradeComposition(GradeComposition gradeComposition) {
+        this.setGradeComposition(gradeComposition);
         return this;
     }
 
@@ -237,6 +270,7 @@ public class Assignment implements Serializable {
         return "Assignment{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
+            ", description='" + getDescription() + "'" +
             ", weight=" + getWeight() +
             ", isDeleted='" + getIsDeleted() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +

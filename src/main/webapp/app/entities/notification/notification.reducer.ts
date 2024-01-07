@@ -3,9 +3,9 @@ import { createAsyncThunk, isFulfilled, isPending, isRejected } from '@reduxjs/t
 
 import { cleanEntity } from 'app/shared/util/entity-utils';
 import { IQueryParams, createEntitySlice, EntityState, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
-import { ICourse, defaultValue } from 'app/shared/model/course.model';
+import { INotification, defaultValue } from 'app/shared/model/notification.model';
 
-const initialState: EntityState<ICourse> = {
+const initialState: EntityState<INotification> = {
   loading: false,
   errorMessage: null,
   entities: [],
@@ -15,28 +15,28 @@ const initialState: EntityState<ICourse> = {
   updateSuccess: false,
 };
 
-const apiUrl = 'api/courses';
+const apiUrl = 'api/notifications';
 
 // Actions
 
-export const getEntities = createAsyncThunk('course/fetch_entity_list', async ({ page, size, sort }: IQueryParams) => {
+export const getEntities = createAsyncThunk('notification/fetch_entity_list', async ({ page, size, sort }: IQueryParams) => {
   const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`;
-  return axios.get<ICourse[]>(requestUrl);
+  return axios.get<INotification[]>(requestUrl);
 });
 
 export const getEntity = createAsyncThunk(
-  'course/fetch_entity',
+  'notification/fetch_entity',
   async (id: string | number) => {
     const requestUrl = `${apiUrl}/${id}`;
-    return axios.get<ICourse>(requestUrl);
+    return axios.get<INotification>(requestUrl);
   },
   { serializeError: serializeAxiosError }
 );
 
 export const createEntity = createAsyncThunk(
-  'course/create_entity',
-  async (entity: ICourse, thunkAPI) => {
-    const result = await axios.post<ICourse>(apiUrl, cleanEntity(entity));
+  'notification/create_entity',
+  async (entity: INotification, thunkAPI) => {
+    const result = await axios.post<INotification>(apiUrl, cleanEntity(entity));
     thunkAPI.dispatch(getEntities({}));
     return result;
   },
@@ -44,9 +44,9 @@ export const createEntity = createAsyncThunk(
 );
 
 export const updateEntity = createAsyncThunk(
-  'course/update_entity',
-  async (entity: ICourse, thunkAPI) => {
-    const result = await axios.put<ICourse>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
+  'notification/update_entity',
+  async (entity: INotification, thunkAPI) => {
+    const result = await axios.put<INotification>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
     thunkAPI.dispatch(getEntities({}));
     return result;
   },
@@ -54,9 +54,9 @@ export const updateEntity = createAsyncThunk(
 );
 
 export const partialUpdateEntity = createAsyncThunk(
-  'course/partial_update_entity',
-  async (entity: ICourse, thunkAPI) => {
-    const result = await axios.patch<ICourse>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
+  'notification/partial_update_entity',
+  async (entity: INotification, thunkAPI) => {
+    const result = await axios.patch<INotification>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
     thunkAPI.dispatch(getEntities({}));
     return result;
   },
@@ -64,10 +64,10 @@ export const partialUpdateEntity = createAsyncThunk(
 );
 
 export const deleteEntity = createAsyncThunk(
-  'course/delete_entity',
+  'notification/delete_entity',
   async (id: string | number, thunkAPI) => {
     const requestUrl = `${apiUrl}/${id}`;
-    const result = await axios.delete<ICourse>(requestUrl);
+    const result = await axios.delete<INotification>(requestUrl);
     thunkAPI.dispatch(getEntities({}));
     return result;
   },
@@ -76,8 +76,8 @@ export const deleteEntity = createAsyncThunk(
 
 // slice
 
-export const CourseSlice = createEntitySlice({
-  name: 'course',
+export const NotificationSlice = createEntitySlice({
+  name: 'notification',
   initialState,
   extraReducers(builder) {
     builder
@@ -119,7 +119,7 @@ export const CourseSlice = createEntitySlice({
   },
 });
 
-export const { reset } = CourseSlice.actions;
+export const { reset } = NotificationSlice.actions;
 
 // Reducer
-export default CourseSlice.reducer;
+export default NotificationSlice.reducer;

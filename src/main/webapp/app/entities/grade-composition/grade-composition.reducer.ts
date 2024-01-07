@@ -19,8 +19,8 @@ const apiUrl = 'api/grade-compositions';
 
 // Actions
 
-export const getEntities = createAsyncThunk('gradeComposition/fetch_entity_list', async ({ page, size, sort }: IQueryParams) => {
-  const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`;
+export const getEntities = createAsyncThunk('gradeComposition/fetch_entity_list', async ({ page, size, sort, query }: IQueryParams) => {
+  const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&${query}&` : '?'}cacheBuster=${new Date().getTime()}`;
   return axios.get<IGradeComposition[]>(requestUrl);
 });
 

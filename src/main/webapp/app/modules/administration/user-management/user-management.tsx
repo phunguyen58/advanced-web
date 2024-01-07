@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Table, Badge } from 'reactstrap';
-import { Translate, TextFormat, JhiPagination, JhiItemCount, getSortState } from 'react-jhipster';
+import { Translate, TextFormat, JhiPagination, JhiItemCount, getSortState, translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { APP_DATE_FORMAT } from 'app/config/constants';
@@ -9,8 +9,14 @@ import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.cons
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { getUsersAsAdmin, updateUser } from './user-management.reducer';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
+import './index.scss';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { listener, sendNotificationStudent } from 'app/config/websocket-middleware';
 
 export const UserManagement = () => {
+  const excelFileInputRef = useRef(null);
+
   const dispatch = useAppDispatch();
 
   const location = useLocation();
@@ -51,6 +57,14 @@ export const UserManagement = () => {
         order: sortSplit[1],
       });
     }
+
+    const handleMessage = message => {
+      console.log('Hello: ', message);
+    };
+
+    listener.subscribe((message: any) => {
+      handleMessage(message);
+    });
   }, [location.search]);
 
   const sort = p => () =>
@@ -79,49 +93,105 @@ export const UserManagement = () => {
     );
   };
 
+  const onFileChange = event => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Replace 'YOUR_BACKEND_API_ENDPOINT' with the actual API endpoint to handle file uploads
+      axios
+        .post(`/api/upload/student-ids-mapping`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          // Handle successful response from the backend
+          getUsersFromProps();
+          excelFileInputRef.current.value = '';
+          toast.success(translate('userManagement.updateStudentIds'), {
+            position: toast.POSITION.TOP_LEFT,
+          });
+        })
+        .catch(error => {
+          console.error('Error uploading file:', error);
+          // Handle error
+        });
+    }
+  };
+
+  const handleSendNotificationStudent = () => {
+    sendNotificationStudent('Hello', 'admin', 'student');
+  };
+
   const account = useAppSelector(state => state.authentication.account);
   const users = useAppSelector(state => state.userManagement.users);
   const totalItems = useAppSelector(state => state.userManagement.totalItems);
   const loading = useAppSelector(state => state.userManagement.loading);
 
   return (
-    <div>
+    <div className="m-3">
       <h2 id="user-management-page-heading" data-cy="userManagementPageHeading">
         <Translate contentKey="userManagement.home.title">Users</Translate>
         <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="userManagement.home.refreshListLabel">Refresh List</Translate>
+          {/* <Button className="me-2 btn-action" onClick={handleSendNotificationStudent} disabled={loading}>
+            <FontAwesomeIcon icon="bell" spin={loading} />
+          </Button> */}
+          <Button className="me-2 btn-action" onClick={handleSyncList} disabled={loading}>
+            <FontAwesomeIcon icon="sync" spin={loading} />
           </Button>
-          <Link to="new" className="btn btn-primary jh-create-entity">
-            <FontAwesomeIcon icon="plus" /> <Translate contentKey="userManagement.home.createLabel">Create a new user</Translate>
+          <label htmlFor="fileInput" className="custom-file-upload">
+            {translate('userManagement.importExcel')}
+          </label>
+          <input id="fileInput" type="file" onChange={onFileChange} style={{ display: 'none' }} ref={excelFileInputRef} />
+          <Link to="new" className="btn btn-success">
+            <Translate contentKey="userManagement.home.createLabel">Create a new user</Translate>
           </Link>
         </div>
       </h2>
       <Table responsive striped>
         <thead>
           <tr>
-            <th className="hand" onClick={sort('id')}>
-              <Translate contentKey="global.field.id">ID</Translate>
-              <FontAwesomeIcon icon="sort" />
+            <th className="hand d-flex gap-2" onClick={sort('id')}>
+              <div className="d-flex gap-2 align-items-center">
+                <Translate contentKey="global.field.id">ID</Translate>
+                <FontAwesomeIcon icon="sort" />
+              </div>
             </th>
             <th className="hand" onClick={sort('login')}>
-              <Translate contentKey="userManagement.login">Login</Translate>
-              <FontAwesomeIcon icon="sort" />
+              <div className="d-flex gap-2 align-items-center">
+                <Translate contentKey="userManagement.login">Login</Translate>
+                <FontAwesomeIcon icon="sort" />
+              </div>
             </th>
             <th className="hand" onClick={sort('email')}>
-              <Translate contentKey="userManagement.email">Email</Translate>
-              <FontAwesomeIcon icon="sort" />
+              <div className="d-flex gap-2 align-items-center">
+                <Translate contentKey="userManagement.email">Email</Translate>
+                <FontAwesomeIcon icon="sort" />
+              </div>
             </th>
-            <th />
-            <th className="hand" onClick={sort('langKey')}>
+            <th className="hand" onClick={sort('activated')}>
+              <div className="d-flex gap-2 align-items-center">
+                <Translate contentKey="userManagement.activated">Activated</Translate>
+                <FontAwesomeIcon icon="sort" />
+              </div>
+            </th>
+            {/* <th className="hand" onClick={sort('langKey')}>
               <Translate contentKey="userManagement.langKey">Lang Key</Translate>
               <FontAwesomeIcon icon="sort" />
-            </th>
+            </th> */}
             <th>
               <Translate contentKey="userManagement.profiles">Profiles</Translate>
             </th>
-            <th className="hand" onClick={sort('createdDate')}>
+            <th className="hand" onClick={sort('studentId')}>
+              <div className="d-flex gap-2 align-items-center">
+                <Translate contentKey="userManagement.studentId">Student ID</Translate>
+                <FontAwesomeIcon icon="sort" />
+              </div>
+            </th>
+            {/* <th className="hand" onClick={sort('createdDate')}>
               <Translate contentKey="userManagement.createdDate">Created Date</Translate>
               <FontAwesomeIcon icon="sort" />
             </th>
@@ -132,7 +202,7 @@ export const UserManagement = () => {
             <th id="modified-date-sort" className="hand" onClick={sort('lastModifiedDate')}>
               <Translate contentKey="userManagement.lastModifiedDate">Last Modified Date</Translate>
               <FontAwesomeIcon icon="sort" />
-            </th>
+            </th> */}
             <th />
           </tr>
         </thead>
@@ -140,24 +210,24 @@ export const UserManagement = () => {
           {users.map((user, i) => (
             <tr id={user.login} key={`user-${i}`}>
               <td>
-                <Button tag={Link} to={user.login} color="link" size="sm">
-                  {user.id}
-                </Button>
+                {/* <Button tag={Link} to={user.login} color="link" size="sm"> */}
+                {user.id}
+                {/* </Button> */}
               </td>
               <td>{user.login}</td>
               <td>{user.email}</td>
               <td>
                 {user.activated ? (
                   <Button color="success" onClick={toggleActive(user)}>
-                    <Translate contentKey="userManagement.activated">Activated</Translate>
+                    <span>{translate('userManagement.activated')}</span>
                   </Button>
                 ) : (
                   <Button color="danger" onClick={toggleActive(user)}>
-                    <Translate contentKey="userManagement.deactivated">Deactivated</Translate>
+                    <span>{translate('userManagement.deactivated')}</span>
                   </Button>
                 )}
               </td>
-              <td>{user.langKey}</td>
+              {/* <td>{user.langKey}</td> */}
               <td>
                 {user.authorities
                   ? user.authorities.map((authority, j) => (
@@ -167,7 +237,8 @@ export const UserManagement = () => {
                     ))
                   : null}
               </td>
-              <td>
+              <td>{user.studentId}</td>
+              {/* <td>
                 {user.createdDate ? <TextFormat value={user.createdDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid /> : null}
               </td>
               <td>{user.lastModifiedBy}</td>
@@ -175,26 +246,26 @@ export const UserManagement = () => {
                 {user.lastModifiedDate ? (
                   <TextFormat value={user.lastModifiedDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid />
                 ) : null}
-              </td>
+              </td> */}
               <td className="text-end">
-                <div className="btn-group flex-btn-group-container">
-                  <Button tag={Link} to={user.login} color="info" size="sm">
+                <div className="d-flex gap-1 justify-content-end">
+                  {/* <Button tag={Link} to={user.login} color="info" size="sm">
                     <FontAwesomeIcon icon="eye" />{' '}
                     <span className="d-none d-md-inline">
                       <Translate contentKey="entity.action.view">View</Translate>
                     </span>
-                  </Button>
-                  <Button tag={Link} to={`${user.login}/edit`} color="primary" size="sm">
+                  </Button> */}
+                  <Button tag={Link} to={`${user.login}/edit`} className="btn-action" size="sm">
                     <FontAwesomeIcon icon="pencil-alt" />{' '}
-                    <span className="d-none d-md-inline">
+                    {/* <span className="d-none d-md-inline">
                       <Translate contentKey="entity.action.edit">Edit</Translate>
-                    </span>
+                    </span> */}
                   </Button>
-                  <Button tag={Link} to={`${user.login}/delete`} color="danger" size="sm" disabled={account.login === user.login}>
+                  <Button tag={Link} to={`${user.login}/delete`} className="btn-action" size="sm" disabled={account.login === user.login}>
                     <FontAwesomeIcon icon="trash" />{' '}
-                    <span className="d-none d-md-inline">
+                    {/* <span className="d-none d-md-inline">
                       <Translate contentKey="entity.action.delete">Delete</Translate>
-                    </span>
+                    </span> */}
                   </Button>
                 </div>
               </td>
@@ -204,10 +275,10 @@ export const UserManagement = () => {
       </Table>
       {totalItems ? (
         <div className={users?.length > 0 ? '' : 'd-none'}>
-          <div className="justify-content-center d-flex">
+          <div className="justify-content-end d-flex">
             <JhiItemCount page={pagination.activePage} total={totalItems} itemsPerPage={pagination.itemsPerPage} i18nEnabled />
           </div>
-          <div className="justify-content-center d-flex">
+          <div className="justify-content-end d-flex">
             <JhiPagination
               activePage={pagination.activePage}
               onSelect={handlePagination}

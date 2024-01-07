@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.ptudw.web.IntegrationTest;
-import com.ptudw.web.domain.GradeComposition;
 import com.ptudw.web.domain.GradeStructure;
+import com.ptudw.web.domain.enumeration.GradeType;
 import com.ptudw.web.repository.GradeStructureRepository;
 import com.ptudw.web.service.criteria.GradeStructureCriteria;
 import java.time.Instant;
@@ -57,6 +57,9 @@ class GradeStructureResourceIT {
     private static final ZonedDateTime UPDATED_LAST_MODIFIED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
     private static final ZonedDateTime SMALLER_LAST_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
 
+    private static final GradeType DEFAULT_TYPE = GradeType.PERCENTAGE;
+    private static final GradeType UPDATED_TYPE = GradeType.POINT;
+
     private static final String ENTITY_API_URL = "/api/grade-structures";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -87,7 +90,8 @@ class GradeStructureResourceIT {
             .createdBy(DEFAULT_CREATED_BY)
             .createdDate(DEFAULT_CREATED_DATE)
             .lastModifiedBy(DEFAULT_LAST_MODIFIED_BY)
-            .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE);
+            .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE)
+            .type(DEFAULT_TYPE);
         return gradeStructure;
     }
 
@@ -104,7 +108,8 @@ class GradeStructureResourceIT {
             .createdBy(UPDATED_CREATED_BY)
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
-            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
+            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE)
+            .type(UPDATED_TYPE);
         return gradeStructure;
     }
 
@@ -134,6 +139,7 @@ class GradeStructureResourceIT {
         assertThat(testGradeStructure.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
         assertThat(testGradeStructure.getLastModifiedBy()).isEqualTo(DEFAULT_LAST_MODIFIED_BY);
         assertThat(testGradeStructure.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
+        assertThat(testGradeStructure.getType()).isEqualTo(DEFAULT_TYPE);
     }
 
     @Test
@@ -253,6 +259,25 @@ class GradeStructureResourceIT {
 
     @Test
     @Transactional
+    void checkTypeIsRequired() throws Exception {
+        int databaseSizeBeforeTest = gradeStructureRepository.findAll().size();
+        // set the field null
+        gradeStructure.setType(null);
+
+        // Create the GradeStructure, which fails.
+
+        restGradeStructureMockMvc
+            .perform(
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(gradeStructure))
+            )
+            .andExpect(status().isBadRequest());
+
+        List<GradeStructure> gradeStructureList = gradeStructureRepository.findAll();
+        assertThat(gradeStructureList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     void getAllGradeStructures() throws Exception {
         // Initialize the database
         gradeStructureRepository.saveAndFlush(gradeStructure);
@@ -268,7 +293,8 @@ class GradeStructureResourceIT {
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY)))
-            .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
+            .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
     }
 
     @Test
@@ -288,7 +314,8 @@ class GradeStructureResourceIT {
             .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.lastModifiedBy").value(DEFAULT_LAST_MODIFIED_BY))
-            .andExpect(jsonPath("$.lastModifiedDate").value(sameInstant(DEFAULT_LAST_MODIFIED_DATE)));
+            .andExpect(jsonPath("$.lastModifiedDate").value(sameInstant(DEFAULT_LAST_MODIFIED_DATE)))
+            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()));
     }
 
     @Test
@@ -753,25 +780,41 @@ class GradeStructureResourceIT {
 
     @Test
     @Transactional
-    void getAllGradeStructuresByGradeCompositionsIsEqualToSomething() throws Exception {
-        GradeComposition gradeCompositions;
-        if (TestUtil.findAll(em, GradeComposition.class).isEmpty()) {
-            gradeStructureRepository.saveAndFlush(gradeStructure);
-            gradeCompositions = GradeCompositionResourceIT.createEntity(em);
-        } else {
-            gradeCompositions = TestUtil.findAll(em, GradeComposition.class).get(0);
-        }
-        em.persist(gradeCompositions);
-        em.flush();
-        gradeStructure.setGradeCompositions(gradeCompositions);
+    void getAllGradeStructuresByTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
         gradeStructureRepository.saveAndFlush(gradeStructure);
-        Long gradeCompositionsId = gradeCompositions.getId();
 
-        // Get all the gradeStructureList where gradeCompositions equals to gradeCompositionsId
-        defaultGradeStructureShouldBeFound("gradeCompositionsId.equals=" + gradeCompositionsId);
+        // Get all the gradeStructureList where type equals to DEFAULT_TYPE
+        defaultGradeStructureShouldBeFound("type.equals=" + DEFAULT_TYPE);
 
-        // Get all the gradeStructureList where gradeCompositions equals to (gradeCompositionsId + 1)
-        defaultGradeStructureShouldNotBeFound("gradeCompositionsId.equals=" + (gradeCompositionsId + 1));
+        // Get all the gradeStructureList where type equals to UPDATED_TYPE
+        defaultGradeStructureShouldNotBeFound("type.equals=" + UPDATED_TYPE);
+    }
+
+    @Test
+    @Transactional
+    void getAllGradeStructuresByTypeIsInShouldWork() throws Exception {
+        // Initialize the database
+        gradeStructureRepository.saveAndFlush(gradeStructure);
+
+        // Get all the gradeStructureList where type in DEFAULT_TYPE or UPDATED_TYPE
+        defaultGradeStructureShouldBeFound("type.in=" + DEFAULT_TYPE + "," + UPDATED_TYPE);
+
+        // Get all the gradeStructureList where type equals to UPDATED_TYPE
+        defaultGradeStructureShouldNotBeFound("type.in=" + UPDATED_TYPE);
+    }
+
+    @Test
+    @Transactional
+    void getAllGradeStructuresByTypeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        gradeStructureRepository.saveAndFlush(gradeStructure);
+
+        // Get all the gradeStructureList where type is not null
+        defaultGradeStructureShouldBeFound("type.specified=true");
+
+        // Get all the gradeStructureList where type is null
+        defaultGradeStructureShouldNotBeFound("type.specified=false");
     }
 
     /**
@@ -788,7 +831,8 @@ class GradeStructureResourceIT {
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY)))
-            .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
+            .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
 
         // Check, that the count call also returns 1
         restGradeStructureMockMvc
@@ -842,7 +886,8 @@ class GradeStructureResourceIT {
             .createdBy(UPDATED_CREATED_BY)
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
-            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
+            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE)
+            .type(UPDATED_TYPE);
 
         restGradeStructureMockMvc
             .perform(
@@ -862,6 +907,7 @@ class GradeStructureResourceIT {
         assertThat(testGradeStructure.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
         assertThat(testGradeStructure.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
         assertThat(testGradeStructure.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
+        assertThat(testGradeStructure.getType()).isEqualTo(UPDATED_TYPE);
     }
 
     @Test
@@ -932,7 +978,7 @@ class GradeStructureResourceIT {
         GradeStructure partialUpdatedGradeStructure = new GradeStructure();
         partialUpdatedGradeStructure.setId(gradeStructure.getId());
 
-        partialUpdatedGradeStructure.courseId(UPDATED_COURSE_ID);
+        partialUpdatedGradeStructure.courseId(UPDATED_COURSE_ID).type(UPDATED_TYPE);
 
         restGradeStructureMockMvc
             .perform(
@@ -952,6 +998,7 @@ class GradeStructureResourceIT {
         assertThat(testGradeStructure.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
         assertThat(testGradeStructure.getLastModifiedBy()).isEqualTo(DEFAULT_LAST_MODIFIED_BY);
         assertThat(testGradeStructure.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
+        assertThat(testGradeStructure.getType()).isEqualTo(UPDATED_TYPE);
     }
 
     @Test
@@ -972,7 +1019,8 @@ class GradeStructureResourceIT {
             .createdBy(UPDATED_CREATED_BY)
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
-            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
+            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE)
+            .type(UPDATED_TYPE);
 
         restGradeStructureMockMvc
             .perform(
@@ -992,6 +1040,7 @@ class GradeStructureResourceIT {
         assertThat(testGradeStructure.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
         assertThat(testGradeStructure.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
         assertThat(testGradeStructure.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
+        assertThat(testGradeStructure.getType()).isEqualTo(UPDATED_TYPE);
     }
 
     @Test

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { IGradeComposition } from 'app/shared/model/grade-composition.model';
+import { GradeType } from 'app/shared/model/enumerations/grade-type.model';
 
 export interface IGradeStructure {
   id?: number;
@@ -9,7 +9,7 @@ export interface IGradeStructure {
   createdDate?: string;
   lastModifiedBy?: string;
   lastModifiedDate?: string;
-  gradeCompositions?: IGradeComposition | null;
+  type?: GradeType;
 }
 
 export const defaultValue: Readonly<IGradeStructure> = {

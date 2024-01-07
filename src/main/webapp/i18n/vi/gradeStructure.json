@@ -24,7 +24,9 @@
       "createdDate": "Created Date",
       "lastModifiedBy": "Last Modified By",
       "lastModifiedDate": "Last Modified Date",
-      "gradeCompositions": "Grade Compositions"
+      "type": "Type",
+      "saveSuccess": "Cấu trúc điểm đã cập nhật!",
+      "invalidForm": "Vui lòng điền đầy đủ thông tin!"
     }
   }
 }

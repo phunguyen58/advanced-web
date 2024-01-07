@@ -8,8 +8,10 @@ import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateT
 import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { IAssignmentGrade } from 'app/shared/model/assignment-grade.model';
-import { getEntities as getAssignmentGrades } from 'app/entities/assignment-grade/assignment-grade.reducer';
+import { ICourse } from 'app/shared/model/course.model';
+import { getEntities as getCourses } from 'app/entities/course/course-router/course.reducer';
+import { IGradeComposition } from 'app/shared/model/grade-composition.model';
+import { getEntities as getGradeCompositions } from 'app/entities/grade-composition/grade-composition.reducer';
 import { IAssignment } from 'app/shared/model/assignment.model';
 import { getEntity, updateEntity, createEntity, reset } from './assignment.reducer';
 
@@ -18,27 +20,39 @@ export const AssignmentUpdate = () => {
 
   const navigate = useNavigate();
 
-  const { id } = useParams<'id'>();
-  const isNew = id === undefined;
+  const account = useAppSelector(state => state.authentication.account);
 
-  const assignmentGrades = useAppSelector(state => state.assignmentGrade.entities);
+  const { id } = useParams<'id'>();
+  const { asignmentId } = useParams<'asignmentId'>();
+  const isNew = asignmentId === undefined;
+
+  const courses = useAppSelector(state => state.course.entities);
+  const gradeCompositions = useAppSelector(state => state.gradeComposition.entities);
   const assignmentEntity = useAppSelector(state => state.assignment.entity);
   const loading = useAppSelector(state => state.assignment.loading);
   const updating = useAppSelector(state => state.assignment.updating);
   const updateSuccess = useAppSelector(state => state.assignment.updateSuccess);
 
   const handleClose = () => {
-    navigate('/assignment' + location.search);
+    // navigate(-1);
   };
 
   useEffect(() => {
     if (isNew) {
       dispatch(reset());
     } else {
-      dispatch(getEntity(id));
+      dispatch(getEntity(asignmentId));
     }
 
-    dispatch(getAssignmentGrades({}));
+    // dispatch(getCourses({}));
+    dispatch(
+      getGradeCompositions({
+        page: 0,
+        size: 100,
+        sort: 'id,asc',
+        query: `courseId.equals=${id}&isDeleted.equals=false`,
+      })
+    );
   }, []);
 
   useEffect(() => {
@@ -50,16 +64,22 @@ export const AssignmentUpdate = () => {
   const saveEntity = values => {
     values.createdDate = convertDateTimeToServer(values.createdDate);
     values.lastModifiedDate = convertDateTimeToServer(values.lastModifiedDate);
+    values.lastModifiedBy = account.login;
+    if (isNew) {
+      values.createdBy = account.login;
+    }
 
     const entity = {
       ...assignmentEntity,
       ...values,
-      assignmentGrades: assignmentGrades.find(it => it.id.toString() === values.assignmentGrades.toString()),
     };
 
     if (isNew) {
+      entity.course = { id };
+      entity.gradeComposition = { id: values.gradeComposition };
       dispatch(createEntity(entity));
     } else {
+      entity.gradeComposition = { id: values.gradeComposition };
       dispatch(updateEntity(entity));
     }
   };
@@ -69,12 +89,13 @@ export const AssignmentUpdate = () => {
       ? {
           createdDate: displayDefaultDateTime(),
           lastModifiedDate: displayDefaultDateTime(),
+          gradeComposition: gradeCompositions[0]?.id,
         }
       : {
           ...assignmentEntity,
           createdDate: convertDateTimeFromServer(assignmentEntity.createdDate),
           lastModifiedDate: convertDateTimeFromServer(assignmentEntity.lastModifiedDate),
-          assignmentGrades: assignmentEntity?.assignmentGrades?.id,
+          gradeComposition: assignmentEntity.gradeComposition?.id,
         };
 
   return (
@@ -113,6 +134,13 @@ export const AssignmentUpdate = () => {
                 }}
               />
               <ValidatedField
+                label={translate('webApp.assignment.description')}
+                id="assignment-description"
+                name="description"
+                data-cy="description"
+                type="text"
+              />
+              {/* <ValidatedField
                 label={translate('webApp.assignment.weight')}
                 id="assignment-weight"
                 name="weight"
@@ -170,32 +198,51 @@ export const AssignmentUpdate = () => {
                 }}
               />
               <ValidatedField
-                id="assignment-assignmentGrades"
-                name="assignmentGrades"
-                data-cy="assignmentGrades"
-                label={translate('webApp.assignment.assignmentGrades')}
+                id="assignment-course"
+                name="course"
+                data-cy="course"
+                label={translate('webApp.assignment.course')}
                 type="select"
               >
                 <option value="" key="0" />
-                {assignmentGrades
-                  ? assignmentGrades.map(otherEntity => (
+                {courses
+                  ? courses.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
                         {otherEntity.id}
                       </option>
                     ))
                   : null}
+              </ValidatedField>*/}
+              <ValidatedField
+                id="assignment-gradeComposition"
+                name="gradeComposition"
+                data-cy="gradeComposition"
+                label={translate('webApp.assignment.gradeComposition')}
+                type="select"
+              >
+                <option value="" key="0" />
+                {gradeCompositions
+                  ? gradeCompositions.map(otherEntity => (
+                      <option value={otherEntity.id} key={otherEntity.id}>
+                        {otherEntity.name} - {otherEntity.scale} - {otherEntity.type}
+                      </option>
+                    ))
+                  : null}
               </ValidatedField>
-              <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/assignment" replace color="info">
-                <FontAwesomeIcon icon="arrow-left" />
-                &nbsp;
+              <Button
+                onClick={() => window.history.back()}
+                id="cancel-save"
+                data-cy="entityCreateCancelButton"
+                replace
+                color="light"
+                className="btn btn-outline-dark"
+              >
                 <span className="d-none d-md-inline">
                   <Translate contentKey="entity.action.back">Back</Translate>
                 </span>
               </Button>
               &nbsp;
-              <Button color="primary" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
-                <FontAwesomeIcon icon="save" />
-                &nbsp;
+              <Button className="btn btn-success" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
                 <Translate contentKey="entity.action.save">Save</Translate>
               </Button>
             </ValidatedForm>

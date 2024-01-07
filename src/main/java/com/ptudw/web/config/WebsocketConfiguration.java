@@ -13,7 +13,6 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.*;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
-import tech.jhipster.config.JHipsterProperties;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -21,27 +20,19 @@ public class WebsocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     public static final String IP_ADDRESS = "IP_ADDRESS";
 
-    private final JHipsterProperties jHipsterProperties;
-
-    public WebsocketConfiguration(JHipsterProperties jHipsterProperties) {
-        this.jHipsterProperties = jHipsterProperties;
-    }
+    public WebsocketConfiguration() {}
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic", "/notification-student", "/notification-teacher", "/notification-finalize-grade-composition");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        String[] allowedOrigins = Optional
-            .ofNullable(jHipsterProperties.getCors().getAllowedOrigins())
-            .map(origins -> origins.toArray(new String[0]))
-            .orElse(new String[0]);
         registry
             .addEndpoint("/websocket/tracker")
             .setHandshakeHandler(defaultHandshakeHandler())
-            .setAllowedOrigins(allowedOrigins)
+            .setAllowedOriginPatterns("*")
             .withSockJS()
             .setInterceptors(httpSessionHandshakeInterceptor());
     }

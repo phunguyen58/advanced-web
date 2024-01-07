@@ -8,24 +8,28 @@ import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateT
 import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
+import { IAssignment } from 'app/shared/model/assignment.model';
+import { getEntities as getAssignments } from 'app/entities/assignment/assignment.reducer';
 import { IAssignmentGrade } from 'app/shared/model/assignment-grade.model';
 import { getEntity, updateEntity, createEntity, reset } from './assignment-grade.reducer';
 
-export const AssignmentGradeUpdate = () => {
+export const AssignmentGradeUpdate = ({ assignmentGradeId }: { assignmentGradeId: number }) => {
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
 
-  const { id } = useParams<'id'>();
+  const id = String(assignmentGradeId);
+
   const isNew = id === undefined;
 
+  const assignments = useAppSelector(state => state.assignment.entities);
   const assignmentGradeEntity = useAppSelector(state => state.assignmentGrade.entity);
   const loading = useAppSelector(state => state.assignmentGrade.loading);
   const updating = useAppSelector(state => state.assignmentGrade.updating);
   const updateSuccess = useAppSelector(state => state.assignmentGrade.updateSuccess);
 
   const handleClose = () => {
-    navigate('/assignment-grade' + location.search);
+    // navigate(-1);
   };
 
   useEffect(() => {
@@ -34,6 +38,8 @@ export const AssignmentGradeUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
+
+    // dispatch(getAssignments({}));
   }, []);
 
   useEffect(() => {
@@ -99,6 +105,7 @@ export const AssignmentGradeUpdate = () => {
                 label={translate('webApp.assignmentGrade.studentId')}
                 id="assignment-grade-studentId"
                 name="studentId"
+                readOnly
                 data-cy="studentId"
                 type="text"
                 validate={{
@@ -116,67 +123,10 @@ export const AssignmentGradeUpdate = () => {
                   validate: v => isNumber(v) || translate('entity.validation.number'),
                 }}
               />
-              <ValidatedField
-                label={translate('webApp.assignmentGrade.isDeleted')}
-                id="assignment-grade-isDeleted"
-                name="isDeleted"
-                data-cy="isDeleted"
-                check
-                type="checkbox"
-              />
-              <ValidatedField
-                label={translate('webApp.assignmentGrade.createdBy')}
-                id="assignment-grade-createdBy"
-                name="createdBy"
-                data-cy="createdBy"
-                type="text"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                }}
-              />
-              <ValidatedField
-                label={translate('webApp.assignmentGrade.createdDate')}
-                id="assignment-grade-createdDate"
-                name="createdDate"
-                data-cy="createdDate"
-                type="datetime-local"
-                placeholder="YYYY-MM-DD HH:mm"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                }}
-              />
-              <ValidatedField
-                label={translate('webApp.assignmentGrade.lastModifiedBy')}
-                id="assignment-grade-lastModifiedBy"
-                name="lastModifiedBy"
-                data-cy="lastModifiedBy"
-                type="text"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                }}
-              />
-              <ValidatedField
-                label={translate('webApp.assignmentGrade.lastModifiedDate')}
-                id="assignment-grade-lastModifiedDate"
-                name="lastModifiedDate"
-                data-cy="lastModifiedDate"
-                type="datetime-local"
-                placeholder="YYYY-MM-DD HH:mm"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                }}
-              />
-              <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/assignment-grade" replace color="info">
-                <FontAwesomeIcon icon="arrow-left" />
-                &nbsp;
-                <span className="d-none d-md-inline">
-                  <Translate contentKey="entity.action.back">Back</Translate>
-                </span>
-              </Button>
-              &nbsp;
-              <Button color="primary" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
-                <FontAwesomeIcon icon="save" />
-                &nbsp;
+
+              <Button className="btn-success" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
+                {/* <FontAwesomeIcon icon="save" />
+                &nbsp; */}
                 <Translate contentKey="entity.action.save">Save</Translate>
               </Button>
             </ValidatedForm>

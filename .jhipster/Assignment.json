@@ -11,6 +11,10 @@
       "fieldValidateRules": ["required"]
     },
     {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
       "fieldName": "weight",
       "fieldType": "Long"
     },
@@ -46,15 +50,21 @@
   "readOnly": false,
   "relationships": [
     {
-      "otherEntityName": "course",
-      "otherEntityRelationshipName": "assignments",
-      "relationshipName": "course",
-      "relationshipType": "one-to-many"
-    },
-    {
       "otherEntityName": "assignmentGrade",
       "otherEntityRelationshipName": "assignment",
       "relationshipName": "assignmentGrades",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "course",
+      "otherEntityRelationshipName": "assignments",
+      "relationshipName": "course",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "gradeComposition",
+      "otherEntityRelationshipName": "assignments",
+      "relationshipName": "gradeComposition",
       "relationshipType": "many-to-one"
     }
   ],

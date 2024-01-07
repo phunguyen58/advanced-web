@@ -11,19 +11,8 @@
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "minGradeScale",
-      "fieldType": "Long",
-      "fieldValidateRules": ["required"]
-    },
-    {
-      "fieldName": "maxGradeScale",
-      "fieldType": "Long",
-      "fieldValidateRules": ["required"]
-    },
-    {
-      "fieldName": "position",
-      "fieldType": "Long",
-      "fieldValidateRules": ["required"]
+      "fieldName": "scale",
+      "fieldType": "Long"
     },
     {
       "fieldName": "isDeleted",
@@ -48,6 +37,16 @@
       "fieldName": "lastModifiedDate",
       "fieldType": "ZonedDateTime",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "GradeType",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PERCENTAGE,POINT,NONE"
+    },
+    {
+      "fieldName": "isPublic",
+      "fieldType": "Boolean"
     }
   ],
   "fluentMethods": true,
@@ -57,10 +56,16 @@
   "readOnly": false,
   "relationships": [
     {
-      "otherEntityName": "gradeStructure",
-      "otherEntityRelationshipName": "gradeCompositions",
-      "relationshipName": "gradeStructure",
+      "otherEntityName": "assignment",
+      "otherEntityRelationshipName": "gradeComposition",
+      "relationshipName": "assignments",
       "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "course",
+      "otherEntityRelationshipName": "gradeCompositions",
+      "relationshipName": "course",
+      "relationshipType": "many-to-one"
     }
   ],
   "service": "serviceClass"

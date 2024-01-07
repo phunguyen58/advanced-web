@@ -1,5 +1,6 @@
 package com.ptudw.web.service.criteria;
 
+import com.ptudw.web.domain.enumeration.GradeType;
 import java.io.Serializable;
 import java.util.Objects;
 import org.springdoc.api.annotations.ParameterObject;
@@ -19,6 +20,23 @@ import tech.jhipster.service.filter.*;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class GradeStructureCriteria implements Serializable, Criteria {
 
+    /**
+     * Class for filtering GradeType
+     */
+    public static class GradeTypeFilter extends Filter<GradeType> {
+
+        public GradeTypeFilter() {}
+
+        public GradeTypeFilter(GradeTypeFilter filter) {
+            super(filter);
+        }
+
+        @Override
+        public GradeTypeFilter copy() {
+            return new GradeTypeFilter(this);
+        }
+    }
+
     private static final long serialVersionUID = 1L;
 
     private LongFilter id;
@@ -35,7 +53,7 @@ public class GradeStructureCriteria implements Serializable, Criteria {
 
     private ZonedDateTimeFilter lastModifiedDate;
 
-    private LongFilter gradeCompositionsId;
+    private GradeTypeFilter type;
 
     private Boolean distinct;
 
@@ -49,7 +67,7 @@ public class GradeStructureCriteria implements Serializable, Criteria {
         this.createdDate = other.createdDate == null ? null : other.createdDate.copy();
         this.lastModifiedBy = other.lastModifiedBy == null ? null : other.lastModifiedBy.copy();
         this.lastModifiedDate = other.lastModifiedDate == null ? null : other.lastModifiedDate.copy();
-        this.gradeCompositionsId = other.gradeCompositionsId == null ? null : other.gradeCompositionsId.copy();
+        this.type = other.type == null ? null : other.type.copy();
         this.distinct = other.distinct;
     }
 
@@ -163,19 +181,19 @@ public class GradeStructureCriteria implements Serializable, Criteria {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public LongFilter getGradeCompositionsId() {
-        return gradeCompositionsId;
+    public GradeTypeFilter getType() {
+        return type;
     }
 
-    public LongFilter gradeCompositionsId() {
-        if (gradeCompositionsId == null) {
-            gradeCompositionsId = new LongFilter();
+    public GradeTypeFilter type() {
+        if (type == null) {
+            type = new GradeTypeFilter();
         }
-        return gradeCompositionsId;
+        return type;
     }
 
-    public void setGradeCompositionsId(LongFilter gradeCompositionsId) {
-        this.gradeCompositionsId = gradeCompositionsId;
+    public void setType(GradeTypeFilter type) {
+        this.type = type;
     }
 
     public Boolean getDistinct() {
@@ -203,24 +221,14 @@ public class GradeStructureCriteria implements Serializable, Criteria {
             Objects.equals(createdDate, that.createdDate) &&
             Objects.equals(lastModifiedBy, that.lastModifiedBy) &&
             Objects.equals(lastModifiedDate, that.lastModifiedDate) &&
-            Objects.equals(gradeCompositionsId, that.gradeCompositionsId) &&
+            Objects.equals(type, that.type) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-            id,
-            courseId,
-            isDeleted,
-            createdBy,
-            createdDate,
-            lastModifiedBy,
-            lastModifiedDate,
-            gradeCompositionsId,
-            distinct
-        );
+        return Objects.hash(id, courseId, isDeleted, createdBy, createdDate, lastModifiedBy, lastModifiedDate, type, distinct);
     }
 
     // prettier-ignore
@@ -234,7 +242,7 @@ public class GradeStructureCriteria implements Serializable, Criteria {
             (createdDate != null ? "createdDate=" + createdDate + ", " : "") +
             (lastModifiedBy != null ? "lastModifiedBy=" + lastModifiedBy + ", " : "") +
             (lastModifiedDate != null ? "lastModifiedDate=" + lastModifiedDate + ", " : "") +
-            (gradeCompositionsId != null ? "gradeCompositionsId=" + gradeCompositionsId + ", " : "") +
+            (type != null ? "type=" + type + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

@@ -77,6 +77,9 @@ public class GradeStructureService {
                 if (gradeStructure.getLastModifiedDate() != null) {
                     existingGradeStructure.setLastModifiedDate(gradeStructure.getLastModifiedDate());
                 }
+                if (gradeStructure.getType() != null) {
+                    existingGradeStructure.setType(gradeStructure.getType());
+                }
 
                 return existingGradeStructure;
             })

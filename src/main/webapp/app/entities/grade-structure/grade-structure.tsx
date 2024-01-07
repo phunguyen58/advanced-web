@@ -124,9 +124,8 @@ export const GradeStructure = () => {
                   <Translate contentKey="webApp.gradeStructure.lastModifiedDate">Last Modified Date</Translate>{' '}
                   <FontAwesomeIcon icon="sort" />
                 </th>
-                <th>
-                  <Translate contentKey="webApp.gradeStructure.gradeCompositions">Grade Compositions</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand" onClick={sort('type')}>
+                  <Translate contentKey="webApp.gradeStructure.type">Type</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th />
               </tr>
@@ -154,11 +153,7 @@ export const GradeStructure = () => {
                     ) : null}
                   </td>
                   <td>
-                    {gradeStructure.gradeCompositions ? (
-                      <Link to={`/grade-composition/${gradeStructure.gradeCompositions.id}`}>{gradeStructure.gradeCompositions.id}</Link>
-                    ) : (
-                      ''
-                    )}
+                    <Translate contentKey={`webApp.GradeType.${gradeStructure.type}`} />
                   </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">

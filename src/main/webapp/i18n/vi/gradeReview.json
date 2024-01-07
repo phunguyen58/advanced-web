@@ -1,0 +1,39 @@
+{
+  "webApp": {
+    "gradeReview": {
+      "home": {
+        "title": "Grade Reviews",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Grade Review",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Grade Review",
+        "notFound": "No Grade Reviews found"
+      },
+      "created": "Một Grade Review mới được tạo với định danh {{ param }}",
+      "updated": "Một Grade Review cập nhật với định danh {{ param }}",
+      "deleted": "Một Grade Review đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Grade Review {{ id }}?"
+      },
+      "detail": {
+        "title": "Phúc khảo"
+      },
+      "id": "ID",
+      "gradeCompositionId": "Grade Composition Id",
+      "studentId": "Mã số sinh viên",
+      "courseId": "Course Id",
+      "reviewerId": "Reviewer Id",
+      "assigmentId": "Assigment Id",
+      "assimentGradeId": "Assiment Grade Id",
+      "currentGrade": "Điểm hiện tại",
+      "expectationGrade": "Điểm mong đợi",
+      "studentExplanation": "Giải thích",
+      "teacherComment": "Comment của giảng viên",
+      "isFinal": "Is Final",
+      "send": "Gửi",
+      "submit": "Hoàn tất",
+      "finalGrade": "Điểm cuối cùng",
+      "oldGrade": "Điểm cũ",
+      "comment": "Bình luận"
+    }
+  }
+}

@@ -1,8 +1,14 @@
 package com.ptudw.web.service;
 
 import com.ptudw.web.domain.Course;
+import com.ptudw.web.domain.User;
+import com.ptudw.web.domain.UserCourse;
 import com.ptudw.web.repository.CourseRepository;
+import com.ptudw.web.security.SecurityUtils;
+import com.ptudw.web.web.rest.errors.BadRequestAlertException;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -21,8 +27,14 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
 
-    public CourseService(CourseRepository courseRepository) {
+    private final UserService userService;
+
+    private final UserCourseService userCourseService;
+
+    public CourseService(CourseRepository courseRepository, UserService userService, UserCourseService userCourseService) {
         this.courseRepository = courseRepository;
+        this.userService = userService;
+        this.userCourseService = userCourseService;
     }
 
     /**
@@ -65,14 +77,17 @@ public class CourseService {
                 if (course.getName() != null) {
                     existingCourse.setName(course.getName());
                 }
+                if (course.getOwnerId() != null) {
+                    existingCourse.setOwnerId(course.getOwnerId());
+                }
+                if (course.getDescription() != null) {
+                    existingCourse.setDescription(course.getDescription());
+                }
                 if (course.getInvitationCode() != null) {
                     existingCourse.setInvitationCode(course.getInvitationCode());
                 }
                 if (course.getExpirationDate() != null) {
                     existingCourse.setExpirationDate(course.getExpirationDate());
-                }
-                if (course.getGradeStructureId() != null) {
-                    existingCourse.setGradeStructureId(course.getGradeStructureId());
                 }
                 if (course.getIsDeleted() != null) {
                     existingCourse.setIsDeleted(course.getIsDeleted());
@@ -120,6 +135,18 @@ public class CourseService {
     }
 
     /**
+     * Get one course by code.
+     *
+     * @param code the code of the entity.
+     * @return the entity.
+     */
+    @Transactional(readOnly = true)
+    public Optional<Course> findOneByCode(String code) {
+        log.debug("Request to get Course by code : {}", code);
+        return courseRepository.findOneByCode(code);
+    }
+
+    /**
      * Delete the course by id.
      *
      * @param id the id of the entity.
@@ -127,5 +154,61 @@ public class CourseService {
     public void delete(Long id) {
         log.debug("Request to delete Course : {}", id);
         courseRepository.deleteById(id);
+    }
+
+    public void joinCourseByInvitationCode(Course course, User user) {
+        log.debug("Request to join Course: {}", course);
+
+        UserCourse userCourse = new UserCourse();
+        userCourse.setCourseId(course.getId());
+        userCourse.setUserId(user.getId());
+        userCourseService.save(userCourse);
+    }
+
+    public Page<Course> findAllByIds(List<Long> courseIds, Pageable pageable) {
+        return courseRepository.findAllByIdInAndIsDeleted(courseIds, false, pageable);
+    }
+
+    public Course createCourse(Course course, User user) {
+        course.setOwnerId(user.getId());
+        course.setCreatedBy(user.getLogin());
+        course.setLastModifiedBy(user.getLogin());
+        course.invitationCode(course.getCode() + "-" + this.generateRandomString());
+        log.debug("Request to create Course: {}", course);
+
+        UserCourse userCourse = new UserCourse();
+        userCourse.setUserId(user.getId());
+
+        Course result = this.save(course);
+        if (result == null) {
+            throw new BadRequestAlertException("Cannot create user course", "Course", "cantcreateusercourse");
+        }
+        userCourse.setCourseId(result.getId());
+
+        UserCourse resultUserCourse = userCourseService.save(userCourse);
+        if (resultUserCourse == null) {
+            throw new BadRequestAlertException("Cannot create user course", "Course", "cantcreateusercourse");
+        }
+        return result;
+    }
+
+    public String generateRandomString() {
+        int length = 5; // Desired length of the random string
+
+        // Characters allowed in the random string
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            // Generate a random index within the allowed characters range
+            int index = random.nextInt(characters.length());
+
+            // Append the character at the randomly generated index to the string
+            sb.append(characters.charAt(index));
+        }
+
+        return sb.toString();
     }
 }

@@ -18,12 +18,27 @@ const initialState = {
 const apiUrl = 'api/users';
 const adminUrl = 'api/admin/users';
 
+interface FetchUsersByCourseIdParams {
+  queryParams: IQueryParams;
+  courseId: number;
+}
+
 // Async Actions
 
 export const getUsers = createAsyncThunk('userManagement/fetch_users', async ({ page, size, sort }: IQueryParams) => {
   const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
   return axios.get<IUser[]>(requestUrl);
 });
+
+//TO-USE: dispatch(getUsersByCourseId({ queryParams: { page: 1, size: 10, sort: 'asc' }, courseId: 123 }));
+export const getUsersByCourseId = createAsyncThunk(
+  'userManagement/fetch_users_by_course_id',
+  async ({ queryParams, courseId }: FetchUsersByCourseIdParams) => {
+    const { page, size, sort } = queryParams;
+    const requestUrl = `${apiUrl}/course/${courseId}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
+    return axios.get<IUser[]>(requestUrl);
+  }
+);
 
 export const getUsersAsAdmin = createAsyncThunk('userManagement/fetch_users_as_admin', async ({ page, size, sort }: IQueryParams) => {
   const requestUrl = `${adminUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
@@ -98,7 +113,7 @@ export const UserManagementSlice = createSlice({
         state.updateSuccess = true;
         state.user = defaultValue;
       })
-      .addMatcher(isFulfilled(getUsers, getUsersAsAdmin), (state, action) => {
+      .addMatcher(isFulfilled(getUsers, getUsersByCourseId, getUsersAsAdmin), (state, action) => {
         state.loading = false;
         state.users = action.payload.data;
         state.totalItems = parseInt(action.payload.headers['x-total-count'], 10);
@@ -109,7 +124,7 @@ export const UserManagementSlice = createSlice({
         state.updateSuccess = true;
         state.user = action.payload.data;
       })
-      .addMatcher(isPending(getUsers, getUsersAsAdmin, getUser), state => {
+      .addMatcher(isPending(getUsers, getUsersByCourseId, getUsersAsAdmin, getUser), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;
@@ -119,12 +134,15 @@ export const UserManagementSlice = createSlice({
         state.updateSuccess = false;
         state.updating = true;
       })
-      .addMatcher(isRejected(getUsers, getUsersAsAdmin, getUser, getRoles, createUser, updateUser, deleteUser), (state, action) => {
-        state.loading = false;
-        state.updating = false;
-        state.updateSuccess = false;
-        state.errorMessage = action.error.message;
-      });
+      .addMatcher(
+        isRejected(getUsers, getUsersByCourseId, getUsersAsAdmin, getUser, getRoles, createUser, updateUser, deleteUser),
+        (state, action) => {
+          state.loading = false;
+          state.updating = false;
+          state.updateSuccess = false;
+          state.errorMessage = action.error.message;
+        }
+      );
   },
 });
 

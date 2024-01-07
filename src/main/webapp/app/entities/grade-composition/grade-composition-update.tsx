@@ -8,7 +8,10 @@ import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateT
 import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
+import { ICourse } from 'app/shared/model/course.model';
+import { getEntities as getCourses } from 'app/entities/course/course-router/course.reducer';
 import { IGradeComposition } from 'app/shared/model/grade-composition.model';
+import { GradeType } from 'app/shared/model/enumerations/grade-type.model';
 import { getEntity, updateEntity, createEntity, reset } from './grade-composition.reducer';
 
 export const GradeCompositionUpdate = () => {
@@ -19,10 +22,12 @@ export const GradeCompositionUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
+  const courses = useAppSelector(state => state.course.entities);
   const gradeCompositionEntity = useAppSelector(state => state.gradeComposition.entity);
   const loading = useAppSelector(state => state.gradeComposition.loading);
   const updating = useAppSelector(state => state.gradeComposition.updating);
   const updateSuccess = useAppSelector(state => state.gradeComposition.updateSuccess);
+  const gradeTypeValues = Object.keys(GradeType);
 
   const handleClose = () => {
     navigate('/grade-composition' + location.search);
@@ -34,6 +39,8 @@ export const GradeCompositionUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
+
+    dispatch(getCourses({}));
   }, []);
 
   useEffect(() => {
@@ -49,6 +56,7 @@ export const GradeCompositionUpdate = () => {
     const entity = {
       ...gradeCompositionEntity,
       ...values,
+      course: courses.find(it => it.id.toString() === values.course.toString()),
     };
 
     if (isNew) {
@@ -65,9 +73,11 @@ export const GradeCompositionUpdate = () => {
           lastModifiedDate: displayDefaultDateTime(),
         }
       : {
+          type: 'PERCENTAGE',
           ...gradeCompositionEntity,
           createdDate: convertDateTimeFromServer(gradeCompositionEntity.createdDate),
           lastModifiedDate: convertDateTimeFromServer(gradeCompositionEntity.lastModifiedDate),
+          course: gradeCompositionEntity?.course?.id,
         };
 
   return (
@@ -106,37 +116,11 @@ export const GradeCompositionUpdate = () => {
                 }}
               />
               <ValidatedField
-                label={translate('webApp.gradeComposition.minGradeScale')}
-                id="grade-composition-minGradeScale"
-                name="minGradeScale"
-                data-cy="minGradeScale"
+                label={translate('webApp.gradeComposition.scale')}
+                id="grade-composition-scale"
+                name="scale"
+                data-cy="scale"
                 type="text"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                  validate: v => isNumber(v) || translate('entity.validation.number'),
-                }}
-              />
-              <ValidatedField
-                label={translate('webApp.gradeComposition.maxGradeScale')}
-                id="grade-composition-maxGradeScale"
-                name="maxGradeScale"
-                data-cy="maxGradeScale"
-                type="text"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                  validate: v => isNumber(v) || translate('entity.validation.number'),
-                }}
-              />
-              <ValidatedField
-                label={translate('webApp.gradeComposition.position')}
-                id="grade-composition-position"
-                name="position"
-                data-cy="position"
-                type="text"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                  validate: v => isNumber(v) || translate('entity.validation.number'),
-                }}
               />
               <ValidatedField
                 label={translate('webApp.gradeComposition.isDeleted')}
@@ -188,6 +172,43 @@ export const GradeCompositionUpdate = () => {
                   required: { value: true, message: translate('entity.validation.required') },
                 }}
               />
+              <ValidatedField
+                label={translate('webApp.gradeComposition.type')}
+                id="grade-composition-type"
+                name="type"
+                data-cy="type"
+                type="select"
+              >
+                {gradeTypeValues.map(gradeType => (
+                  <option value={gradeType} key={gradeType}>
+                    {translate('webApp.GradeType.' + gradeType)}
+                  </option>
+                ))}
+              </ValidatedField>
+              <ValidatedField
+                label={translate('webApp.gradeComposition.isPublic')}
+                id="grade-composition-isPublic"
+                name="isPublic"
+                data-cy="isPublic"
+                check
+                type="checkbox"
+              />
+              <ValidatedField
+                id="grade-composition-course"
+                name="course"
+                data-cy="course"
+                label={translate('webApp.gradeComposition.course')}
+                type="select"
+              >
+                <option value="" key="0" />
+                {courses
+                  ? courses.map(otherEntity => (
+                      <option value={otherEntity.id} key={otherEntity.id}>
+                        {otherEntity.id}
+                      </option>
+                    ))
+                  : null}
+              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/grade-composition" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

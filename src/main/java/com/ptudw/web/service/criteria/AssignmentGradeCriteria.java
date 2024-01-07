@@ -39,6 +39,8 @@ public class AssignmentGradeCriteria implements Serializable, Criteria {
 
     private LongFilter assignmentId;
 
+    private LongFilter gradeReviewId;
+
     private Boolean distinct;
 
     public AssignmentGradeCriteria() {}
@@ -53,6 +55,7 @@ public class AssignmentGradeCriteria implements Serializable, Criteria {
         this.lastModifiedBy = other.lastModifiedBy == null ? null : other.lastModifiedBy.copy();
         this.lastModifiedDate = other.lastModifiedDate == null ? null : other.lastModifiedDate.copy();
         this.assignmentId = other.assignmentId == null ? null : other.assignmentId.copy();
+        this.gradeReviewId = other.gradeReviewId == null ? null : other.gradeReviewId.copy();
         this.distinct = other.distinct;
     }
 
@@ -196,6 +199,21 @@ public class AssignmentGradeCriteria implements Serializable, Criteria {
         this.assignmentId = assignmentId;
     }
 
+    public LongFilter getGradeReviewId() {
+        return gradeReviewId;
+    }
+
+    public LongFilter gradeReviewId() {
+        if (gradeReviewId == null) {
+            gradeReviewId = new LongFilter();
+        }
+        return gradeReviewId;
+    }
+
+    public void setGradeReviewId(LongFilter gradeReviewId) {
+        this.gradeReviewId = gradeReviewId;
+    }
+
     public Boolean getDistinct() {
         return distinct;
     }
@@ -223,6 +241,7 @@ public class AssignmentGradeCriteria implements Serializable, Criteria {
             Objects.equals(lastModifiedBy, that.lastModifiedBy) &&
             Objects.equals(lastModifiedDate, that.lastModifiedDate) &&
             Objects.equals(assignmentId, that.assignmentId) &&
+            Objects.equals(gradeReviewId, that.gradeReviewId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -239,6 +258,7 @@ public class AssignmentGradeCriteria implements Serializable, Criteria {
             lastModifiedBy,
             lastModifiedDate,
             assignmentId,
+            gradeReviewId,
             distinct
         );
     }
@@ -256,6 +276,7 @@ public class AssignmentGradeCriteria implements Serializable, Criteria {
             (lastModifiedBy != null ? "lastModifiedBy=" + lastModifiedBy + ", " : "") +
             (lastModifiedDate != null ? "lastModifiedDate=" + lastModifiedDate + ", " : "") +
             (assignmentId != null ? "assignmentId=" + assignmentId + ", " : "") +
+            (gradeReviewId != null ? "gradeReviewId=" + gradeReviewId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

@@ -8,9 +8,8 @@ import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateT
 import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { IGradeComposition } from 'app/shared/model/grade-composition.model';
-import { getEntities as getGradeCompositions } from 'app/entities/grade-composition/grade-composition.reducer';
 import { IGradeStructure } from 'app/shared/model/grade-structure.model';
+import { GradeType } from 'app/shared/model/enumerations/grade-type.model';
 import { getEntity, updateEntity, createEntity, reset } from './grade-structure.reducer';
 
 export const GradeStructureUpdate = () => {
@@ -21,11 +20,11 @@ export const GradeStructureUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const gradeCompositions = useAppSelector(state => state.gradeComposition.entities);
   const gradeStructureEntity = useAppSelector(state => state.gradeStructure.entity);
   const loading = useAppSelector(state => state.gradeStructure.loading);
   const updating = useAppSelector(state => state.gradeStructure.updating);
   const updateSuccess = useAppSelector(state => state.gradeStructure.updateSuccess);
+  const gradeTypeValues = Object.keys(GradeType);
 
   const handleClose = () => {
     navigate('/grade-structure' + location.search);
@@ -37,8 +36,6 @@ export const GradeStructureUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getGradeCompositions({}));
   }, []);
 
   useEffect(() => {
@@ -54,7 +51,6 @@ export const GradeStructureUpdate = () => {
     const entity = {
       ...gradeStructureEntity,
       ...values,
-      gradeCompositions: gradeCompositions.find(it => it.id.toString() === values.gradeCompositions.toString()),
     };
 
     if (isNew) {
@@ -71,10 +67,10 @@ export const GradeStructureUpdate = () => {
           lastModifiedDate: displayDefaultDateTime(),
         }
       : {
+          type: 'PERCENTAGE',
           ...gradeStructureEntity,
           createdDate: convertDateTimeFromServer(gradeStructureEntity.createdDate),
           lastModifiedDate: convertDateTimeFromServer(gradeStructureEntity.lastModifiedDate),
-          gradeCompositions: gradeStructureEntity?.gradeCompositions?.id,
         };
 
   return (
@@ -164,20 +160,17 @@ export const GradeStructureUpdate = () => {
                 }}
               />
               <ValidatedField
-                id="grade-structure-gradeCompositions"
-                name="gradeCompositions"
-                data-cy="gradeCompositions"
-                label={translate('webApp.gradeStructure.gradeCompositions')}
+                label={translate('webApp.gradeStructure.type')}
+                id="grade-structure-type"
+                name="type"
+                data-cy="type"
                 type="select"
               >
-                <option value="" key="0" />
-                {gradeCompositions
-                  ? gradeCompositions.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.id}
-                      </option>
-                    ))
-                  : null}
+                {gradeTypeValues.map(gradeType => (
+                  <option value={gradeType} key={gradeType}>
+                    {translate('webApp.GradeType.' + gradeType)}
+                  </option>
+                ))}
               </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/grade-structure" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />

@@ -41,7 +41,7 @@ Navbar styles
 ========================================================================== */
 .jh-navbar {
   background-color: #f7f5fa;
-  padding: 0.2em 1em;
+  padding: 0.2em 1.5rem;
   .profile-image {
     margin: -10px 0px;
     height: 40px;
@@ -142,4 +142,107 @@ Navbar styles
   position: absolute;
   top: 0px;
   z-index: 1031;
+}
+
+.aw-btn-header {
+  background-color: transparent;
+  border: 1px solid #009cd8;
+  border-radius: 50px;
+  color: #0a033c;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 5px 10px;
+}
+
+.join-a-course-dialog {
+  border-radius: 16px;
+  .p-dialog-header {
+    border-top-right-radius: 16px;
+    border-top-left-radius: 16px;
+  }
+  .p-dialog-content {
+    border-bottom-right-radius: 16px;
+    border-bottom-left-radius: 16px;
+    .aw-input {
+      border-radius: 16px;
+    }
+    .aw-btn-join {
+      border-radius: 16px;
+    }
+  }
+}
+
+.btn-notification-container {
+  position: relative;
+
+  .btn-notification {
+    background-color: #e4e6eb;
+    border: none;
+    color: #0a033c;
+    font-size: 20px;
+    padding: 6px 12px;
+    margin-left: 16px;
+    border-radius: 50%;
+    height: 100%;
+    box-shadow: none;
+    &:hover {
+      background-color: #c2c4c9;
+    }
+  }
+
+  .notification-number {
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: red;
+    border-radius: 50%;
+    font-size: 12px;
+  }
+
+  .notification-dialog {
+    position: absolute;
+    top: 46px;
+    right: -160px;
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 0.5rem;
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.08);
+    max-height: 80vh;
+    width: 360px;
+    overflow-y: scroll;
+
+    .notification-item {
+      background-color: #fff;
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      cursor: pointer;
+      &:hover {
+        background-color: #e4e6eb;
+      }
+
+      .dot-container {
+        width: max-content;
+        height: max-content;
+
+        .dot {
+          display: flex;
+          width: 12px;
+          height: 12px;
+          background: #0866ff;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
 }
