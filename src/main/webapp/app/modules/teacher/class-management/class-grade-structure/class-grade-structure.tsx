@@ -103,7 +103,6 @@ const ClassGradeStructure = () => {
               }),
             };
 
-            console.log('gradeCompositions', data);
             const newGradeComposition = data.gradeCompositions.filter(composition => !composition.id);
             const oldGradeComposition = data.gradeCompositions.filter(composition => composition.id && gradeIds.includes(composition.id));
             const deletedGradeComposition = gradeCompositions.filter(
@@ -140,11 +139,6 @@ const ClassGradeStructure = () => {
                 console.error(error);
               }
             });
-
-            console.log('gradeConewGradeCompositionmpositions', newGradeComposition);
-            console.log('oldGradeComposition', oldGradeComposition);
-            console.log('deletedGradeComposition', deletedGradeComposition);
-            // alert(JSON.stringify(data, null, 2));
           }}
         >
           {({ values }) => (

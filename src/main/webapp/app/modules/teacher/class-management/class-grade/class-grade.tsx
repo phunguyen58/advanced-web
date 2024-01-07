@@ -92,9 +92,7 @@ const ClassGrade = () => {
     });
 
   useEffect(() => {
-    console.log(id);
     getAssignmentsByCourseId(id).then(value => setAssignmentsInCourse(value.data));
-    console.log('assignmentsInCourse', assignmentsInCourse);
   }, []);
 
   useEffect(() => {
