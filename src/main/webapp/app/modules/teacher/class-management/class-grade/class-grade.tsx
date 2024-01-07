@@ -3,21 +3,23 @@ import './class-grade.scss';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
-import { getSortState } from 'react-jhipster';
+import { getSortState, translate } from 'react-jhipster';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 import { IUserCourse } from 'app/shared/model/user-course.model';
-import { getAssimentGrades, getCourse, getUserById, getUserCourses } from './grade-util';
+import { getAssignmentsByCourseId, getAssimentGrades, getCourse, getUserById, getUserCourses } from './grade-util';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { IAssignmentGrade } from 'app/shared/model/assignment-grade.model';
 import { IUser } from 'app/shared/model/user.model';
-import { getEntities } from 'app/entities/user-course/user-course.reducer';
 import { ICourse } from 'app/shared/model/course.model';
 import { Button } from 'primereact/button';
+import { IAssignment } from 'app/shared/model/assignment.model';
+import { IGradeComposition } from 'app/shared/model/grade-composition.model';
 export interface GradeReview {
   studentId?: number | null;
   assignmentGrade?: IAssignmentGrade[];
   info?: IUser;
+  finalGrade?: number | null;
 }
 
 const ClassGrade = () => {
@@ -35,6 +37,8 @@ const ClassGrade = () => {
   const [data, setData] = useState<GradeReview[]>([]);
   const userCourseList: IUserCourse[] = useAppSelector(state => state.userCourse.entities);
   const course: ICourse = useAppSelector(state => state.course.entity);
+  const [assignmentsInCourse, setAssignmentsInCourse] = useState<IAssignment[]>([]);
+  const [assignmentGradesTemp, setAssignmentGradesTemp] = useState<IAssignmentGrade[]>([]);
   const loading = useAppSelector(state => state.userCourse.loading);
   const totalItems = useAppSelector(state => state.userCourse.totalItems);
 
@@ -89,10 +93,23 @@ const ClassGrade = () => {
     });
 
   useEffect(() => {
+    console.log(id);
+    getAssignmentsByCourseId(id).then(value => setAssignmentsInCourse(value.data));
+    console.log('assignmentsInCourse', assignmentsInCourse);
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const userGradesPromises = userCourseList.map(userCourse => getAssimentGrades(userCourse.userId));
         const userGradesResponses = await Promise.all(userGradesPromises);
+        let assignmentsInCoursesResponse: IAssignment[] = [];
+        try {
+          assignmentsInCoursesResponse = (await getAssignmentsByCourseId(id)).data;
+          setAssignmentsInCourse(assignmentsInCoursesResponse);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
 
         // Organize data
         const organizedData: GradeReview[] = await Promise.all(
@@ -103,7 +120,9 @@ const ClassGrade = () => {
               user = (await getUserById(userCourseList[index].userId)).data;
 
               // Extract data from Axios response
-              assignmentGrades = assignmentGradesResponse.data;
+              // setAssignmentGradesTemp(await assignmentGradesResponse.data);
+
+              assignmentGrades = await assignmentGradesResponse.data;
               assignmentGrades = assignmentGrades.filter(assignmentGrade => {
                 course.assignments.findIndex(assignment => assignment.id === assignmentGrade.assignment.id) !== -1 &&
                   assignmentGrade.assignment !== null;
@@ -113,17 +132,39 @@ const ClassGrade = () => {
               studentId: user ? user.id : null,
               assignmentGrade: assignmentGrades,
               info: user,
+              assignments: assignmentGrades.map(value => value.assignment),
+              finalGrade: calculateFinalGrade(assignmentGrades, assignmentsInCoursesResponse),
             };
           })
         );
 
-        setData(organizedData);
+        setData(await organizedData);
         return organizedData;
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
   }, [userCourseList]);
+
+  const calculateFinalGrade = (assignmentGrades: IAssignmentGrade[], assignments: IAssignment[]) => {
+    const totalPoints = assignmentGrades
+      .filter(value => value !== null)
+      .map(value => {
+        const assignment = assignments.find(assignment => assignment.id === value.assignment.id);
+        return assignment ? assignment.gradeComposition.scale * value.grade : 0;
+      })
+      .reduce((prev, cur) => prev + cur, 0);
+
+    const totalScale = assignmentGrades
+      .filter(value => value !== null)
+      .map(value => {
+        const assignment = assignments.find(assignment => assignment.id === value.assignment.id);
+        return assignment ? assignment.gradeComposition.scale : 0;
+      })
+      .reduce((prev, cur) => prev + cur, 0);
+
+    return totalScale ? Math.round((totalPoints / (totalScale || 1)) * 100) / 100 : null;
+  };
 
   // Rest of your component code remains unchanged
 
@@ -135,7 +176,7 @@ const ClassGrade = () => {
 
       course.assignments?.forEach((assignment, index) => {
         const assignmentGrade = row.assignmentGrade?.find(value => value.assignment?.id === assignment?.id);
-        rowData[`assignment_${index + 1}_grade`] = assignmentGrade ? assignmentGrade.grade : null;
+        rowData[assignment.name] = assignmentGrade ? assignmentGrade.grade : null;
       });
 
       return rowData;
@@ -162,7 +203,7 @@ const ClassGrade = () => {
 
         course.assignments?.forEach((assignment, index) => {
           const assignmentGrade = row.assignmentGrade?.find(value => value.assignment?.id === assignment?.id);
-          rowData[`Assignment ${index + 1} Grade`] = assignmentGrade ? assignmentGrade.grade : null;
+          rowData[assignment.name] = assignmentGrade ? assignmentGrade.grade : null;
         });
 
         return rowData;
@@ -176,16 +217,24 @@ const ClassGrade = () => {
   };
 
   const header = (
-    <div className="flex align-items-center justify-content-end gap-2">
-      <Button type="button" icon="pi pi-file" rounded={true} onClick={exportCSV} data-pr-tooltip="CSV" />
-      <Button type="button" icon="pi pi-file-excel" severity="success" rounded={true} onClick={exportXLSX} data-pr-tooltip="XLS" />
+    <div className=" aw-class-grade-container flex align-items-center justify-content-end gap-2">
+      <Button className="aw-aw-operation-button" type="button" icon="pi pi-file" rounded={true} onClick={exportCSV} data-pr-tooltip="CSV" />
+      <Button
+        className="aw-aw-operation-button"
+        type="button"
+        icon="pi pi-file-excel"
+        severity="success"
+        rounded={true}
+        onClick={exportXLSX}
+        data-pr-tooltip="XLS"
+      />
     </div>
   );
 
   return (
     <div className="class-detail-container">
       <DataTable ref={dt} stripedRows={true} value={data} tableStyle={{ minWidth: '50rem' }} header={header}>
-        <Column key={'studentId'} field="studentId" header="Student ID"></Column>
+        <Column key={'studentId'} field="studentId" header={translate('webApp.classManagement.studentId')}></Column>
         {/* TODO: implement final grade */}
         {course.assignments?.map((assignment, index) => (
           <Column
@@ -199,6 +248,7 @@ const ClassGrade = () => {
             }}
           ></Column>
         ))}
+        <Column key={'studentId'} field="finalGrade" header={translate('webApp.classManagement.finalGrade')}></Column>
       </DataTable>
     </div>
   );

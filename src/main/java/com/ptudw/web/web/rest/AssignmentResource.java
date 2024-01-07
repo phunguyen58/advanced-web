@@ -188,6 +188,20 @@ public class AssignmentResource {
     }
 
     /**
+     * {@code GET  /assignments} : get all the assignments.
+     *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of assignments in body.
+     */
+    @GetMapping("/assignments/course-id/{courseId}")
+    public ResponseEntity<List<Assignment>> getAllAssignmentsByCourseId(@PathVariable Long courseId) {
+        log.debug("REST request to get getAllAssignments By CourseId : {}", courseId);
+        List<Assignment> assignments = assignmentService.findAllByCourseId(courseId);
+        return ResponseEntity.ok().body(assignments);
+    }
+
+    /**
      * {@code GET  /assignments/count} : count all the assignments.
      *
      * @param criteria the criteria which the requested entities should match.
