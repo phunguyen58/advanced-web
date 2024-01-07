@@ -12,6 +12,7 @@ import { Column } from 'primereact/column';
 import { ICourse } from 'app/shared/model/course.model';
 import { Button } from 'primereact/button';
 import { IGradeBoard } from 'app/shared/model/grade-board.model';
+import { getEntity } from 'app/entities/course/course-router/course.reducer';
 
 const ClassGrade = () => {
   const dt = useRef<DataTable<IGradeBoard[]>>(null);
@@ -34,6 +35,10 @@ const ClassGrade = () => {
       console.log(data);
     };
     fetch();
+  }, []);
+
+  useEffect(() => {
+    dispatch(getEntity(id));
   }, []);
 
   // Rest of your component code remains unchanged
