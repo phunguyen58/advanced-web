@@ -1,9 +1,25 @@
 package com.ptudw.web.service;
 
+import com.ptudw.web.domain.Assignment;
 import com.ptudw.web.domain.AssignmentGrade;
+import com.ptudw.web.domain.Course;
+import com.ptudw.web.domain.GradeBoard;
+import com.ptudw.web.domain.GradeComposition;
+import com.ptudw.web.domain.User;
+import com.ptudw.web.domain.UserCourse;
+import com.ptudw.web.domain.enumeration.GradeType;
 import com.ptudw.web.repository.AssignmentGradeRepository;
+import com.ptudw.web.repository.AssignmentRepository;
+import com.ptudw.web.repository.CourseRepository;
+import com.ptudw.web.repository.GradeCompositionRepository;
+import com.ptudw.web.repository.UserCourseRepository;
+import com.ptudw.web.repository.UserRepository;
+import com.ptudw.web.web.rest.AssignmentResource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -21,9 +37,87 @@ public class AssignmentGradeService {
     private final Logger log = LoggerFactory.getLogger(AssignmentGradeService.class);
 
     private final AssignmentGradeRepository assignmentGradeRepository;
+    private final UserCourseRepository userCourseRepository;
+    private final UserRepository userRepository;
+    private final AssignmentRepository assignmentRepository;
+    private final CourseRepository courseRepository;
+    private final GradeCompositionRepository gradeCompositionRepository;
 
-    public AssignmentGradeService(AssignmentGradeRepository assignmentGradeRepository) {
+    public AssignmentGradeService(
+        AssignmentGradeRepository assignmentGradeRepository,
+        UserCourseRepository userCourseRepository,
+        UserRepository userRepository,
+        AssignmentRepository assignmentRepository,
+        CourseRepository courseRepository,
+        GradeCompositionRepository gradeCompositionRepository
+    ) {
         this.assignmentGradeRepository = assignmentGradeRepository;
+        this.userCourseRepository = userCourseRepository;
+        this.userRepository = userRepository;
+        this.assignmentRepository = assignmentRepository;
+        this.courseRepository = courseRepository;
+        this.gradeCompositionRepository = gradeCompositionRepository;
+    }
+
+    public List<GradeBoard> getGradeBoardsByCourseId(Long courseId) {
+        List<UserCourse> userCourses = userCourseRepository.findAllByCourseId(courseId);
+        List<Long> userIds = userCourses.stream().map(userCourse -> userCourse.getUserId()).collect(Collectors.toList());
+        List<User> users = userRepository.findAllByIdIn(userIds);
+        Course course = courseRepository.findOneById(courseId);
+        List<Assignment> assignmentsInCourse = assignmentRepository.findAllByCourseId(courseId);
+        List<Long> assignmentsIdInCourse = assignmentsInCourse.stream().map(assignment -> assignment.getId()).collect(Collectors.toList());
+
+        List<GradeBoard> gradeBoards = new ArrayList();
+        users
+            .stream()
+            .forEach(user -> {
+                List<AssignmentGrade> userAssignmentGrades = assignmentGradeRepository.findAllByStudentId(user.getStudentId());
+                List<AssignmentGrade> userAssignmentGradesInCourse = userAssignmentGrades
+                    .stream()
+                    .filter(assignmentGrade -> assignmentsIdInCourse.contains(assignmentGrade.getAssignment().getId()))
+                    .collect(Collectors.toList());
+                GradeComposition gradeComposition = gradeCompositionRepository.findOneByCourseId(course.getId());
+                Double finalGrade = 0D;
+                if (gradeComposition.getType() != null && userAssignmentGradesInCourse.size() > 0) {
+                    if (gradeComposition.getType().equals(GradeType.PERCENTAGE)) {
+                        long a = userAssignmentGradesInCourse
+                            .stream()
+                            .map(grade -> grade.getGrade() / 100 * grade.getAssignment().getGradeComposition().getScale())
+                            .mapToLong(Long::longValue)
+                            .sum();
+                        long b = assignmentsInCourse
+                            .stream()
+                            .map(assignment -> assignment.getGradeComposition().getScale())
+                            .mapToLong(Long::longValue)
+                            .sum();
+                        finalGrade = (double) a / b;
+                    } else {
+                        long a = userAssignmentGradesInCourse.stream().map(grade -> grade.getGrade()).mapToLong(Long::longValue).sum();
+                        long b = assignmentsInCourse
+                            .stream()
+                            .map(assignment -> assignment.getGradeComposition().getScale())
+                            .mapToLong(Long::longValue)
+                            .sum();
+                        finalGrade = (double) a / b;
+                    }
+                }
+                gradeBoards.add(
+                    new GradeBoard(
+                        user,
+                        user.getStudentId(),
+                        userAssignmentGradesInCourse,
+                        assignmentsInCourse,
+                        finalGrade,
+                        gradeComposition.getType(),
+                        course
+                    )
+                );
+            });
+        // List<Assignment> assignments
+
+        log.debug("Request to get all AssignmentGrades");
+
+        return gradeBoards;
     }
 
     /**
