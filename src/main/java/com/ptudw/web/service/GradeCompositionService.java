@@ -86,6 +86,9 @@ public class GradeCompositionService {
                 if (gradeComposition.getIsPublic() != null) {
                     existingGradeComposition.setIsPublic(gradeComposition.getIsPublic());
                 }
+                if (gradeComposition.getPosition() != null) {
+                    existingGradeComposition.setPosition(gradeComposition.getPosition());
+                }
 
                 return existingGradeComposition;
             })

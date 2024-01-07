@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
@@ -44,6 +42,9 @@
             <column name="course_id" type="bigint">
                 <constraints nullable="true" />
             </column>
+            <column name="position" type="bigint">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
         <dropDefaultValue tableName="grade_composition" columnName="created_date" columnDataType="${datetimeType}"/>
@@ -61,11 +62,7 @@
           Spring Boot configuration key.
     -->
     <changeSet id="20231210053421-1-data" author="jhipster" context="faker">
-        <loadData
-                  file="config/liquibase/fake-data/grade_composition.csv"
-                  separator=";"
-                  tableName="grade_composition"
-                  usePreparedStatements="true">
+        <loadData file="config/liquibase/fake-data/grade_composition.csv" separator=";" tableName="grade_composition" usePreparedStatements="true">
             <column name="id" type="numeric"/>
             <column name="name" type="string"/>
             <column name="scale" type="numeric"/>

@@ -113,6 +113,9 @@ public class GradeCompositionQueryService extends QueryService<GradeComposition>
             if (criteria.getIsPublic() != null) {
                 specification = specification.and(buildSpecification(criteria.getIsPublic(), GradeComposition_.isPublic));
             }
+            if (criteria.getPosition() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getPosition(), GradeComposition_.position));
+            }
             if (criteria.getAssignmentsId() != null) {
                 specification =
                     specification.and(

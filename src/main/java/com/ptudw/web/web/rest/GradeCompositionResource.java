@@ -1,7 +1,9 @@
 package com.ptudw.web.web.rest;
 
+import com.ptudw.web.domain.Assignment;
 import com.ptudw.web.domain.Course;
 import com.ptudw.web.domain.GradeComposition;
+import com.ptudw.web.repository.AssignmentRepository;
 import com.ptudw.web.repository.CourseRepository;
 import com.ptudw.web.repository.GradeCompositionRepository;
 import com.ptudw.web.security.SecurityUtils;
@@ -13,7 +15,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import javax.validation.Valid;
@@ -54,16 +58,20 @@ public class GradeCompositionResource {
 
     private final CourseRepository courseRepository;
 
+    private final AssignmentRepository assignmentRepository;
+
     public GradeCompositionResource(
         GradeCompositionService gradeCompositionService,
         GradeCompositionRepository gradeCompositionRepository,
         GradeCompositionQueryService gradeCompositionQueryService,
-        CourseRepository courseRepository
+        CourseRepository courseRepository,
+        AssignmentRepository assignmentRepository
     ) {
         this.gradeCompositionService = gradeCompositionService;
         this.gradeCompositionRepository = gradeCompositionRepository;
         this.gradeCompositionQueryService = gradeCompositionQueryService;
         this.courseRepository = courseRepository;
+        this.assignmentRepository = assignmentRepository;
     }
 
     /**
@@ -95,23 +103,27 @@ public class GradeCompositionResource {
     ) throws URISyntaxException {
         log.debug("REST request to save GradeCompositions : {}", gradeCompositions);
         List<GradeComposition> result = new ArrayList<>();
+
         Optional<Course> course = courseRepository.findById(courseId);
         course.ifPresent(c -> {
             List<GradeComposition> gradeCompositionsInDB = gradeCompositionRepository.findAllByCourse(c);
             gradeCompositionsInDB.forEach(gradeComposition -> {
-                gradeComposition.setIsDeleted(true);
+                if (!gradeCompositions.contains(gradeComposition)) {
+                    gradeComposition.setIsDeleted(true);
+                }
             });
             gradeCompositionRepository.saveAll(gradeCompositionsInDB);
         });
+
         if (!gradeCompositions.isEmpty()) {
             gradeCompositions.forEach(gradeComposition -> {
-                gradeComposition.setId(null);
                 gradeComposition.setCreatedBy(SecurityUtils.getCurrentUserLogin().orElse("system"));
                 gradeComposition.setCreatedDate(ZonedDateTime.now());
                 gradeComposition.setLastModifiedBy(SecurityUtils.getCurrentUserLogin().orElse("system"));
                 gradeComposition.setLastModifiedDate(ZonedDateTime.now());
                 gradeComposition.setCourse(course.orElse(null));
             });
+
             result = gradeCompositionRepository.saveAll(gradeCompositions);
         }
         return ResponseEntity

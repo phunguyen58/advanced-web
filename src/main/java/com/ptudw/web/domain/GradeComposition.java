@@ -62,6 +62,9 @@ public class GradeComposition implements Serializable {
     @Column(name = "is_public")
     private Boolean isPublic;
 
+    @Column(name = "position")
+    private Long position;
+
     @OneToMany(mappedBy = "gradeComposition")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "assignmentGrades", "course", "gradeComposition" }, allowSetters = true)
@@ -247,6 +250,14 @@ public class GradeComposition implements Serializable {
         return this;
     }
 
+    public Long getPosition() {
+        return this.position;
+    }
+
+    public void setPosition(Long position) {
+        this.position = position;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -280,6 +291,7 @@ public class GradeComposition implements Serializable {
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
             ", type='" + getType() + "'" +
             ", isPublic='" + getIsPublic() + "'" +
+            ", position=" + getPosition() +
             "}";
     }
 }

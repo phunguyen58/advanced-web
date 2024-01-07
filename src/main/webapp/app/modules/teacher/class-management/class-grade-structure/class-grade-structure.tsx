@@ -49,7 +49,7 @@ const ClassGradeStructure = () => {
 
   useEffect(() => {
     getGradeCompositions(id).then(value => {
-      setGradeCompositions(value.data);
+      setGradeCompositions(value.data.sort((a, b) => a.position - b.position));
       setGradeType(value.data[0].type);
       setOldIsPublicNumber(value.data.filter(value1 => value1.isPublic).length);
       setIsLoading(false);
@@ -128,8 +128,9 @@ const ClassGradeStructure = () => {
               sendNotificationFinalizeGradeComposition('gradeCompositionFinalized', course.id, 'notification');
             }
 
-            data.gradeCompositions.forEach(value => {
+            data.gradeCompositions.forEach((value, i) => {
               value.type = gradeType;
+              value.position = i;
             });
             axios.post(`/api/grade-compositions/bulk/${course.id}`, data.gradeCompositions).then(res => {
               setGradeCompositions(res.data);

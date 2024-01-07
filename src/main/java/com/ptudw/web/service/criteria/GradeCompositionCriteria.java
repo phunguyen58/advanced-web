@@ -63,6 +63,8 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
 
     private LongFilter courseId;
 
+    private LongFilter position;
+
     private Boolean distinct;
 
     public GradeCompositionCriteria() {}
@@ -80,6 +82,7 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         this.isPublic = other.isPublic == null ? null : other.isPublic.copy();
         this.assignmentsId = other.assignmentsId == null ? null : other.assignmentsId.copy();
         this.courseId = other.courseId == null ? null : other.courseId.copy();
+        this.position = other.position == null ? null : other.position.copy();
         this.distinct = other.distinct;
     }
 
@@ -276,6 +279,21 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         this.distinct = distinct;
     }
 
+    public LongFilter getPosition() {
+        return position;
+    }
+
+    public LongFilter position() {
+        if (position == null) {
+            position = new LongFilter();
+        }
+        return position;
+    }
+
+    public void setPosition(LongFilter position) {
+        this.position = position;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -298,6 +316,7 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
             Objects.equals(isPublic, that.isPublic) &&
             Objects.equals(assignmentsId, that.assignmentsId) &&
             Objects.equals(courseId, that.courseId) &&
+            Objects.equals(position, that.position) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -317,6 +336,7 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
             isPublic,
             assignmentsId,
             courseId,
+            position,
             distinct
         );
     }
@@ -338,6 +358,7 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
             (assignmentsId != null ? "assignmentsId=" + assignmentsId + ", " : "") +
             (courseId != null ? "courseId=" + courseId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
+            (position != null ? "position=" + position + ", " : "") +
             "}";
     }
 }

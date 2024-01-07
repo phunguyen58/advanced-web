@@ -6,7 +6,8 @@
         "refreshListLabel": "Refresh list",
         "createLabel": "Thêm mới một Assignment Grade",
         "createOrEditLabel": "Thêm mới hoặc cập nhật Assignment Grade",
-        "notFound": "No Assignment Grades found"
+        "notFound": "No Assignment Grades found",
+        "createList": "Thêm mới danh sách điểm bài tập"
       },
       "created": "Một Assignment Grade mới được tạo với định danh {{ param }}",
       "updated": "Một Assignment Grade cập nhật với định danh {{ param }}",

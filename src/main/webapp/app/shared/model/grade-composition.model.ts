@@ -16,6 +16,7 @@ export interface IGradeComposition {
   isPublic?: boolean | null;
   assignments?: IAssignment[] | null;
   course?: ICourse | null;
+  position?: number | null;
 }
 
 export const defaultValue: Readonly<IGradeComposition> = {

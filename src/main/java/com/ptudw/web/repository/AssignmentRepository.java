@@ -1,6 +1,7 @@
 package com.ptudw.web.repository;
 
 import com.ptudw.web.domain.Assignment;
+import com.ptudw.web.domain.Course;
 import java.util.List;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
