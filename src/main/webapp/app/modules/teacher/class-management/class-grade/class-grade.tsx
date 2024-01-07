@@ -32,13 +32,11 @@ const ClassGrade = () => {
     const fetch = async () => {
       const gradeboards = (await getGradeBoards(id)).data;
       setData(gradeboards);
-      console.log(data);
+      return gradeboards;
     };
-    fetch();
-  }, []);
-
-  useEffect(() => {
-    dispatch(getEntity(id));
+    fetch().then(value => {
+      console.log('value: ', value);
+    });
   }, []);
 
   // Rest of your component code remains unchanged
@@ -46,13 +44,15 @@ const ClassGrade = () => {
   const exportCSV = () => {
     const exportedData = data.map(row => {
       const rowData = {
-        studentId: row.user.studentId,
+        [translate('webApp.classManagement.studentId')]: row.user.studentId,
       };
 
-      course.assignments?.forEach((assignment, index) => {
-        const assignmentGrade = row.userAssignmentsGradesInCourse?.find(value => value.assignment?.id === assignment?.id);
+      // const assignmentGrade = rowData.userAssignmentGradesInCourse.find(value => value.assignment?.id === assignment?.id);
+      data?.[0].assignmentsInCourse?.forEach((assignment, index) => {
+        const assignmentGrade = row.userAssignmentGradesInCourse?.find(value => value.assignment?.id === assignment?.id);
         rowData[assignment.name] = assignmentGrade ? assignmentGrade.grade : null;
       });
+      rowData[translate('webApp.classManagement.finalGrade')] = row.finalGrade ? String(row.finalGrade) : null;
 
       return rowData;
     });
@@ -73,13 +73,15 @@ const ClassGrade = () => {
     import('xlsx').then(xlsx => {
       const exportedData = data.map(row => {
         const rowData = {
-          'Student ID': row.user.studentId,
+          [translate('webApp.classManagement.studentId')]: row.user.studentId,
         };
 
-        course.assignments?.forEach((assignment, index) => {
-          const assignmentGrade = row.userAssignmentsGradesInCourse?.find(value => value.assignment?.id === assignment?.id);
+        data?.[0].assignmentsInCourse.forEach((assignment, index) => {
+          const assignmentGrade = row.userAssignmentGradesInCourse?.find(value => value.assignment?.id === assignment?.id);
           rowData[assignment.name] = assignmentGrade ? assignmentGrade.grade : null;
         });
+
+        rowData[translate('webApp.classManagement.finalGrade')] = row.finalGrade ? String(row.finalGrade) : null;
 
         return rowData;
       });
@@ -111,18 +113,19 @@ const ClassGrade = () => {
       <DataTable ref={dt} stripedRows={true} value={data} tableStyle={{ minWidth: '50rem' }} header={header}>
         <Column key={'studentId'} field="studentId" header={translate('webApp.classManagement.studentId')}></Column>
         {/* TODO: implement final grade */}
-        {course.assignments?.map((assignment, index) => (
-          <Column
-            key={'studentId'}
-            header={assignment.name}
-            field={assignment.name}
-            body={(rowData: IGradeBoard) => {
-              const assignmentGrade = rowData.userAssignmentsGradesInCourse?.filter(value => value.assignment?.id === assignment?.id)?.[0];
-
-              return assignmentGrade ? assignmentGrade.grade : null;
-            }}
-          ></Column>
-        ))}
+        {data.length > 0
+          ? data[0].assignmentsInCourse?.map((assignment, index) => (
+              <Column
+                key={'studentId'}
+                header={assignment.name}
+                field={assignment.name}
+                body={(rowData: IGradeBoard) => {
+                  const assignmentGrade = rowData.userAssignmentGradesInCourse.find(value => value.assignment?.id === assignment?.id);
+                  return assignmentGrade ? assignmentGrade.grade : null;
+                }}
+              ></Column>
+            ))
+          : null}
         <Column key={'studentId'} field="finalGrade" header={translate('webApp.classManagement.finalGrade')}></Column>
       </DataTable>
     </div>

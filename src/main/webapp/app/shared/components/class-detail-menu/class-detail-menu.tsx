@@ -44,7 +44,7 @@ export const ClassDetailMenu = () => {
     if (path) {
       setActiveIndex(TAB_NAME[path]);
     }
-  });
+  }, []);
 
   const { id } = useParams<'id'>();
   const [searchParams] = useSearchParams();

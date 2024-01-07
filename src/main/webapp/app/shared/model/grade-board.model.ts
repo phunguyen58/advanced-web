@@ -7,7 +7,7 @@ import { IUser } from './user.model';
 export interface IGradeBoard {
   user?: IUser | null;
   studentId?: string | null;
-  userAssignmentsGradesInCourse?: IAssignmentGrade[] | null;
+  userAssignmentGradesInCourse?: IAssignmentGrade[] | null;
   assignmentsInCourse?: IAssignment[] | null;
   finalGrade?: number | null;
   gradeType?: GradeType | null;

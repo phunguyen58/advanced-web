@@ -2,6 +2,7 @@ package com.ptudw.web.service;
 
 import com.ptudw.web.domain.Assignment;
 import com.ptudw.web.domain.AssignmentGrade;
+import com.ptudw.web.domain.Authority;
 import com.ptudw.web.domain.Course;
 import com.ptudw.web.domain.GradeBoard;
 import com.ptudw.web.domain.GradeComposition;
@@ -10,6 +11,7 @@ import com.ptudw.web.domain.UserCourse;
 import com.ptudw.web.domain.enumeration.GradeType;
 import com.ptudw.web.repository.AssignmentGradeRepository;
 import com.ptudw.web.repository.AssignmentRepository;
+import com.ptudw.web.repository.AuthorityRepository;
 import com.ptudw.web.repository.CourseRepository;
 import com.ptudw.web.repository.GradeCompositionRepository;
 import com.ptudw.web.repository.UserCourseRepository;
@@ -42,6 +44,7 @@ public class AssignmentGradeService {
     private final AssignmentRepository assignmentRepository;
     private final CourseRepository courseRepository;
     private final GradeCompositionRepository gradeCompositionRepository;
+    private final AuthorityRepository authorityRepository;
 
     public AssignmentGradeService(
         AssignmentGradeRepository assignmentGradeRepository,
@@ -49,7 +52,8 @@ public class AssignmentGradeService {
         UserRepository userRepository,
         AssignmentRepository assignmentRepository,
         CourseRepository courseRepository,
-        GradeCompositionRepository gradeCompositionRepository
+        GradeCompositionRepository gradeCompositionRepository,
+        AuthorityRepository authorityRepository
     ) {
         this.assignmentGradeRepository = assignmentGradeRepository;
         this.userCourseRepository = userCourseRepository;
@@ -57,12 +61,17 @@ public class AssignmentGradeService {
         this.assignmentRepository = assignmentRepository;
         this.courseRepository = courseRepository;
         this.gradeCompositionRepository = gradeCompositionRepository;
+        this.authorityRepository = authorityRepository;
     }
 
     public List<GradeBoard> getGradeBoardsByCourseId(Long courseId) {
         List<UserCourse> userCourses = userCourseRepository.findAllByCourseId(courseId);
         List<Long> userIds = userCourses.stream().map(userCourse -> userCourse.getUserId()).collect(Collectors.toList());
-        List<User> users = userRepository.findAllByIdIn(userIds);
+        List<User> users = userRepository
+            .findAllByIdIn(userIds)
+            .stream()
+            .filter(user -> !user.getAuthorities().contains(authorityRepository.findOneByName("ROLE_TEACHER")))
+            .collect(Collectors.toList());
         Course course = courseRepository.findOneById(courseId);
         List<Assignment> assignmentsInCourse = assignmentRepository.findAllByCourseId(courseId);
         List<Long> assignmentsIdInCourse = assignmentsInCourse.stream().map(assignment -> assignment.getId()).collect(Collectors.toList());
