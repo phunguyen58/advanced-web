@@ -45,7 +45,14 @@ export const AssignmentUpdate = () => {
     }
 
     // dispatch(getCourses({}));
-    // dispatch(getGradeCompositions({}));
+    dispatch(
+      getGradeCompositions({
+        page: 0,
+        size: 100,
+        sort: 'id,asc',
+        query: `courseId.equals=${id}&isDeleted.equals=false`,
+      })
+    );
   }, []);
 
   useEffect(() => {
@@ -68,7 +75,8 @@ export const AssignmentUpdate = () => {
     };
 
     if (isNew) {
-      entity.course = { id: id };
+      entity.course = { id };
+      entity.gradeComposition = { id: values.gradeComposition };
       dispatch(createEntity(entity));
     } else {
       dispatch(updateEntity(entity));
@@ -80,11 +88,13 @@ export const AssignmentUpdate = () => {
       ? {
           createdDate: displayDefaultDateTime(),
           lastModifiedDate: displayDefaultDateTime(),
+          gradeComposition: gradeCompositions[0]?.id,
         }
       : {
           ...assignmentEntity,
           createdDate: convertDateTimeFromServer(assignmentEntity.createdDate),
           lastModifiedDate: convertDateTimeFromServer(assignmentEntity.lastModifiedDate),
+          gradeComposition: assignmentEntity.gradeComposition?.id,
         };
 
   return (
@@ -213,7 +223,7 @@ export const AssignmentUpdate = () => {
                 {gradeCompositions
                   ? gradeCompositions.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.id}
+                        {otherEntity.name} - {otherEntity.scale} - {otherEntity.type}
                       </option>
                     ))
                   : null}
