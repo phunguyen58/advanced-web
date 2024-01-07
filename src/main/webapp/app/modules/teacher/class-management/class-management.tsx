@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import CreateClassModal from '../../../shared/components/create-class-modal/create-class-modal';
 import { convertDateTimeToServer } from 'app/shared/util/date-utils';
-import { createEntity, getEntities } from 'app/entities/course/course-router/course.reducer';
+import { createEntity, getEntities, getMyCourses } from 'app/entities/course/course-router/course.reducer';
 import { Button } from 'primereact/button';
 import ClassCard from '../../../shared/components/class-card/class-card';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -13,6 +13,7 @@ import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.cons
 import { JhiItemCount, JhiPagination, Translate, getSortState, translate } from 'react-jhipster';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { ICourse } from 'app/shared/model/course.model';
+import { AUTHORITIES } from 'app/config/constants';
 
 export const ClassManagement = () => {
   const dispatch = useAppDispatch();
@@ -29,7 +30,7 @@ export const ClassManagement = () => {
 
   const getAllEntities = () => {
     dispatch(
-      getEntities({
+      getMyCourses({
         page: paginationState.activePage - 1,
         size: paginationState.itemsPerPage,
         sort: `${paginationState.sort},${paginationState.order}`,
@@ -106,12 +107,14 @@ export const ClassManagement = () => {
         <h2 id="course-heading" data-cy="CourseHeading">
           <Translate contentKey="webApp.course.home.classManagement">Courses</Translate>
         </h2>
-        <Button
-          className="aw-create-class-btn mt-3 mr-4"
-          label={translate('webApp.classManagement.createClassButton')}
-          icon="pi pi-plus"
-          onClick={() => setVisible(true)}
-        />
+        {account.authorities.includes(AUTHORITIES.TEACHER) && (
+          <Button
+            className="aw-create-class-btn mt-3 mr-4"
+            label={translate('webApp.classManagement.createClassButton')}
+            icon="pi pi-plus"
+            onClick={() => setVisible(true)}
+          />
+        )}
       </div>
       <CreateClassModal visible={visible} setVisible={toggleModal} onCreateClass={handleCreateClass}></CreateClassModal>
       <div className="d-flex flex-wrap gap-3 p-3">
