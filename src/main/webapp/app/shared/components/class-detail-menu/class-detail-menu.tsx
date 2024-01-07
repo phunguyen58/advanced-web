@@ -159,6 +159,7 @@ export const ClassDetailMenu = () => {
           <div
             className="w-100 p-2"
             style={{
+              height: '55px',
               padding: '2px',
               borderRadius: '10px',
               background:
