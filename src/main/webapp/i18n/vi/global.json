@@ -164,6 +164,7 @@
   "pushNotification": {
     "gradeReviewCreated": "Có yêu cầu phúc khảo mới vừa được tạo.",
     "gradeReviewCompleted": "Yêu cầu phúc khảo đã được xử lý.",
-    "newComment": "Có bình luận mới vừa được tạo."
+    "newComment": "Có bình luận mới vừa được tạo.",
+    "gradeCompositionFinalized": "Đã hoàn thành cấu trúc điểm."
   }
 }

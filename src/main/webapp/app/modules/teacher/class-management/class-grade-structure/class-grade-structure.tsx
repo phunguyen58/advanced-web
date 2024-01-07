@@ -1,204 +1,226 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Button } from 'primereact/button';
-import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
-import { Formik, Field, Form, useFormik, FieldArray, FieldArrayRenderProps } from 'formik';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Button, Table } from 'reactstrap';
+import { Translate, TextFormat, getSortState, JhiPagination, JhiItemCount } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { translate, Translate } from 'react-jhipster';
-import { GradeType } from 'app/shared/model/enumerations/grade-type.model';
+
+import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
+import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
+import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
-import * as _ from 'lodash';
-import './class-grade-structure.scss';
-import { IGradeComposition } from 'app/shared/model/grade-composition.model';
-import {
-  createGradeComposition,
-  deleteGradeComposition,
-  getCourse,
-  getGradeCompositionByCourseId,
-  getGradeCompositions,
-  updateGradeComposition,
-} from './class-grade-structure-util';
-import { ICourse } from 'app/shared/model/course.model';
 
-export interface FormData {
-  gradeCompositions: IGradeComposition[];
-}
+import { IGradeStructure } from 'app/shared/model/grade-structure.model';
+import { getEntities } from './grade-structure.reducer';
 
-const ClassGradeStructure = () => {
+export const GradeStructure = () => {
   const dispatch = useAppDispatch();
+
+  const location = useLocation();
   const navigate = useNavigate();
-  const { id } = useParams<'id'>();
-  const account = useAppSelector(state => state.authentication.account);
-  const isNew = id === undefined;
 
-  const [gradeCompositions, setGradeCompositions] = useState<IGradeComposition[]>([]);
-  const [gradeType, setGradeType] = useState<GradeType>(GradeType.NONE);
+  const [paginationState, setPaginationState] = useState(
+    overridePaginationStateWithQueryParams(getSortState(location, ITEMS_PER_PAGE, 'id'), location.search)
+  );
+
+  const gradeStructureList = useAppSelector(state => state.gradeStructure.entities);
   const loading = useAppSelector(state => state.gradeStructure.loading);
-  const updating = useAppSelector(state => state.gradeStructure.updating);
-  const updateSuccess = useAppSelector(state => state.gradeStructure.updateSuccess);
-  const [course, setCourse] = useState<ICourse>();
+  const totalItems = useAppSelector(state => state.gradeStructure.totalItems);
 
-  useEffect(() => {
-    getGradeCompositions(1).then(value => setGradeCompositions(value.data));
-  }, []);
-
-  const handleClose = () => {
-    navigate('/grade-structure');
+  const getAllEntities = () => {
+    dispatch(
+      getEntities({
+        page: paginationState.activePage - 1,
+        size: paginationState.itemsPerPage,
+        sort: `${paginationState.sort},${paginationState.order}`,
+      })
+    );
   };
 
-  useEffect(() => {
-    getCourse(id).then(value => setCourse(value.data));
-  }, []);
-
-  useEffect(() => {
-    if (updateSuccess) {
-      handleClose();
+  const sortEntities = () => {
+    getAllEntities();
+    const endURL = `?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`;
+    if (location.search !== endURL) {
+      navigate(`${location.pathname}${endURL}`);
     }
-  }, [updateSuccess]);
-
-  const saveEntity = values => {
-    values.createdDate = convertDateTimeToServer(values.createdDate);
-    values.lastModifiedDate = convertDateTimeToServer(values.lastModifiedDate);
-
-    const entity = {
-      ...gradeCompositions,
-      ...values,
-    };
   };
 
-  const defaultValues = () => {
-    return { type: 'PERCENTAGE', scale: 0, createdDate: displayDefaultDateTime(), lastModifiedDate: displayDefaultDateTime() };
+  useEffect(() => {
+    sortEntities();
+  }, [paginationState.activePage, paginationState.order, paginationState.sort]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const page = params.get('page');
+    const sort = params.get(SORT);
+    if (page && sort) {
+      const sortSplit = sort.split(',');
+      setPaginationState({
+        ...paginationState,
+        activePage: +page,
+        sort: sortSplit[0],
+        order: sortSplit[1],
+      });
+    }
+  }, [location.search]);
+
+  const sort = p => () => {
+    setPaginationState({
+      ...paginationState,
+      order: paginationState.order === ASC ? DESC : ASC,
+      sort: p,
+    });
+  };
+
+  const handlePagination = currentPage =>
+    setPaginationState({
+      ...paginationState,
+      activePage: currentPage,
+    });
+
+  const handleSyncList = () => {
+    sortEntities();
   };
 
   return (
-    <div className="d-flex aw-class-grade-structure-container flex-column">
-      <div className="aw-grade-type d-flex flex-column">
-        <label htmlFor="type">
-          <Translate contentKey="webApp.gradeStructure.type">Type</Translate>
-        </label>
-        <Dropdown
-          name="type"
-          options={Object.keys(GradeType).map(type => ({ label: translate(`webApp.GradeType.${type}`), value: type }))}
-          value={gradeType}
-          onChange={(e: DropdownChangeEvent) => {
-            setGradeType(e.value);
-          }}
-          placeholder={translate('webApp.gradeStructure.type')}
-        />
-      </div>
-      <div className="aw-form">
-        <Formik
-          initialValues={{ gradeCompositions: gradeCompositions } as FormData}
-          enableReinitialize
-          onSubmit={async (data: FormData) => {
-            // await new Promise(r => setTimeout(r, 500));
-            gradeCompositions.map(value => {
-              return { ...value, type: gradeType };
-            });
-            const gradeIds = gradeCompositions.map(value => value.id).filter(id => id !== null);
-            data = {
-              gradeCompositions: data.gradeCompositions.map(value => {
-                return { ...value, type: gradeType };
-              }),
-            };
-
-            const newGradeComposition = data.gradeCompositions.filter(composition => !composition.id);
-            const oldGradeComposition = data.gradeCompositions.filter(composition => composition.id && gradeIds.includes(composition.id));
-            const deletedGradeComposition = gradeCompositions.filter(
-              composition => data.gradeCompositions.findIndex(value => value.id === composition.id) === -1
-            );
-
-            newGradeComposition
-              .map(value => {
-                return {
-                  ...value,
-                  createdDate: convertDateTimeToServer(value.createdDate),
-                  lastModifiedDate: convertDateTimeToServer(value.lastModifiedDate),
-                  course: course,
-                };
-              })
-              .forEach(value => {
-                try {
-                  createGradeComposition(value);
-                } catch (error) {
-                  console.error(error);
-                }
-              });
-            oldGradeComposition.forEach(value => {
-              try {
-                updateGradeComposition(value);
-              } catch (error) {
-                console.error(error);
-              }
-            });
-            deletedGradeComposition.forEach(value => {
-              try {
-                updateGradeComposition({ ...value, isDeleted: true });
-              } catch (error) {
-                console.error(error);
-              }
-            });
-          }}
-        >
-          {({ values }) => (
-            <Form>
-              <FieldArray name="gradeCompositions">
-                {({ insert, remove, push }) => (
-                  <div className="aw-composition-item">
-                    {values.gradeCompositions.length > 0 &&
-                      values.gradeCompositions.map((composition, index) => (
-                        <div className="row" key={index}>
-                          <div className="col">
-                            <label htmlFor={`gradeCompositions.${index}.name`}>Name</label>
-                            <Field name={`gradeCompositions.${index}.name`} type="text" />
-                          </div>
-                          <div className="col">
-                            <label htmlFor={`gradeCompositions.${index}.scale`}>Scale</label>
-                            <Field name={`gradeCompositions.${index}.scale`} type="number" />
-                          </div>
-                          <div className="col aw-is-public-checkbox">
-                            <label htmlFor={`gradeCompositions.${index}.isPublic`}>isPublic</label>
-                            <Field name={`gradeCompositions.${index}.isPublic`} type="checkbox" />
-                          </div>
-                          <div className="col aw-delete-btn-container">
-                            <button type="button" className="secondary aw-delete-btn" onClick={() => remove(index)}>
-                              X
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    <div
-                      className="aw-add-btn"
-                      onClick={() =>
-                        push({
-                          type: gradeType,
-                          createdDate: displayDefaultDateTime(),
-                          lastModifiedDate: displayDefaultDateTime(),
-                          scale: 10,
-                          isDeleted: false,
-                          createdBy: account.login,
-                          lastModifiedBy: account.login,
-                          isPublic: false,
-                        } as IGradeComposition)
-                      }
-                    >
-                      Add composition
+    <div>
+      <h2 id="grade-structure-heading" data-cy="GradeStructureHeading">
+        <Translate contentKey="webApp.gradeStructure.home.title">Grade Structures</Translate>
+        <div className="d-flex justify-content-end">
+          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
+            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
+            <Translate contentKey="webApp.gradeStructure.home.refreshListLabel">Refresh List</Translate>
+          </Button>
+          <Link to="/grade-structure/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+            <FontAwesomeIcon icon="plus" />
+            &nbsp;
+            <Translate contentKey="webApp.gradeStructure.home.createLabel">Create new Grade Structure</Translate>
+          </Link>
+        </div>
+      </h2>
+      <div className="table-responsive">
+        {gradeStructureList && gradeStructureList.length > 0 ? (
+          <Table responsive>
+            <thead>
+              <tr>
+                <th className="hand" onClick={sort('id')}>
+                  <Translate contentKey="webApp.gradeStructure.id">ID</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('courseId')}>
+                  <Translate contentKey="webApp.gradeStructure.courseId">Course Id</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('isDeleted')}>
+                  <Translate contentKey="webApp.gradeStructure.isDeleted">Is Deleted</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('createdBy')}>
+                  <Translate contentKey="webApp.gradeStructure.createdBy">Created By</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('createdDate')}>
+                  <Translate contentKey="webApp.gradeStructure.createdDate">Created Date</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('lastModifiedBy')}>
+                  <Translate contentKey="webApp.gradeStructure.lastModifiedBy">Last Modified By</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('lastModifiedDate')}>
+                  <Translate contentKey="webApp.gradeStructure.lastModifiedDate">Last Modified Date</Translate>{' '}
+                  <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('type')}>
+                  <Translate contentKey="webApp.gradeStructure.type">Type</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {gradeStructureList.map((gradeStructure, i) => (
+                <tr key={`entity-${i}`} data-cy="entityTable">
+                  <td>
+                    <Button tag={Link} to={`/grade-structure/${gradeStructure.id}`} color="link" size="sm">
+                      {gradeStructure.id}
+                    </Button>
+                  </td>
+                  <td>{gradeStructure.courseId}</td>
+                  <td>{gradeStructure.isDeleted ? 'true' : 'false'}</td>
+                  <td>{gradeStructure.createdBy}</td>
+                  <td>
+                    {gradeStructure.createdDate ? (
+                      <TextFormat type="date" value={gradeStructure.createdDate} format={APP_DATE_FORMAT} />
+                    ) : null}
+                  </td>
+                  <td>{gradeStructure.lastModifiedBy}</td>
+                  <td>
+                    {gradeStructure.lastModifiedDate ? (
+                      <TextFormat type="date" value={gradeStructure.lastModifiedDate} format={APP_DATE_FORMAT} />
+                    ) : null}
+                  </td>
+                  <td>
+                    <Translate contentKey={`webApp.GradeType.${gradeStructure.type}`} />
+                  </td>
+                  <td className="text-end">
+                    <div className="btn-group flex-btn-group-container">
+                      <Button tag={Link} to={`/grade-structure/${gradeStructure.id}`} color="info" size="sm" data-cy="entityDetailsButton">
+                        <FontAwesomeIcon icon="eye" />{' '}
+                        <span className="d-none d-md-inline">
+                          <Translate contentKey="entity.action.view">View</Translate>
+                        </span>
+                      </Button>
+                      <Button
+                        tag={Link}
+                        to={`/grade-structure/${gradeStructure.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
+                        color="primary"
+                        size="sm"
+                        data-cy="entityEditButton"
+                      >
+                        <FontAwesomeIcon icon="pencil-alt" />{' '}
+                        <span className="d-none d-md-inline">
+                          <Translate contentKey="entity.action.edit">Edit</Translate>
+                        </span>
+                      </Button>
+                      <Button
+                        tag={Link}
+                        to={`/grade-structure/${gradeStructure.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
+                        color="danger"
+                        size="sm"
+                        data-cy="entityDeleteButton"
+                      >
+                        <FontAwesomeIcon icon="trash" />{' '}
+                        <span className="d-none d-md-inline">
+                          <Translate contentKey="entity.action.delete">Delete</Translate>
+                        </span>
+                      </Button>
                     </div>
-                  </div>
-                )}
-              </FieldArray>
-              <Button color="primary" id="save-entity" type="submit" disabled={updating}>
-                <FontAwesomeIcon icon="save" />
-                &nbsp;
-                <Translate contentKey="entity.action.save">Save</Translate>
-              </Button>
-            </Form>
-          )}
-        </Formik>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        ) : (
+          !loading && (
+            <div className="alert alert-warning">
+              <Translate contentKey="webApp.gradeStructure.home.notFound">No Grade Structures found</Translate>
+            </div>
+          )
+        )}
       </div>
+      {totalItems ? (
+        <div className={gradeStructureList && gradeStructureList.length > 0 ? '' : 'd-none'}>
+          <div className="justify-content-center d-flex">
+            <JhiItemCount page={paginationState.activePage} total={totalItems} itemsPerPage={paginationState.itemsPerPage} i18nEnabled />
+          </div>
+          <div className="justify-content-center d-flex">
+            <JhiPagination
+              activePage={paginationState.activePage}
+              onSelect={handlePagination}
+              maxButtons={5}
+              itemsPerPage={paginationState.itemsPerPage}
+              totalItems={totalItems}
+            />
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   );
 };
 
-export default ClassGradeStructure;
+export default GradeStructure;

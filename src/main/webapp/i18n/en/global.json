@@ -159,6 +159,7 @@
   "pushNotification": {
     "gradeReviewCreated": "A new grade review has been created.",
     "gradeReviewCompleted": "A grade review has been completed.",
-    "newComment": "A new comment has been added to your grade review."
+    "newComment": "A new comment has been added to your grade review.",
+    "gradeCompositionFinalized": "A grade composition has been finalized."
   }
 }

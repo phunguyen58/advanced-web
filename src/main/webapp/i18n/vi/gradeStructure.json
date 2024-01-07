@@ -24,7 +24,8 @@
       "createdDate": "Created Date",
       "lastModifiedBy": "Last Modified By",
       "lastModifiedDate": "Last Modified Date",
-      "type": "Type"
+      "type": "Type",
+      "saveSuccess": "Cấu trúc điểm đã cập nhật!"
     }
   }
 }

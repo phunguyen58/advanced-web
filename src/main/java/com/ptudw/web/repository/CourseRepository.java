@@ -16,4 +16,6 @@ import org.springframework.stereotype.Repository;
 public interface CourseRepository extends JpaRepository<Course, Long>, JpaSpecificationExecutor<Course> {
     Optional<Course> findOneByCode(String code);
     Page<Course> findAllByIdInAndIsDeleted(List<Long> courseId, Boolean isDeleted, Pageable pageable);
+    Page<Course> findAllByIdIn(List<Long> courseId, Pageable pageable);
+    Course findOneById(Long id);
 }

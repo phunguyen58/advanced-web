@@ -2,6 +2,7 @@ package com.ptudw.web.web.rest;
 
 import com.ptudw.web.domain.Assignment;
 import com.ptudw.web.domain.AssignmentGrade;
+import com.ptudw.web.domain.GradeBoard;
 import com.ptudw.web.domain.User;
 import com.ptudw.web.domain.UserCourse;
 import com.ptudw.web.repository.AssignmentGradeRepository;
@@ -200,6 +201,20 @@ public class AssignmentGradeResource {
     public ResponseEntity<Long> countAssignmentGrades(AssignmentGradeCriteria criteria) {
         log.debug("REST request to count AssignmentGrades by criteria: {}", criteria);
         return ResponseEntity.ok().body(assignmentGradeQueryService.countByCriteria(criteria));
+    }
+
+    /**
+     * {@code GET  /assignment-grades} : get all the assignmentGrades.
+     *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of assignmentGrades in body.
+     */
+    @GetMapping("/assignment-grades/grade-board/course-id/{id}")
+    public ResponseEntity<List<GradeBoard>> getAllAssignmentGrades(@PathVariable(value = "id", required = false) final Long id) {
+        log.debug("REST request to get AssignmentGrades by criteria: {}", id);
+        List<GradeBoard> gradeBoards = assignmentGradeService.getGradeBoardsByCourseId(id);
+        return ResponseEntity.ok().body(gradeBoards);
     }
 
     /**

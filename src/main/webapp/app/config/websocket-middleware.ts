@@ -93,6 +93,16 @@ export const sendNotificationTeacherCommentOnGradeReview = (message: string, gra
   }
 };
 
+export const sendNotificationFinalizeGradeComposition = (message: string, courseId: number, type: string) => {
+  if (stompClient !== null && stompClient.connected) {
+    stompClient.send(
+      '/notification-finalize-grade-composition', // destination
+      JSON.stringify({ message, courseId, type }), // body
+      {} // header
+    );
+  }
+};
+
 const subscribe = () => {
   connection.then(() => {
     subscriber = stompClient.subscribe('/topic/tracker', data => {
@@ -102,6 +112,9 @@ const subscribe = () => {
       listenerObserver.next(JSON.parse(data.body));
     });
     subscriber = stompClient.subscribe('/notification-teacher', data => {
+      listenerObserver.next(JSON.parse(data.body));
+    });
+    subscriber = stompClient.subscribe('/notification-finalize-grade-composition', data => {
       listenerObserver.next(JSON.parse(data.body));
     });
   });
