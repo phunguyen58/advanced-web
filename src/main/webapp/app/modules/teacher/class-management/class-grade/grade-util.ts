@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { IAssignmentGrade } from 'app/shared/model/assignment-grade.model';
 import { IAssignment } from 'app/shared/model/assignment.model';
 import { ICourse } from 'app/shared/model/course.model';
+import { IGradeBoard } from 'app/shared/model/grade-board.model';
 import { IUserCourse } from 'app/shared/model/user-course.model';
 import { IUser } from 'app/shared/model/user.model';
 import { IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
@@ -20,6 +21,10 @@ export const getAssimentGrades = studentId => {
   return axios.get<IAssignmentGrade[]>(requestUrl);
 };
 
+export const getGradeBoards = courseId => {
+  const requestUrl = `${assignmentGradeUrl}/grade-board/course-id/${courseId}`;
+  return axios.get<IGradeBoard[]>(requestUrl);
+};
 export const getUserById = id => {
   const requestUrl = `${userUrl}/user-id/${id}`;
   return axios.get<IUser>(requestUrl);

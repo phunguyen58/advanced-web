@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AssignmentGradeRepository extends JpaRepository<AssignmentGrade, Long>, JpaSpecificationExecutor<AssignmentGrade> {
     List<AssignmentGrade> findAllByAssignmentId(Long assignmentId);
+    List<AssignmentGrade> findAllByStudentId(String studentId);
 }
