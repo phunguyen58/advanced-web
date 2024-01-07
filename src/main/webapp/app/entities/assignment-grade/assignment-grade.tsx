@@ -109,9 +109,9 @@ export const AssignmentGrade = () => {
 
   const handleToShowGradeReview = assignmentGrade => {
     if (assignmentGrade.gradeReviewId) {
-      navigate(`/grade-review/${assignmentGrade.id}/edit`);
+      window.location.href = `course/${courseId}/detail/grade-review/${assignmentGrade.gradeReviewId}/edit`;
     } else {
-      navigate(`/grade-review/new?assignmentGradeId=${assignmentGrade.id}`);
+      window.location.href = `course/${courseId}/detail/grade-review/new?assignmentGradeId=${assignmentGrade.id}`;
     }
   };
 
@@ -162,10 +162,14 @@ export const AssignmentGrade = () => {
       <h2 id="assignment-grade-heading" data-cy="AssignmentGradeHeading">
         <Translate contentKey="webApp.assignmentGrade.home.title">Assignment Grades</Translate>
         <div className="d-flex justify-content-end">
-          <label htmlFor="fileInput" className="custom-file-upload">
-            {translate('userManagement.importExcel')}
-          </label>
-          <input id="fileInput" type="file" onChange={onFileChange} style={{ display: 'none' }} ref={excelFileInputRef} />
+          {account && account.authorities.includes('ROLE_TEACHER') && (
+            <>
+              <label htmlFor="fileInput" className="custom-file-upload">
+                {translate('userManagement.importExcel')}
+              </label>
+              <input id="fileInput" type="file" onChange={onFileChange} style={{ display: 'none' }} ref={excelFileInputRef} />
+            </>
+          )}
           <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
             <Translate contentKey="webApp.assignmentGrade.home.refreshListLabel">Refresh List</Translate>

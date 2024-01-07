@@ -40,7 +40,7 @@ export const GradeReviewUpdate = () => {
   const searchParams = new URLSearchParams(location.search);
   const assignmentGradeId = searchParams.get('assignmentGradeId');
 
-  const isNew = id === undefined;
+  const isNew = Boolean(assignmentGradeId);
 
   const account = useAppSelector(state => state.authentication.account);
   const gradeReviewEntity = useAppSelector(state => state.gradeReview.entity);
@@ -49,7 +49,8 @@ export const GradeReviewUpdate = () => {
   const updateSuccess = useAppSelector(state => state.gradeReview.updateSuccess);
 
   const handleClose = () => {
-    navigate('/grade-review' + location.search);
+    // window.history.back();
+    return;
   };
 
   useEffect(() => {
@@ -139,6 +140,10 @@ export const GradeReviewUpdate = () => {
         };
 
   const sendComment = () => {
+    if (!comment) {
+      return;
+    }
+
     const _comments = [...comments];
     _comments.push({ author: `${account.firstName} ${account.lastName}`, content: comment, login: account.login });
     setComments(_comments);

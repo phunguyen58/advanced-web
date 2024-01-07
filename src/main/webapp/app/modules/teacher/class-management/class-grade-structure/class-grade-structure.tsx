@@ -113,9 +113,9 @@ const ClassGradeStructure = () => {
           enableReinitialize
           validationSchema={validationSchema}
           onSubmit={async (data: FormData) => {
-            // if (oldIsPublicNumber < data.gradeCompositions.filter(value => value.isPublic).length) {
-            sendNotificationFinalizeGradeComposition('gradeCompositionFinalized', course.id, 'notification');
-            // }
+            if (data.gradeCompositions.filter(value => value.isPublic).length) {
+              sendNotificationFinalizeGradeComposition('gradeCompositionFinalized', course.id, 'notification');
+            }
 
             data.gradeCompositions.forEach(value => {
               value.type = gradeType;
