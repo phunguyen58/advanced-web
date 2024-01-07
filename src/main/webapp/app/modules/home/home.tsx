@@ -6,6 +6,7 @@ import { AUTHORITIES } from 'app/config/constants';
 import { useAppSelector } from 'app/config/store';
 import { hasAnyAuthority } from 'app/shared/auth/private-route';
 import { useNavigate } from 'react-router-dom';
+import { translate } from 'react-jhipster';
 
 const Home = () => {
   const account = useAppSelector(state => state.authentication.account);
@@ -27,14 +28,13 @@ const Home = () => {
         >
           <div className="mx-4 md:mx-8 mt-0 md:mt-2">
             <h1 className="text-6xl font-bold text-gray-900 line-height-2">
-              <span className="font-light block">Unlocking knowledge potential</span>Eduvi - Empowering course
+              <span className="font-light block">{translate('home.titleText1')}</span>
+              {translate('home.titleText2')}
             </h1>
-            <p className="font-normal text-2xl line-height-3 md:mt-3 text-gray-700">
-              Explore endless learning possibilities with our comprehensive course management platform...{' '}
-            </p>
+            <p className="font-normal text-2xl line-height-3 md:mt-3 text-gray-700">{translate('home.titleText3')} </p>
             <Button
               type="button"
-              label="Get Started"
+              label={translate('home.getStarted')}
               className="p-button-rounded text-xl border-none mt-3 bg-blue-500 font-normal line-height-3 px-3 text-white"
             ></Button>
           </div>
@@ -46,7 +46,7 @@ const Home = () => {
         <div id="features" className="py-4 px-4 lg:px-1 mt-5 mx-0 lg:mx-8">
           <div className="grid justify-content-center">
             <div className="col-12 text-center mt-8 mb-4">
-              <h2 className="text-900 font-normal mb-2">Marvelous Features</h2>
+              <h2 className="text-900 font-normal mb-2">{translate('home.marvelousFeatures')}</h2>
               <span className="text-600 text-2xl">Placerat in egestas erat...</span>
             </div>
 
@@ -67,7 +67,7 @@ const Home = () => {
                   >
                     <i className="pi pi-fw pi-users text-2xl text-yellow-700"></i>
                   </div>
-                  <h5 className="mb-2 text-900">Easy to Use</h5>
+                  <h5 className="mb-2 text-900">{translate('home.easyToUse')}</h5>
                   <span className="text-600">Posuere morbi leo urna molestie.</span>
                 </div>
               </div>
@@ -90,7 +90,7 @@ const Home = () => {
                   >
                     <i className="pi pi-fw pi-palette text-2xl text-cyan-700"></i>
                   </div>
-                  <h5 className="mb-2 text-900">Fresh Design</h5>
+                  <h5 className="mb-2 text-900">{translate('home.freshDesign')}</h5>
                   <span className="text-600">Semper risus in hendrerit.</span>
                 </div>
               </div>
@@ -108,12 +108,12 @@ const Home = () => {
               >
                 <div className="p-3 surface-card h-full" style={{ borderRadius: '8px' }}>
                   <div
-                    className="flex align-items-center justify-content-center bg-indigo-200"
+                    className="flex align-items-center justify-content-center bg-indigo-200 mb-3"
                     style={{ width: '3.5rem', height: '3.5rem', borderRadius: '10px' }}
                   >
                     <i className="pi pi-fw pi-map text-2xl text-indigo-700"></i>
                   </div>
-                  <h5 className="mb-2 text-900">Well Documented</h5>
+                  <h5 className="mb-2 text-900">{translate('home.wellDocumented')}</h5>
                   <span className="text-600">Non arcu risus quis varius quam quisque.</span>
                 </div>
               </div>
@@ -136,7 +136,7 @@ const Home = () => {
                   >
                     <i className="pi pi-fw pi-id-card text-2xl text-bluegray-700"></i>
                   </div>
-                  <h5 className="mb-2 text-900">Responsive Layout</h5>
+                  <h5 className="mb-2 text-900">{translate('home.responsiveLayout')}</h5>
                   <span className="text-600">Nulla malesuada pellentesque elit.</span>
                 </div>
               </div>
@@ -159,7 +159,7 @@ const Home = () => {
                   >
                     <i className="pi pi-fw pi-star text-2xl text-orange-700"></i>
                   </div>
-                  <h5 className="mb-2 text-900">Clean Code</h5>
+                  <h5 className="mb-2 text-900">{translate('home.cleanCode')}</h5>
                   <span className="text-600">Condimentum lacinia quis vel eros.</span>
                 </div>
               </div>
@@ -182,7 +182,7 @@ const Home = () => {
                   >
                     <i className="pi pi-fw pi-moon text-2xl text-pink-700"></i>
                   </div>
-                  <h5 className="mb-2 text-900">Dark Mode</h5>
+                  <h5 className="mb-2 text-900">{translate('home.darkMode')}</h5>
                   <span className="text-600">Convallis tellus id interdum velit laoreet.</span>
                 </div>
               </div>
@@ -205,7 +205,7 @@ const Home = () => {
                   >
                     <i className="pi pi-fw pi-shopping-cart text-2xl text-teal-700"></i>
                   </div>
-                  <h5 className="mb-2 text-900">Ready to Use</h5>
+                  <h5 className="mb-2 text-900">{translate('home.readyToUse')}</h5>
                   <span className="text-600">Mauris sit amet massa vitae.</span>
                 </div>
               </div>
@@ -228,7 +228,7 @@ const Home = () => {
                   >
                     <i className="pi pi-fw pi-globe text-2xl text-blue-700"></i>
                   </div>
-                  <h5 className="mb-2 text-900">Modern Practices</h5>
+                  <h5 className="mb-2 text-900">{translate('home.modernPractices')}</h5>
                   <span className="text-600">Elementum nibh tellus molestie nunc non.</span>
                 </div>
               </div>
@@ -251,7 +251,7 @@ const Home = () => {
                   >
                     <i className="pi pi-fw pi-eye text-2xl text-purple-700"></i>
                   </div>
-                  <h5 className="mb-2 text-900">Privacy</h5>
+                  <h5 className="mb-2 text-900">{translate('home.privacy')}</h5>
                   <span className="text-600">Neque egestas congue quisque.</span>
                 </div>
               </div>
@@ -280,7 +280,7 @@ const Home = () => {
 
         <div id="highlights" className="py-4 px-4 lg:px-1 mx-0 my-6 lg:mx-8">
           <div className="text-center">
-            <h2 className="text-900 font-normal mb-2">Powerful Everywhere</h2>
+            <h2 className="text-900 font-normal mb-2">{translate('home.powerfulEverywhere')}</h2>
             <span className="text-600 text-2xl">Amet consectetur adipiscing elit...</span>
           </div>
 
@@ -344,34 +344,34 @@ const Home = () => {
             <div className="col-12 md:col-10 lg:col-7">
               <div className="grid text-center md:text-left">
                 <div className="col-12 md:col-3">
-                  <h4 className="font-medium text-2xl line-height-3 mb-3 text-900">Company</h4>
-                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">About Us</div>
-                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">News</div>
-                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">Investor Relations</div>
-                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">Careers</div>
-                  <div className="line-height-3 text-xl block cursor-pointer text-700">Media Kit</div>
+                  <h4 className="font-medium text-2xl line-height-3 mb-3 text-900">{translate('home.company')}</h4>
+                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">{translate('home.aboutUs')}</div>
+                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">{translate('home.news')}</div>
+                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">{translate('home.investorRelations')}</div>
+                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">{translate('home.careers')}</div>
+                  <div className="line-height-3 text-xl block cursor-pointer text-700">{translate('home.mediaKit')}</div>
                 </div>
 
                 <div className="col-12 md:col-3 mt-4 md:mt-0">
-                  <h4 className="font-medium text-2xl line-height-3 mb-3 text-900">Resources</h4>
-                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">Get Started</div>
-                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">Learn</div>
-                  <div className="line-height-3 text-xl block cursor-pointer text-700">Case Studies</div>
+                  <h4 className="font-medium text-2xl line-height-3 mb-3 text-900">{translate('home.resources')}</h4>
+                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">{translate('home.getStarted')}</div>
+                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">{translate('home.learn')}</div>
+                  <div className="line-height-3 text-xl block cursor-pointer text-700">{translate('home.caseStudies')}</div>
                 </div>
 
                 <div className="col-12 md:col-3 mt-4 md:mt-0">
-                  <h4 className="font-medium text-2xl line-height-3 mb-3 text-900">Community</h4>
-                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">Discord</div>
-                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">Events</div>
-                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">FAQ</div>
-                  <div className="line-height-3 text-xl block cursor-pointer text-700">Blog</div>
+                  <h4 className="font-medium text-2xl line-height-3 mb-3 text-900">{translate('home.community')}</h4>
+                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">{translate('home.discord')}</div>
+                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">{translate('home.events')}</div>
+                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">{translate('home.faq')}</div>
+                  <div className="line-height-3 text-xl block cursor-pointer text-700">{translate('home.blog')}</div>
                 </div>
 
                 <div className="col-12 md:col-3 mt-4 md:mt-0">
-                  <h4 className="font-medium text-2xl line-height-3 mb-3 text-900">Legal</h4>
-                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">Brand Policy</div>
-                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">Privacy Policy</div>
-                  <div className="line-height-3 text-xl block cursor-pointer text-700">Terms of Service</div>
+                  <h4 className="font-medium text-2xl line-height-3 mb-3 text-900">{translate('home.legal')}</h4>
+                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">{translate('home.brandPolicy')}</div>
+                  <div className="line-height-3 text-xl block cursor-pointer mb-2 text-700">{translate('home.privacyPolicy')}</div>
+                  <div className="line-height-3 text-xl block cursor-pointer text-700">{translate('home.termsOfService')}</div>
                 </div>
               </div>
             </div>
