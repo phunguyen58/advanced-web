@@ -1,18 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { TabMenu } from 'primereact/tabmenu';
-import { MenuItem } from 'primereact/menuitem';
-import './class-detail-menu.scss';
-import { InvitationCodeContext, MenuContext } from './class-detail-context';
+import { useAppSelector } from 'app/config/store';
 import { hasAnyAuthority } from 'app/shared/auth/private-route';
 import axios from 'axios';
 import { Chips } from 'primereact/chips';
 import { Dialog } from 'primereact/dialog';
+import { MenuItem } from 'primereact/menuitem';
+import { TabMenu } from 'primereact/tabmenu';
+import React, { useContext, useEffect, useState } from 'react';
 import { translate } from 'react-jhipster';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button } from 'reactstrap';
-import { useAppSelector } from 'app/config/store';
+import { InvitationCodeContext, MenuContext } from './class-detail-context';
+import './class-detail-menu.scss';
 
 export const ClassDetailMenu = () => {
   const { activeMenu, setActiveMenu } = useContext(MenuContext);
@@ -34,6 +33,13 @@ export const ClassDetailMenu = () => {
     people: 2,
     grade: 3,
   };
+
+  useEffect(() => {
+    const path = location.pathname.split('/')[4];
+    if (path) {
+      setActiveIndex(TAB_NAME[path]);
+    }
+  });
 
   const { id } = useParams<'id'>();
   const [searchParams] = useSearchParams();

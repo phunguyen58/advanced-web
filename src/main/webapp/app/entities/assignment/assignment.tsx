@@ -333,13 +333,18 @@ export const Assignment = () => {
 
   return (
     <div>
-      <div>
+      <div className="px-4">
         <h2 id="assignment-heading" data-cy="AssignmentHeading">
           <div className="d-flex justify-content-end">
             <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
               <FontAwesomeIcon icon="sync" spin={loading} />{' '}
               <Translate contentKey="webApp.assignment.home.refreshListLabel">Refresh List</Translate>
             </Button>
+            <Link to="assignment/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+              <FontAwesomeIcon icon="plus" />
+              &nbsp;
+              <Translate contentKey="webApp.assignment.home.createLabel">Create new Assignment</Translate>
+            </Link>
           </div>
         </h2>
         <div className="table-responsive">
@@ -363,7 +368,7 @@ export const Assignment = () => {
                 {assignmentList.map((assignment, i) => (
                   <tr key={`entity-${i}`} data-cy="entityTable">
                     <td>
-                      <Button tag={Link} to={`/assignment/${assignment.id}`} color="link" size="sm">
+                      <Button tag={Link} to={`assignment/${assignment.id}`} color="link" size="sm">
                         {assignment.id}
                       </Button>
                     </td>

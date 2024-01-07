@@ -20,8 +20,11 @@ export const AssignmentUpdate = () => {
 
   const navigate = useNavigate();
 
+  const account = useAppSelector(state => state.authentication.account);
+
   const { id } = useParams<'id'>();
-  const isNew = id === undefined;
+  const { asignmentId } = useParams<'asignmentId'>();
+  const isNew = asignmentId === undefined;
 
   const courses = useAppSelector(state => state.course.entities);
   const gradeCompositions = useAppSelector(state => state.gradeComposition.entities);
@@ -31,18 +34,18 @@ export const AssignmentUpdate = () => {
   const updateSuccess = useAppSelector(state => state.assignment.updateSuccess);
 
   const handleClose = () => {
-    navigate('/assignment' + location.search);
+    navigate(-1);
   };
 
   useEffect(() => {
     if (isNew) {
       dispatch(reset());
     } else {
-      dispatch(getEntity(id));
+      dispatch(getEntity(asignmentId));
     }
 
-    dispatch(getCourses({}));
-    dispatch(getGradeCompositions({}));
+    // dispatch(getCourses({}));
+    // dispatch(getGradeCompositions({}));
   }, []);
 
   useEffect(() => {
@@ -54,15 +57,18 @@ export const AssignmentUpdate = () => {
   const saveEntity = values => {
     values.createdDate = convertDateTimeToServer(values.createdDate);
     values.lastModifiedDate = convertDateTimeToServer(values.lastModifiedDate);
+    values.lastModifiedBy = account.login;
+    if (isNew) {
+      values.createdBy = account.login;
+    }
 
     const entity = {
       ...assignmentEntity,
       ...values,
-      course: courses.find(it => it.id.toString() === values.course.toString()),
-      gradeComposition: gradeCompositions.find(it => it.id.toString() === values.gradeComposition.toString()),
     };
 
     if (isNew) {
+      entity.course = { id: id };
       dispatch(createEntity(entity));
     } else {
       dispatch(updateEntity(entity));
@@ -79,8 +85,6 @@ export const AssignmentUpdate = () => {
           ...assignmentEntity,
           createdDate: convertDateTimeFromServer(assignmentEntity.createdDate),
           lastModifiedDate: convertDateTimeFromServer(assignmentEntity.lastModifiedDate),
-          course: assignmentEntity?.course?.id,
-          gradeComposition: assignmentEntity?.gradeComposition?.id,
         };
 
   return (
@@ -125,7 +129,7 @@ export const AssignmentUpdate = () => {
                 data-cy="description"
                 type="text"
               />
-              <ValidatedField
+              {/* <ValidatedField
                 label={translate('webApp.assignment.weight')}
                 id="assignment-weight"
                 name="weight"
@@ -213,8 +217,8 @@ export const AssignmentUpdate = () => {
                       </option>
                     ))
                   : null}
-              </ValidatedField>
-              <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/assignment" replace color="info">
+              </ValidatedField> */}
+              <Button onClick={() => handleClose()} id="cancel-save" data-cy="entityCreateCancelButton" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;
                 <span className="d-none d-md-inline">
