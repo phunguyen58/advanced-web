@@ -41,6 +41,7 @@ export const CourseUpdate = ({ onEventTrigger }) => {
   };
 
   useEffect(() => {
+    console.log('CourseUpdate useEffect');
     if (isNew) {
       // dispatch(reset());
     } else {
@@ -84,6 +85,10 @@ export const CourseUpdate = ({ onEventTrigger }) => {
           createdDate: convertDateTimeFromServer(courseEntity.createdDate),
           lastModifiedDate: convertDateTimeFromServer(courseEntity.lastModifiedDate),
         };
+
+  const handleBackButtonClick = () => {
+    navigate(`/course/${id}/detail/stream`);
+  };
 
   return (
     <div>
@@ -218,14 +223,16 @@ export const CourseUpdate = ({ onEventTrigger }) => {
                   required: { value: true, message: translate('entity.validation.required') },
                 }}
               /> */}
-              {/* <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/course" replace color="info">
-                <FontAwesomeIcon icon="arrow-left" />
-                &nbsp;
-                <span className="d-none d-md-inline">
-                  <Translate contentKey="entity.action.back">Back</Translate>
-                </span>
-              </Button>
-              &nbsp; */}
+              {!isNew && (
+                <Button onClick={() => handleBackButtonClick()} id="cancel-save" data-cy="entityCreateCancelButton" color="info">
+                  <FontAwesomeIcon icon="arrow-left" />
+                  &nbsp;
+                  <span className="d-none d-md-inline">
+                    <Translate contentKey="entity.action.back">Back</Translate>
+                  </span>
+                </Button>
+              )}
+              &nbsp;
               <Button color="primary" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
                 <FontAwesomeIcon icon="save" />
                 &nbsp;

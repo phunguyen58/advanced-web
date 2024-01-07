@@ -124,6 +124,47 @@ export const ClassDetailMenu = () => {
 
   return (
     <div className="aw-class-detail-menu-container">
+      <Dialog header={translate('webApp.course.invitePeople')} visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)}>
+        <div className="w-100">
+          <Chips
+            className="w-100"
+            value={invitedMails}
+            onChange={e => handleSetInvitedMails(e.value)}
+            placeholder={translate('webApp.course.addEmails')}
+          ></Chips>
+        </div>
+        <div className="d-flex flex-row gap-3 justify-content-between">
+          <div className="d-flex flex-row gap-3">
+            <button className="btn btn-outline-dark" onClick={handleCopyInvitationCodeToClipboard}>
+              {!isCopyInvitationCode && translate('webApp.course.copyCode')}
+              {isCopyInvitationCode && <span>{translate('webApp.course.copied')}</span>}
+            </button>
+            <button className="btn btn-outline-dark" onClick={handleCopyInvitationLinkToClipboard}>
+              {!isCopyInvitationLink && translate('webApp.course.copyLink')}
+              {isCopyInvitationLink && <span>{translate('webApp.course.copied')}</span>}
+            </button>
+          </div>
+          <button className="btn btn-primary" onClick={handleSendInvitationByEmail} disabled={disabledSendInvitation}>
+            {translate('webApp.course.sendInvitation')}
+          </button>
+        </div>
+      </Dialog>
+      <div
+        className="w-100 p-2"
+        style={{
+          padding: '2px',
+          borderRadius: '10px',
+          background:
+            'linear-gradient(90deg, rgba(145,226,237,0.2),rgba(251, 199, 145, 0.2)), linear-gradient(180deg, rgba(253, 228, 165, 0.2), rgba(172, 180, 223, 0.2))',
+        }}
+      >
+        <h3 className="ms-4 text-black fs-10">{courseEntity.name}</h3>
+        {hasAnyAuthority(account.authorities, ['ROLE_TEACHER']) && account.id === curCourseOwnerId && (
+          <Button className="d-flex flex-row align-items-center btn-invite btn btn-dark" onClick={() => setVisible(true)}>
+            {translate('webApp.course.invite')}
+          </Button>
+        )}
+      </div>
       <TabMenu
         model={items}
         unstyled={false}
@@ -133,43 +174,6 @@ export const ClassDetailMenu = () => {
           setActiveIndex(e.index);
         }}
       />
-      {hasAnyAuthority(account.authorities, ['ROLE_TEACHER']) && account.id === curCourseOwnerId && (
-        <>
-          <Button className="d-flex flex-row align-items-center btn-invite btn btn-dark" onClick={() => setVisible(true)}>
-            {translate('webApp.course.invite')}
-          </Button>
-          <Dialog
-            header={translate('webApp.course.invitePeople')}
-            visible={visible}
-            style={{ width: '25vw' }}
-            onHide={() => setVisible(false)}
-          >
-            <div className="w-100">
-              <Chips
-                className="w-100"
-                value={invitedMails}
-                onChange={e => handleSetInvitedMails(e.value)}
-                placeholder={translate('webApp.course.addEmails')}
-              ></Chips>
-            </div>
-            <div className="d-flex flex-row gap-3 justify-content-between">
-              <div className="d-flex flex-row gap-3">
-                <button className="btn btn-outline-dark" onClick={handleCopyInvitationCodeToClipboard}>
-                  {!isCopyInvitationCode && translate('webApp.course.copyCode')}
-                  {isCopyInvitationCode && <span>{translate('webApp.course.copied')}</span>}
-                </button>
-                <button className="btn btn-outline-dark" onClick={handleCopyInvitationLinkToClipboard}>
-                  {!isCopyInvitationLink && translate('webApp.course.copyLink')}
-                  {isCopyInvitationLink && <span>{translate('webApp.course.copied')}</span>}
-                </button>
-              </div>
-              <button className="btn btn-primary" onClick={handleSendInvitationByEmail} disabled={disabledSendInvitation}>
-                {translate('webApp.course.sendInvitation')}
-              </button>
-            </div>
-          </Dialog>
-        </>
-      )}
     </div>
   );
 };
