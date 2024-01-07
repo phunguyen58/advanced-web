@@ -26,6 +26,8 @@ public class WebsocketSecurityConfiguration extends AbstractSecurityWebSocketMes
             .permitAll()
             .simpDestMatchers("/notification-teacher/**")
             .permitAll()
+            .simpDestMatchers("/notification-finalize-grade-composition/**")
+            .permitAll()
             // message types other than MESSAGE and SUBSCRIBE
             .simpTypeMatchers(SimpMessageType.MESSAGE, SimpMessageType.SUBSCRIBE)
             .denyAll()

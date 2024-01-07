@@ -1,8 +1,6 @@
 package com.ptudw.web.web.websocket;
 
-import com.ptudw.web.domain.Assignment;
 import com.ptudw.web.domain.Authority;
-import com.ptudw.web.domain.GradeReview;
 import com.ptudw.web.domain.Notification;
 import com.ptudw.web.domain.User;
 import com.ptudw.web.domain.UserCourse;
@@ -22,11 +20,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.hibernate.mapping.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
-import org.springframework.messaging.handler.annotation.*;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
@@ -41,13 +39,9 @@ public class PushNotificationService implements ApplicationListener<SessionDisco
 
     private final AssignmentService assignmentService;
 
-    private final UserCourseService userCourseService;
-
     private final UserRepository userRepository;
 
     private final GradeReviewService gradeReviewService;
-
-    private final NotificationService notificationService;
 
     private final UserCourseRepository userCourseRepository;
 
@@ -65,10 +59,8 @@ public class PushNotificationService implements ApplicationListener<SessionDisco
     ) {
         this.messagingTemplate = messagingTemplate;
         this.assignmentService = assignmentService;
-        this.userCourseService = userCourseService;
         this.userRepository = userRepository;
         this.gradeReviewService = gradeReviewService;
-        this.notificationService = notificationService;
         this.userCourseRepository = userCourseRepository;
         this.notificationRepository = notificationRepository;
     }
@@ -93,6 +85,52 @@ public class PushNotificationService implements ApplicationListener<SessionDisco
                 notification.setIsRead(false);
                 notificationRepository.save(notification);
             });
+
+        return notificationDTO;
+    }
+
+    @MessageMapping("/notification-finalize-grade-composition")
+    public NotificationDTO sendNotificationFinalizeGradeComposition(
+        @Payload NotificationDTO notificationDTO,
+        StompHeaderAccessor stompHeaderAccessor,
+        Principal principal
+    ) {
+        log.debug("Sending notification finalize grade composition to student {}", notificationDTO);
+
+        List<Long> ids = userCourseRepository
+            .findAllByCourseId(Long.valueOf(notificationDTO.getCourseId()))
+            .stream()
+            .filter(Objects::nonNull)
+            .map(userCourse -> userCourse.getUserId())
+            .collect(Collectors.toList());
+
+        notificationRepository.saveAll(
+            userRepository
+                .findAllWithAuthoritiesByIdIn(ids)
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(user ->
+                    user
+                        .getAuthorities()
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .map(Authority::getName)
+                        .collect(Collectors.toList())
+                        .contains(AuthoritiesConstants.STUDENT)
+                )
+                .map(user -> {
+                    Notification notification = new Notification();
+                    notification.setMessage(notificationDTO.getMessage());
+                    notification.setTopic(notificationDTO.getTopic());
+                    notification.setReceivers(user.getLogin());
+                    notification.setSender(principal.getName());
+                    notification.setLink("/course/" + notificationDTO.getCourseId() + "/detail/grade-structure");
+                    notification.setIsRead(false);
+
+                    return notification;
+                })
+                .collect(Collectors.toList())
+        );
 
         return notificationDTO;
     }

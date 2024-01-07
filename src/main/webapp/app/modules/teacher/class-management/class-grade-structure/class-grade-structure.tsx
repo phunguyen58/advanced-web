@@ -22,6 +22,8 @@ import {
 import { ICourse } from 'app/shared/model/course.model';
 import * as Yup from 'yup';
 import axios from 'axios';
+import { sendNotificationFinalizeGradeComposition } from 'app/config/websocket-middleware';
+import { toast } from 'react-toastify';
 
 export interface FormData {
   gradeCompositions: IGradeComposition[];
@@ -41,11 +43,13 @@ const ClassGradeStructure = () => {
   const updating = useAppSelector(state => state.gradeStructure.updating);
   const updateSuccess = useAppSelector(state => state.gradeStructure.updateSuccess);
   const [course, setCourse] = useState<ICourse>();
+  const [oldIsPublicNumber, setOldIsPublicNumber] = useState<number>(0);
 
   useEffect(() => {
     getGradeCompositions(id).then(value => {
       setGradeCompositions(value.data);
       setGradeType(value.data[0].type);
+      setOldIsPublicNumber(value.data.filter(value1 => value1.isPublic).length);
     });
   }, []);
 
@@ -109,11 +113,16 @@ const ClassGradeStructure = () => {
           enableReinitialize
           validationSchema={validationSchema}
           onSubmit={async (data: FormData) => {
+            // if (oldIsPublicNumber < data.gradeCompositions.filter(value => value.isPublic).length) {
+            sendNotificationFinalizeGradeComposition('gradeCompositionFinalized', course.id, 'notification');
+            // }
+
             data.gradeCompositions.forEach(value => {
               value.type = gradeType;
             });
             axios.post(`/api/grade-compositions/bulk/${course.id}`, data.gradeCompositions).then(res => {
               setGradeCompositions(res.data);
+              toast.success(translate('webApp.gradeStructure.saveSuccess'), { position: toast.POSITION.TOP_LEFT });
             });
           }}
         >
