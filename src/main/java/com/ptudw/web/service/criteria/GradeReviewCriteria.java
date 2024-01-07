@@ -39,6 +39,8 @@ public class GradeReviewCriteria implements Serializable, Criteria {
 
     private LongFilter expectationGrade;
 
+    private LongFilter finalGrade;
+
     private StringFilter studentExplanation;
 
     private StringFilter teacherComment;
@@ -59,6 +61,7 @@ public class GradeReviewCriteria implements Serializable, Criteria {
         this.assimentGradeId = other.assimentGradeId == null ? null : other.assimentGradeId.copy();
         this.currentGrade = other.currentGrade == null ? null : other.currentGrade.copy();
         this.expectationGrade = other.expectationGrade == null ? null : other.expectationGrade.copy();
+        this.finalGrade = other.finalGrade == null ? null : other.finalGrade.copy();
         this.studentExplanation = other.studentExplanation == null ? null : other.studentExplanation.copy();
         this.teacherComment = other.teacherComment == null ? null : other.teacherComment.copy();
         this.isFinal = other.isFinal == null ? null : other.isFinal.copy();
@@ -205,6 +208,21 @@ public class GradeReviewCriteria implements Serializable, Criteria {
         this.expectationGrade = expectationGrade;
     }
 
+    public LongFilter getFinalGrade() {
+        return finalGrade;
+    }
+
+    public LongFilter finalGrade() {
+        if (finalGrade == null) {
+            finalGrade = new LongFilter();
+        }
+        return finalGrade;
+    }
+
+    public void setFinalGrade(LongFilter finalGrade) {
+        this.finalGrade = finalGrade;
+    }
+
     public StringFilter getStudentExplanation() {
         return studentExplanation;
     }
@@ -277,6 +295,7 @@ public class GradeReviewCriteria implements Serializable, Criteria {
             Objects.equals(assimentGradeId, that.assimentGradeId) &&
             Objects.equals(currentGrade, that.currentGrade) &&
             Objects.equals(expectationGrade, that.expectationGrade) &&
+            Objects.equals(finalGrade, that.finalGrade) &&
             Objects.equals(studentExplanation, that.studentExplanation) &&
             Objects.equals(teacherComment, that.teacherComment) &&
             Objects.equals(isFinal, that.isFinal) &&
@@ -296,6 +315,7 @@ public class GradeReviewCriteria implements Serializable, Criteria {
             assimentGradeId,
             currentGrade,
             expectationGrade,
+            finalGrade,
             studentExplanation,
             teacherComment,
             isFinal,
@@ -316,6 +336,7 @@ public class GradeReviewCriteria implements Serializable, Criteria {
             (assimentGradeId != null ? "assimentGradeId=" + assimentGradeId + ", " : "") +
             (currentGrade != null ? "currentGrade=" + currentGrade + ", " : "") +
             (expectationGrade != null ? "expectationGrade=" + expectationGrade + ", " : "") +
+            (finalGrade != null ? "finalGrade=" + finalGrade + ", " : "") +
             (studentExplanation != null ? "studentExplanation=" + studentExplanation + ", " : "") +
             (teacherComment != null ? "teacherComment=" + teacherComment + ", " : "") +
             (isFinal != null ? "isFinal=" + isFinal + ", " : "") +

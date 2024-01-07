@@ -20,8 +20,8 @@
         "title": "Course"
       },
       "id": "ID",
-      "code": "Code",
-      "name": "Name",
+      "code": "Class Code",
+      "name": "Class Name",
       "ownerId": "Owner Id",
       "description": "Description",
       "invitationCode": "Invitation Code",
@@ -47,7 +47,8 @@
       "copyLink": "Copy Link",
       "copied": "Copied!",
       "sendInvitation": "Send Invitation",
-      "invitePeople": "Invite People"
+      "invitePeople": "Invite People",
+      "class": "Class"
     }
   }
 }

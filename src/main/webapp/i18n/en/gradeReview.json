@@ -19,16 +19,21 @@
       },
       "id": "ID",
       "gradeCompositionId": "Grade Composition Id",
-      "studentId": "Student Id",
+      "studentId": "Student ID",
       "courseId": "Course Id",
       "reviewerId": "Reviewer Id",
       "assigmentId": "Assigment Id",
       "assimentGradeId": "Assiment Grade Id",
       "currentGrade": "Current Grade",
       "expectationGrade": "Expectation Grade",
-      "studentExplanation": "Student Explanation",
+      "studentExplanation": "Explanation",
       "teacherComment": "Teacher Comment",
-      "isFinal": "Is Final"
+      "isFinal": "Is Final",
+      "send": "Send",
+      "submit": "Submit",
+      "finalGrade": "Final Grade",
+      "oldGrade": "Old Grade",
+      "comment": "Comment"
+      }
     }
-  }
 }

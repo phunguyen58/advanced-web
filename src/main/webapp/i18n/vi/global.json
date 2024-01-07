@@ -159,5 +159,10 @@
     "studentIdExisted": "Mã số sinh viên đã tồn tại",
     "invitationcodeexpired": "Mã mời đã hết hạn"
   },
-  "footer": "Đây là chân trang của bạn"
+  "footer": "Đây là chân trang của bạn",
+  "pushNotification": {
+    "gradeReviewCreated": "Có yêu cầu phúc khảo mới vừa được tạo.",
+    "gradeReviewCompleted": "Yêu cầu phúc khảo đã được xử lý.",
+    "newComment": "Có bình luận mới vừa được tạo."
+  }
 }

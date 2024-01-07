@@ -106,6 +106,14 @@ export const AssignmentGrade = () => {
     setAssignmentGradeId(assignmentGradeIdParam);
   };
 
+  const handleToShowGradeReview = assignmentGrade => {
+    if (assignmentGrade.gradeReviewId) {
+      navigate(`/grade-review/${assignmentGrade.id}/edit`);
+    } else {
+      navigate(`/grade-review/new?assignmentGradeId=${assignmentGrade.id}`);
+    }
+  };
+
   return (
     <div>
       {isDisplayAssignmentGradeUpdate && isDisplayAssignmentGradeUpdate === true && (
@@ -190,6 +198,18 @@ export const AssignmentGrade = () => {
                           <Translate contentKey="entity.action.view">View</Translate>
                         </span>
                       </Button> */}
+                      {account && (
+                        <Button
+                          onClick={() => handleToShowGradeReview(assignmentGrade)}
+                          color="primary"
+                          size="sm"
+                          data-cy="entityEditButton"
+                        >
+                          <span className="d-none d-md-inline">
+                            <Translate contentKey="webApp.gradeReview.detail.title">Grade Review</Translate>
+                          </span>
+                        </Button>
+                      )}
                       {account && account.authorities.includes('ROLE_TEACHER') && (
                         <Button
                           onClick={() => handleToShowAssignmentGradeUpdate(assignmentGrade.id)}

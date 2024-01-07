@@ -81,6 +81,9 @@ public class AssignmentGradeService {
                 if (assignmentGrade.getLastModifiedDate() != null) {
                     existingAssignmentGrade.setLastModifiedDate(assignmentGrade.getLastModifiedDate());
                 }
+                if (assignmentGrade.getGradeReviewId() != null) {
+                    existingAssignmentGrade.setGradeReviewId(assignmentGrade.getGradeReviewId());
+                }
 
                 return existingAssignmentGrade;
             })

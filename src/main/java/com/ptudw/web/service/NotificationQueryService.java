@@ -106,6 +106,9 @@ public class NotificationQueryService extends QueryService<Notification> {
             if (criteria.getGradeReviewId() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getGradeReviewId(), Notification_.gradeReviewId));
             }
+            if (criteria.getIsRead() != null) {
+                specification = specification.and(buildSpecification(criteria.getIsRead(), Notification_.isRead));
+            }
         }
         return specification;
     }

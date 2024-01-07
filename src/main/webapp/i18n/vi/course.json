@@ -20,8 +20,8 @@
         "title": "Lớp học"
       },
       "id": "ID",
-      "code": "Code",
-      "name": "Name",
+      "code": "Mã lớp",
+      "name": "Tên lớp",
       "ownerId": "Owner Id",
       "description": "Description",
       "invitationCode": "Invitation Code",
@@ -47,7 +47,8 @@
       "copyLink": "Copy Link",
       "copied": "Copied!",
       "sendInvitation": "Gửi lời mời",
-      "invitePeople": "Mời người khác"
+      "invitePeople": "Mời người khác",
+      "class": "Lớp"
     }
   }
 }

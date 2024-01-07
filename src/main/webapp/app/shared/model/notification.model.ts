@@ -7,6 +7,7 @@ export interface INotification {
   role?: string | null;
   link?: string | null;
   gradeReviewId?: number | null;
+  isRead?: boolean | null;
 }
 
 export const defaultValue: Readonly<INotification> = {};

@@ -15,20 +15,25 @@
         "question": "Bạn có chắc là muốn xóa Grade Review {{ id }}?"
       },
       "detail": {
-        "title": "Grade Review"
+        "title": "Review điểm"
       },
       "id": "ID",
       "gradeCompositionId": "Grade Composition Id",
-      "studentId": "Student Id",
+      "studentId": "Mã số sinh viên",
       "courseId": "Course Id",
       "reviewerId": "Reviewer Id",
       "assigmentId": "Assigment Id",
       "assimentGradeId": "Assiment Grade Id",
-      "currentGrade": "Current Grade",
-      "expectationGrade": "Expectation Grade",
-      "studentExplanation": "Student Explanation",
-      "teacherComment": "Teacher Comment",
-      "isFinal": "Is Final"
+      "currentGrade": "Điểm hiện tại",
+      "expectationGrade": "Điểm mong đợi",
+      "studentExplanation": "Giải thích",
+      "teacherComment": "Comment của giảng viên",
+      "isFinal": "Is Final",
+      "send": "Gửi",
+      "submit": "Hoàn tất",
+      "finalGrade": "Điểm cuối cùng",
+      "oldGrade": "Điểm cũ",
+      "comment": "Bình luận"
     }
   }
 }

@@ -16,7 +16,7 @@
         "question": "Bạn có chắc là muốn xóa Assignment {{ id }}?"
       },
       "detail": {
-        "title": "Assignment"
+        "title": "Bài tập"
       },
       "id": "ID",
       "name": "Name",

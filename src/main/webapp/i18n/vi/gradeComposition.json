@@ -15,7 +15,7 @@
         "question": "Bạn có chắc là muốn xóa Grade Composition {{ id }}?"
       },
       "detail": {
-        "title": "Grade Composition"
+        "title": "Thành phần điểm"
       },
       "id": "ID",
       "name": "Name",
