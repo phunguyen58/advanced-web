@@ -23,7 +23,7 @@
       "id": "ID",
       "code": "Mã lớp",
       "name": "Tên lớp",
-      "ownerId": "Owner Id",
+      "ownerId": "Người sở hữu",
       "description": "Mô tả",
       "invitationCode": "Mã thư mời",
       "expirationDate": "Ngày hết hạn của Mã thư mời vào lớp",
@@ -55,7 +55,7 @@
       "status": "Trạng thái",
       "members": "Thành viên",
       "gradeBoard": "Bảng điểm",
-      "stream": "Bảng tin"
+      "stream": "Thông tin lớp học"
     }
   }
 }

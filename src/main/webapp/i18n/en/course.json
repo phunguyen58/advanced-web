@@ -23,7 +23,7 @@
       "id": "ID",
       "code": "Class Code",
       "name": "Class Name",
-      "ownerId": "Owner Id",
+      "ownerId": "Owner",
       "description": "Description",
       "invitationCode": "Invitation Code",
       "expirationDate": "Expiration Date of Invitation Code",
@@ -55,7 +55,7 @@
       "status": "Status",
       "members": "Members",
       "gradeBoard": "Grade Board",
-      "stream": "Stream"
+      "stream": "Information"
     }
   }
 }
