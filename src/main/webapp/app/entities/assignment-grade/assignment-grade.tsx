@@ -225,7 +225,7 @@ export const AssignmentGrade = () => {
               {assignmentGradeList.map((assignmentGrade, i) => (
                 <>
                   {(!account.authorities.includes(AUTHORITIES.STUDENT) ||
-                    (assignmentGrade?.assignment?.gradeComposition?.isPublic && !account.authorities.includes(AUTHORITIES.STUDENT))) && (
+                    (assignmentGrade?.assignment?.gradeComposition?.isPublic && account.authorities.includes(AUTHORITIES.STUDENT))) && (
                     <>
                       <tr key={`entity-${i}`} data-cy="entityTable">
                         {/* <td>

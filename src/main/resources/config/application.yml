@@ -200,7 +200,7 @@ jhipster:
     license: unlicensed
     license-url:
   security:
-    content-security-policy: "default-src 'self'; frame-src 'self' data: https://advanced-web-auth.firebaseapp.com/; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://identitytoolkit.googleapis.com;
+    content-security-policy: "default-src 'self'; frame-src 'self' data: https://advanced-web-auth.firebaseapp.com/; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' data: https://fonts.googleapis.com; connect-src 'self' https://identitytoolkit.googleapis.com;
 "
 # ===================================================================
 # Application specific properties
