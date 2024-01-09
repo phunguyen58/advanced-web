@@ -1,11 +1,1 @@
-id;course_id;is_deleted;created_by;created_date;last_modified_by;last_modified_date
-1;92560;true;Hawaii Account;2023-12-09T18:32:45;transmitting reboot niches;2023-12-09T19:52:11
-2;73174;false;Marks;2023-12-10T05:33:26;programming;2023-12-09T18:34:00
-3;44169;true;calculate Savings;2023-12-09T09:34:51;THX Cambridgeshire;2023-12-09T15:31:12
-4;92484;false;applications Music;2023-12-09T19:58:33;Kwanza;2023-12-09T13:49:55
-5;38652;true;Metal Shoal;2023-12-09T08:02:46;Bedfordshire Associate Licensed;2023-12-09T20:55:59
-6;61145;false;Pennsylvania;2023-12-09T18:44:03;Account;2023-12-09T20:37:28
-7;5533;true;Berkshire Towels;2023-12-09T19:31:56;Generic;2023-12-09T22:21:49
-8;43660;false;Graphical;2023-12-09T22:31:52;Jordan Car;2023-12-09T15:10:11
-9;98904;true;Loaf Incredible granular;2023-12-10T02:17:08;hacking Loan Cotton;2023-12-10T03:59:50
-10;97238;false;Plastic Card;2023-12-10T03:18:45;dynamic;2023-12-09T05:43:44
+id;course_id;is_deleted;created_by;created_date;last_modified_by;last_modified_date;type

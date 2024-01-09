@@ -1,7 +1,7 @@
 export interface IUserCourse {
   id?: number;
   courseId?: number;
-  userId?: string;
+  userId?: number;
 }
 
 export const defaultValue: Readonly<IUserCourse> = {};

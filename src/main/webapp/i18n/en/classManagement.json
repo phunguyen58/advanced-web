@@ -1,0 +1,18 @@
+{
+    "webApp": {
+        "classManagement": {
+            "className": "Class name",
+            "code": "Code",
+            "description": "Description",
+            "createNewClass": "Create a new class",
+            "createClassButton": "Create class",
+            "action": {
+                "confirm": "Confirm",
+                "cancel": "Cancel",
+                "create": "Create"
+            },
+            "studentId": "Student id",
+            "finalGrade": "Final grade"
+        }
+    }
+}

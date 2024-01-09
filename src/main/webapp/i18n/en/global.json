@@ -16,6 +16,8 @@
         "assignmentGrade": "Assignment Grade",
         "courseGrade": "Course Grade",
         "userCourse": "User Course",
+        "gradeReview": "Grade Review",
+        "notification": "Notification",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {
@@ -107,8 +109,7 @@
       "edit": "Edit",
       "open": "Open",
       "save": "Save",
-      "view": "View",
-      "show": "Show {{otherEntity}}"
+      "view": "View"
     },
     "detail": {
       "field": "Field",
@@ -129,11 +130,6 @@
       "number": "This field should be a number.",
       "datetimelocal": "This field should be a date and time.",
       "patternLogin": "This field can only contain letters, digits and e-mail addresses."
-    },
-    "filters": {
-      "set": "Following filters are set",
-      "clear": "Clear filter",
-      "clearAll": "Clear all filters"
     }
   },
   "error": {
@@ -151,7 +147,19 @@
     "file": {
       "could.not.extract": "Could not extract file",
       "not.image": "File was expected to be an image but was found to be \"{{ fileType }}\""
-    }
+    },
+    "invitationcodeinvalid": "Invalid invitation code",
+    "userinvalid": "Invalid user",
+    "useralreadyjoined": "User already joined",
+    "studentIdExisted": "Student ID already existed",
+    "invitationcodeexpired": "Invitation code expired",
+    "cantcreateusercourse": "Can't create class dueto some error"
   },
-  "footer": "This is your footer"
+  "footer": "This is your footer",
+  "pushNotification": {
+    "gradeReviewCreated": "A new grade review has been created.",
+    "gradeReviewCompleted": "A grade review has been completed.",
+    "newComment": "A new comment has been added to your grade review.",
+    "gradeCompositionFinalized": "A grade composition has been finalized."
+  }
 }

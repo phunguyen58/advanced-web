@@ -39,23 +39,11 @@ export const GradeCompositionDetail = () => {
           </dt>
           <dd>{gradeCompositionEntity.name}</dd>
           <dt>
-            <span id="minGradeScale">
-              <Translate contentKey="webApp.gradeComposition.minGradeScale">Min Grade Scale</Translate>
+            <span id="scale">
+              <Translate contentKey="webApp.gradeComposition.scale">Scale</Translate>
             </span>
           </dt>
-          <dd>{gradeCompositionEntity.minGradeScale}</dd>
-          <dt>
-            <span id="maxGradeScale">
-              <Translate contentKey="webApp.gradeComposition.maxGradeScale">Max Grade Scale</Translate>
-            </span>
-          </dt>
-          <dd>{gradeCompositionEntity.maxGradeScale}</dd>
-          <dt>
-            <span id="position">
-              <Translate contentKey="webApp.gradeComposition.position">Position</Translate>
-            </span>
-          </dt>
-          <dd>{gradeCompositionEntity.position}</dd>
+          <dd>{gradeCompositionEntity.scale}</dd>
           <dt>
             <span id="isDeleted">
               <Translate contentKey="webApp.gradeComposition.isDeleted">Is Deleted</Translate>
@@ -94,6 +82,22 @@ export const GradeCompositionDetail = () => {
               <TextFormat value={gradeCompositionEntity.lastModifiedDate} type="date" format={APP_DATE_FORMAT} />
             ) : null}
           </dd>
+          <dt>
+            <span id="type">
+              <Translate contentKey="webApp.gradeComposition.type">Type</Translate>
+            </span>
+          </dt>
+          <dd>{gradeCompositionEntity.type}</dd>
+          <dt>
+            <span id="isPublic">
+              <Translate contentKey="webApp.gradeComposition.isPublic">Is Public</Translate>
+            </span>
+          </dt>
+          <dd>{gradeCompositionEntity.isPublic ? 'true' : 'false'}</dd>
+          <dt>
+            <Translate contentKey="webApp.gradeComposition.course">Course</Translate>
+          </dt>
+          <dd>{gradeCompositionEntity.course ? gradeCompositionEntity.course.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/grade-composition" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

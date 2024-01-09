@@ -104,14 +104,8 @@ public class GradeStructureQueryService extends QueryService<GradeStructure> {
                 specification =
                     specification.and(buildRangeSpecification(criteria.getLastModifiedDate(), GradeStructure_.lastModifiedDate));
             }
-            if (criteria.getGradeCompositionsId() != null) {
-                specification =
-                    specification.and(
-                        buildSpecification(
-                            criteria.getGradeCompositionsId(),
-                            root -> root.join(GradeStructure_.gradeCompositions, JoinType.LEFT).get(GradeComposition_.id)
-                        )
-                    );
+            if (criteria.getType() != null) {
+                specification = specification.and(buildSpecification(criteria.getType(), GradeStructure_.type));
             }
         }
         return specification;

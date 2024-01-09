@@ -50,7 +50,7 @@
       "otherEntityName": "assignment",
       "otherEntityRelationshipName": "assignmentGrades",
       "relationshipName": "assignment",
-      "relationshipType": "one-to-many"
+      "relationshipType": "many-to-one"
     }
   ],
   "service": "serviceClass"

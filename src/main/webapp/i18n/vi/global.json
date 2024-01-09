@@ -10,12 +10,14 @@
         "categories": "Categories",
         "product": "Product",
         "course": "Course",
-        "gradeStructure": "Grade Structure",
-        "gradeComposition": "Grade Composition",
-        "assignment": "Assignment",
+        "gradeStructure": "Cấu trúc điểm",
+        "gradeComposition": "Thành phần điểm",
+        "assignment": "Bài tập",
         "assignmentGrade": "Assignment Grade",
         "courseGrade": "Course Grade",
         "userCourse": "User Course",
+        "gradeReview": "Grade Review",
+        "notification": "Notification",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {
@@ -150,7 +152,19 @@
     "file": {
       "could.not.extract": "Could not extract file",
       "not.image": "File was expected to be an image but was found to be \"{{ fileType }}\""
-    }
+    },
+    "invitationcodeinvalid": "Mã mời không hợp lệ",
+    "userinvalid": "Tài khoản không hợp lệ",
+    "useralreadyjoined": "Tài khoản đã tham gia khóa học này",
+    "studentIdExisted": "Mã số sinh viên đã tồn tại",
+    "invitationcodeexpired": "Mã mời đã hết hạn",
+    "cantcreateusercourse": "Không thể tạo khóa học vì đã có lỗi xảy ra"
   },
-  "footer": "Đây là chân trang của bạn"
+  "footer": "Đây là chân trang của bạn",
+  "pushNotification": {
+    "gradeReviewCreated": "Có yêu cầu phúc khảo mới vừa được tạo.",
+    "gradeReviewCompleted": "Yêu cầu phúc khảo đã được xử lý.",
+    "newComment": "Có bình luận mới vừa được tạo.",
+    "gradeCompositionFinalized": "Đã hoàn thành cấu trúc điểm."
+  }
 }

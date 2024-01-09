@@ -855,7 +855,7 @@ class AssignmentGradeResourceIT {
         }
         em.persist(assignment);
         em.flush();
-        assignmentGrade.addAssignment(assignment);
+        assignmentGrade.setAssignment(assignment);
         assignmentGradeRepository.saveAndFlush(assignmentGrade);
         Long assignmentId = assignment.getId();
 

@@ -88,14 +88,8 @@ public class GradeCompositionQueryService extends QueryService<GradeComposition>
             if (criteria.getName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getName(), GradeComposition_.name));
             }
-            if (criteria.getMinGradeScale() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getMinGradeScale(), GradeComposition_.minGradeScale));
-            }
-            if (criteria.getMaxGradeScale() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getMaxGradeScale(), GradeComposition_.maxGradeScale));
-            }
-            if (criteria.getPosition() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getPosition(), GradeComposition_.position));
+            if (criteria.getScale() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getScale(), GradeComposition_.scale));
             }
             if (criteria.getIsDeleted() != null) {
                 specification = specification.and(buildSpecification(criteria.getIsDeleted(), GradeComposition_.isDeleted));
@@ -113,12 +107,30 @@ public class GradeCompositionQueryService extends QueryService<GradeComposition>
                 specification =
                     specification.and(buildRangeSpecification(criteria.getLastModifiedDate(), GradeComposition_.lastModifiedDate));
             }
-            if (criteria.getGradeStructureId() != null) {
+            if (criteria.getType() != null) {
+                specification = specification.and(buildSpecification(criteria.getType(), GradeComposition_.type));
+            }
+            if (criteria.getIsPublic() != null) {
+                specification = specification.and(buildSpecification(criteria.getIsPublic(), GradeComposition_.isPublic));
+            }
+            if (criteria.getPosition() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getPosition(), GradeComposition_.position));
+            }
+            if (criteria.getAssignmentsId() != null) {
                 specification =
                     specification.and(
                         buildSpecification(
-                            criteria.getGradeStructureId(),
-                            root -> root.join(GradeComposition_.gradeStructures, JoinType.LEFT).get(GradeStructure_.id)
+                            criteria.getAssignmentsId(),
+                            root -> root.join(GradeComposition_.assignments, JoinType.LEFT).get(Assignment_.id)
+                        )
+                    );
+            }
+            if (criteria.getCourseId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(
+                            criteria.getCourseId(),
+                            root -> root.join(GradeComposition_.course, JoinType.LEFT).get(Course_.id)
                         )
                     );
             }

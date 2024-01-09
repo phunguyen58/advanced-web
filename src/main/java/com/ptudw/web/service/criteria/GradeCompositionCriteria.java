@@ -1,5 +1,6 @@
 package com.ptudw.web.service.criteria;
 
+import com.ptudw.web.domain.enumeration.GradeType;
 import java.io.Serializable;
 import java.util.Objects;
 import org.springdoc.api.annotations.ParameterObject;
@@ -19,17 +20,30 @@ import tech.jhipster.service.filter.*;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class GradeCompositionCriteria implements Serializable, Criteria {
 
+    /**
+     * Class for filtering GradeType
+     */
+    public static class GradeTypeFilter extends Filter<GradeType> {
+
+        public GradeTypeFilter() {}
+
+        public GradeTypeFilter(GradeTypeFilter filter) {
+            super(filter);
+        }
+
+        @Override
+        public GradeTypeFilter copy() {
+            return new GradeTypeFilter(this);
+        }
+    }
+
     private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
     private StringFilter name;
 
-    private LongFilter minGradeScale;
-
-    private LongFilter maxGradeScale;
-
-    private LongFilter position;
+    private LongFilter scale;
 
     private BooleanFilter isDeleted;
 
@@ -41,7 +55,15 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
 
     private ZonedDateTimeFilter lastModifiedDate;
 
-    private LongFilter gradeStructureId;
+    private GradeTypeFilter type;
+
+    private BooleanFilter isPublic;
+
+    private LongFilter assignmentsId;
+
+    private LongFilter courseId;
+
+    private LongFilter position;
 
     private Boolean distinct;
 
@@ -50,15 +72,17 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
     public GradeCompositionCriteria(GradeCompositionCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
         this.name = other.name == null ? null : other.name.copy();
-        this.minGradeScale = other.minGradeScale == null ? null : other.minGradeScale.copy();
-        this.maxGradeScale = other.maxGradeScale == null ? null : other.maxGradeScale.copy();
-        this.position = other.position == null ? null : other.position.copy();
+        this.scale = other.scale == null ? null : other.scale.copy();
         this.isDeleted = other.isDeleted == null ? null : other.isDeleted.copy();
         this.createdBy = other.createdBy == null ? null : other.createdBy.copy();
         this.createdDate = other.createdDate == null ? null : other.createdDate.copy();
         this.lastModifiedBy = other.lastModifiedBy == null ? null : other.lastModifiedBy.copy();
         this.lastModifiedDate = other.lastModifiedDate == null ? null : other.lastModifiedDate.copy();
-        this.gradeStructureId = other.gradeStructureId == null ? null : other.gradeStructureId.copy();
+        this.type = other.type == null ? null : other.type.copy();
+        this.isPublic = other.isPublic == null ? null : other.isPublic.copy();
+        this.assignmentsId = other.assignmentsId == null ? null : other.assignmentsId.copy();
+        this.courseId = other.courseId == null ? null : other.courseId.copy();
+        this.position = other.position == null ? null : other.position.copy();
         this.distinct = other.distinct;
     }
 
@@ -97,49 +121,19 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         this.name = name;
     }
 
-    public LongFilter getMinGradeScale() {
-        return minGradeScale;
+    public LongFilter getScale() {
+        return scale;
     }
 
-    public LongFilter minGradeScale() {
-        if (minGradeScale == null) {
-            minGradeScale = new LongFilter();
+    public LongFilter scale() {
+        if (scale == null) {
+            scale = new LongFilter();
         }
-        return minGradeScale;
+        return scale;
     }
 
-    public void setMinGradeScale(LongFilter minGradeScale) {
-        this.minGradeScale = minGradeScale;
-    }
-
-    public LongFilter getMaxGradeScale() {
-        return maxGradeScale;
-    }
-
-    public LongFilter maxGradeScale() {
-        if (maxGradeScale == null) {
-            maxGradeScale = new LongFilter();
-        }
-        return maxGradeScale;
-    }
-
-    public void setMaxGradeScale(LongFilter maxGradeScale) {
-        this.maxGradeScale = maxGradeScale;
-    }
-
-    public LongFilter getPosition() {
-        return position;
-    }
-
-    public LongFilter position() {
-        if (position == null) {
-            position = new LongFilter();
-        }
-        return position;
-    }
-
-    public void setPosition(LongFilter position) {
-        this.position = position;
+    public void setScale(LongFilter scale) {
+        this.scale = scale;
     }
 
     public BooleanFilter getIsDeleted() {
@@ -217,19 +211,64 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public LongFilter getGradeStructureId() {
-        return gradeStructureId;
+    public GradeTypeFilter getType() {
+        return type;
     }
 
-    public LongFilter gradeStructureId() {
-        if (gradeStructureId == null) {
-            gradeStructureId = new LongFilter();
+    public GradeTypeFilter type() {
+        if (type == null) {
+            type = new GradeTypeFilter();
         }
-        return gradeStructureId;
+        return type;
     }
 
-    public void setGradeStructureId(LongFilter gradeStructureId) {
-        this.gradeStructureId = gradeStructureId;
+    public void setType(GradeTypeFilter type) {
+        this.type = type;
+    }
+
+    public BooleanFilter getIsPublic() {
+        return isPublic;
+    }
+
+    public BooleanFilter isPublic() {
+        if (isPublic == null) {
+            isPublic = new BooleanFilter();
+        }
+        return isPublic;
+    }
+
+    public void setIsPublic(BooleanFilter isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public LongFilter getAssignmentsId() {
+        return assignmentsId;
+    }
+
+    public LongFilter assignmentsId() {
+        if (assignmentsId == null) {
+            assignmentsId = new LongFilter();
+        }
+        return assignmentsId;
+    }
+
+    public void setAssignmentsId(LongFilter assignmentsId) {
+        this.assignmentsId = assignmentsId;
+    }
+
+    public LongFilter getCourseId() {
+        return courseId;
+    }
+
+    public LongFilter courseId() {
+        if (courseId == null) {
+            courseId = new LongFilter();
+        }
+        return courseId;
+    }
+
+    public void setCourseId(LongFilter courseId) {
+        this.courseId = courseId;
     }
 
     public Boolean getDistinct() {
@@ -238,6 +277,21 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
 
     public void setDistinct(Boolean distinct) {
         this.distinct = distinct;
+    }
+
+    public LongFilter getPosition() {
+        return position;
+    }
+
+    public LongFilter position() {
+        if (position == null) {
+            position = new LongFilter();
+        }
+        return position;
+    }
+
+    public void setPosition(LongFilter position) {
+        this.position = position;
     }
 
     @Override
@@ -252,15 +306,17 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         return (
             Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
-            Objects.equals(minGradeScale, that.minGradeScale) &&
-            Objects.equals(maxGradeScale, that.maxGradeScale) &&
-            Objects.equals(position, that.position) &&
+            Objects.equals(scale, that.scale) &&
             Objects.equals(isDeleted, that.isDeleted) &&
             Objects.equals(createdBy, that.createdBy) &&
             Objects.equals(createdDate, that.createdDate) &&
             Objects.equals(lastModifiedBy, that.lastModifiedBy) &&
             Objects.equals(lastModifiedDate, that.lastModifiedDate) &&
-            Objects.equals(gradeStructureId, that.gradeStructureId) &&
+            Objects.equals(type, that.type) &&
+            Objects.equals(isPublic, that.isPublic) &&
+            Objects.equals(assignmentsId, that.assignmentsId) &&
+            Objects.equals(courseId, that.courseId) &&
+            Objects.equals(position, that.position) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -270,15 +326,17 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         return Objects.hash(
             id,
             name,
-            minGradeScale,
-            maxGradeScale,
-            position,
+            scale,
             isDeleted,
             createdBy,
             createdDate,
             lastModifiedBy,
             lastModifiedDate,
-            gradeStructureId,
+            type,
+            isPublic,
+            assignmentsId,
+            courseId,
+            position,
             distinct
         );
     }
@@ -289,16 +347,18 @@ public class GradeCompositionCriteria implements Serializable, Criteria {
         return "GradeCompositionCriteria{" +
             (id != null ? "id=" + id + ", " : "") +
             (name != null ? "name=" + name + ", " : "") +
-            (minGradeScale != null ? "minGradeScale=" + minGradeScale + ", " : "") +
-            (maxGradeScale != null ? "maxGradeScale=" + maxGradeScale + ", " : "") +
-            (position != null ? "position=" + position + ", " : "") +
+            (scale != null ? "scale=" + scale + ", " : "") +
             (isDeleted != null ? "isDeleted=" + isDeleted + ", " : "") +
             (createdBy != null ? "createdBy=" + createdBy + ", " : "") +
             (createdDate != null ? "createdDate=" + createdDate + ", " : "") +
             (lastModifiedBy != null ? "lastModifiedBy=" + lastModifiedBy + ", " : "") +
             (lastModifiedDate != null ? "lastModifiedDate=" + lastModifiedDate + ", " : "") +
-            (gradeStructureId != null ? "gradeStructureId=" + gradeStructureId + ", " : "") +
+            (type != null ? "type=" + type + ", " : "") +
+            (isPublic != null ? "isPublic=" + isPublic + ", " : "") +
+            (assignmentsId != null ? "assignmentsId=" + assignmentsId + ", " : "") +
+            (courseId != null ? "courseId=" + courseId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
+            (position != null ? "position=" + position + ", " : "") +
             "}";
     }
 }

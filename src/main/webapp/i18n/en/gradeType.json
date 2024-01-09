@@ -1,0 +1,10 @@
+{
+  "webApp": {
+    "GradeType": {
+      "null": "",
+      "PERCENTAGE": "PERCENTAGE",
+      "POINT": "POINT",
+      "NONE": "NONE"
+    }
+  }
+}

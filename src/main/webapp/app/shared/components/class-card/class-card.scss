@@ -1,0 +1,43 @@
+.aw-card-container {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  border-radius: 10px;
+  justify-content: space-between;
+  .aw-card-header-image {
+    border-radius: 10px 10px 0 0;
+  }
+
+  .aw-content-container {
+    top: 0;
+    padding: 14px;
+    justify-content: space-between;
+    max-width: 100%;
+    .aw-card-title {
+      color: whitesmoke;
+      text-align: left;
+      font-size: 25px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+    }
+    .aw-card-description {
+      color: whitesmoke;
+      text-align: left;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 30px; /* 187.5% */
+    }
+  }
+  .aw-detail-btn {
+    border-radius: 50px;
+    border: 1px solid #9c4df4;
+    color: #9c4df4;
+    background: none;
+  }
+}
+
+.p-card-body {
+  border-top: 1px solid silver;
+}

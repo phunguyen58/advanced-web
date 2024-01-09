@@ -1,6 +1,7 @@
 package com.ptudw.web.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.ptudw.web.domain.enumeration.GradeType;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
@@ -31,17 +32,8 @@ public class GradeComposition implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull
-    @Column(name = "min_grade_scale", nullable = false)
-    private Long minGradeScale;
-
-    @NotNull
-    @Column(name = "max_grade_scale", nullable = false)
-    private Long maxGradeScale;
-
-    @NotNull
-    @Column(name = "position", nullable = false)
-    private Long position;
+    @Column(name = "scale")
+    private Long scale;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
@@ -62,10 +54,25 @@ public class GradeComposition implements Serializable {
     @Column(name = "last_modified_date", nullable = false)
     private ZonedDateTime lastModifiedDate;
 
-    @OneToMany(mappedBy = "gradeCompositions")
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private GradeType type;
+
+    @Column(name = "is_public")
+    private Boolean isPublic;
+
+    @Column(name = "position")
+    private Long position;
+
+    @OneToMany(mappedBy = "gradeComposition")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "gradeCompositions" }, allowSetters = true)
-    private Set<GradeStructure> gradeStructures = new HashSet<>();
+    @JsonIgnoreProperties(value = { "assignmentGrades", "course", "gradeComposition" }, allowSetters = true)
+    private Set<Assignment> assignments = new HashSet<>();
+
+    @ManyToOne
+    @JsonIgnoreProperties(value = { "assignments", "gradeCompositions" }, allowSetters = true)
+    private Course course;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -95,43 +102,17 @@ public class GradeComposition implements Serializable {
         this.name = name;
     }
 
-    public Long getMinGradeScale() {
-        return this.minGradeScale;
+    public Long getScale() {
+        return this.scale;
     }
 
-    public GradeComposition minGradeScale(Long minGradeScale) {
-        this.setMinGradeScale(minGradeScale);
+    public GradeComposition scale(Long scale) {
+        this.setScale(scale);
         return this;
     }
 
-    public void setMinGradeScale(Long minGradeScale) {
-        this.minGradeScale = minGradeScale;
-    }
-
-    public Long getMaxGradeScale() {
-        return this.maxGradeScale;
-    }
-
-    public GradeComposition maxGradeScale(Long maxGradeScale) {
-        this.setMaxGradeScale(maxGradeScale);
-        return this;
-    }
-
-    public void setMaxGradeScale(Long maxGradeScale) {
-        this.maxGradeScale = maxGradeScale;
-    }
-
-    public Long getPosition() {
-        return this.position;
-    }
-
-    public GradeComposition position(Long position) {
-        this.setPosition(position);
-        return this;
-    }
-
-    public void setPosition(Long position) {
-        this.position = position;
+    public void setScale(Long scale) {
+        this.scale = scale;
     }
 
     public Boolean getIsDeleted() {
@@ -199,35 +180,82 @@ public class GradeComposition implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public Set<GradeStructure> getGradeStructures() {
-        return this.gradeStructures;
+    public GradeType getType() {
+        return this.type;
     }
 
-    public void setGradeStructures(Set<GradeStructure> gradeStructures) {
-        if (this.gradeStructures != null) {
-            this.gradeStructures.forEach(i -> i.setGradeCompositions(null));
+    public GradeComposition type(GradeType type) {
+        this.setType(type);
+        return this;
+    }
+
+    public void setType(GradeType type) {
+        this.type = type;
+    }
+
+    public Boolean getIsPublic() {
+        return this.isPublic;
+    }
+
+    public GradeComposition isPublic(Boolean isPublic) {
+        this.setIsPublic(isPublic);
+        return this;
+    }
+
+    public void setIsPublic(Boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public Set<Assignment> getAssignments() {
+        return this.assignments;
+    }
+
+    public void setAssignments(Set<Assignment> assignments) {
+        if (this.assignments != null) {
+            this.assignments.forEach(i -> i.setGradeComposition(null));
         }
-        if (gradeStructures != null) {
-            gradeStructures.forEach(i -> i.setGradeCompositions(this));
+        if (assignments != null) {
+            assignments.forEach(i -> i.setGradeComposition(this));
         }
-        this.gradeStructures = gradeStructures;
+        this.assignments = assignments;
     }
 
-    public GradeComposition gradeStructures(Set<GradeStructure> gradeStructures) {
-        this.setGradeStructures(gradeStructures);
+    public GradeComposition assignments(Set<Assignment> assignments) {
+        this.setAssignments(assignments);
         return this;
     }
 
-    public GradeComposition addGradeStructure(GradeStructure gradeStructure) {
-        this.gradeStructures.add(gradeStructure);
-        gradeStructure.setGradeCompositions(this);
+    public GradeComposition addAssignments(Assignment assignment) {
+        this.assignments.add(assignment);
+        assignment.setGradeComposition(this);
         return this;
     }
 
-    public GradeComposition removeGradeStructure(GradeStructure gradeStructure) {
-        this.gradeStructures.remove(gradeStructure);
-        gradeStructure.setGradeCompositions(null);
+    public GradeComposition removeAssignments(Assignment assignment) {
+        this.assignments.remove(assignment);
+        assignment.setGradeComposition(null);
         return this;
+    }
+
+    public Course getCourse() {
+        return this.course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public GradeComposition course(Course course) {
+        this.setCourse(course);
+        return this;
+    }
+
+    public Long getPosition() {
+        return this.position;
+    }
+
+    public void setPosition(Long position) {
+        this.position = position;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -255,14 +283,15 @@ public class GradeComposition implements Serializable {
         return "GradeComposition{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
-            ", minGradeScale=" + getMinGradeScale() +
-            ", maxGradeScale=" + getMaxGradeScale() +
-            ", position=" + getPosition() +
+            ", scale=" + getScale() +
             ", isDeleted='" + getIsDeleted() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
+            ", type='" + getType() + "'" +
+            ", isPublic='" + getIsPublic() + "'" +
+            ", position=" + getPosition() +
             "}";
     }
 }

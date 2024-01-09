@@ -1,11 +1,1 @@
-id;name;min_grade_scale;max_grade_scale;position;is_deleted;created_by;created_date;last_modified_by;last_modified_date
-1;internet copy;9716;66078;64739;false;Guatemala Shirt input;2023-12-09T17:14:10;Toys;2023-12-09T17:31:01
-2;Buckinghamshire;54588;5403;27345;true;National Account circuit;2023-12-09T08:52:55;framework;2023-12-09T12:04:44
-3;generate Data;54984;16405;4882;true;Unbranded;2023-12-09T14:38:11;driver;2023-12-09T06:59:44
-4;Delaware empower;14157;60305;42812;false;Mouse hard;2023-12-09T15:03:43;Orchestrator driver;2023-12-09T14:10:52
-5;matrix;37913;34120;39926;false;Metal mobile productize;2023-12-10T05:11:27;Officer Customer;2023-12-09T13:25:06
-6;Dakota sensor administration;21437;20700;23391;false;Rustic middleware;2023-12-09T12:17:55;Cambridgeshire sensor Pound;2023-12-10T04:00:39
-7;Mouse Loan;93248;83271;52262;true;Loan Assurance real-time;2023-12-09T15:30:07;Clothing;2023-12-09T06:01:05
-8;International overriding Outdoors;54159;15804;84780;false;generating Soft Licensed;2023-12-09T12:13:32;invoice;2023-12-09T23:01:12
-9;Metal Investment;23163;77155;13977;false;Designer;2023-12-09T21:37:36;primary application;2023-12-09T16:52:45
-10;Awesome Intelligent;83718;16344;30640;false;Cambridgeshire Investor Avon;2023-12-09T07:05:08;Intelligent Licensed;2023-12-10T01:44:09
+id;name;scale;is_deleted;created_by;created_date;last_modified_by;last_modified_date;type;is_public

@@ -8,10 +8,16 @@
     -->
     <changeSet id="20231210053422-2" author="jhipster">
 
-        <addForeignKeyConstraint baseColumnNames="assignment_grades_id"
+        <addForeignKeyConstraint baseColumnNames="course_id"
                                  baseTableName="assignment"
-                                 constraintName="fk_assignment__assignment_grades_id"
+                                 constraintName="fk_assignment__course_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="assignment_grade"/>
+                                 referencedTableName="course"/>
+
+        <addForeignKeyConstraint baseColumnNames="grade_composition_id"
+                                 baseTableName="assignment"
+                                 constraintName="fk_assignment__grade_composition_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="grade_composition"/>
     </changeSet>
 </databaseChangeLog>

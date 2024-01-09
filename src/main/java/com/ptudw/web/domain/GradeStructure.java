@@ -1,6 +1,6 @@
 package com.ptudw.web.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.ptudw.web.domain.enumeration.GradeType;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import javax.persistence.*;
@@ -48,9 +48,10 @@ public class GradeStructure implements Serializable {
     @Column(name = "last_modified_date", nullable = false)
     private ZonedDateTime lastModifiedDate;
 
-    @ManyToOne
-    @JsonIgnoreProperties(value = { "gradeStructures" }, allowSetters = true)
-    private GradeComposition gradeCompositions;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private GradeType type;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -145,17 +146,17 @@ public class GradeStructure implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public GradeComposition getGradeCompositions() {
-        return this.gradeCompositions;
+    public GradeType getType() {
+        return this.type;
     }
 
-    public void setGradeCompositions(GradeComposition gradeComposition) {
-        this.gradeCompositions = gradeComposition;
-    }
-
-    public GradeStructure gradeCompositions(GradeComposition gradeComposition) {
-        this.setGradeCompositions(gradeComposition);
+    public GradeStructure type(GradeType type) {
+        this.setType(type);
         return this;
+    }
+
+    public void setType(GradeType type) {
+        this.type = type;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -188,6 +189,7 @@ public class GradeStructure implements Serializable {
             ", createdDate='" + getCreatedDate() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
+            ", type='" + getType() + "'" +
             "}";
     }
 }

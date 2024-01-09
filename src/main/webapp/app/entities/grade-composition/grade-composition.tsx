@@ -108,14 +108,8 @@ export const GradeComposition = () => {
                 <th className="hand" onClick={sort('name')}>
                   <Translate contentKey="webApp.gradeComposition.name">Name</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('minGradeScale')}>
-                  <Translate contentKey="webApp.gradeComposition.minGradeScale">Min Grade Scale</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('maxGradeScale')}>
-                  <Translate contentKey="webApp.gradeComposition.maxGradeScale">Max Grade Scale</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('position')}>
-                  <Translate contentKey="webApp.gradeComposition.position">Position</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand" onClick={sort('scale')}>
+                  <Translate contentKey="webApp.gradeComposition.scale">Scale</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('isDeleted')}>
                   <Translate contentKey="webApp.gradeComposition.isDeleted">Is Deleted</Translate> <FontAwesomeIcon icon="sort" />
@@ -134,6 +128,15 @@ export const GradeComposition = () => {
                   <Translate contentKey="webApp.gradeComposition.lastModifiedDate">Last Modified Date</Translate>{' '}
                   <FontAwesomeIcon icon="sort" />
                 </th>
+                <th className="hand" onClick={sort('type')}>
+                  <Translate contentKey="webApp.gradeComposition.type">Type</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('isPublic')}>
+                  <Translate contentKey="webApp.gradeComposition.isPublic">Is Public</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th>
+                  <Translate contentKey="webApp.gradeComposition.course">Course</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
                 <th />
               </tr>
             </thead>
@@ -146,9 +149,7 @@ export const GradeComposition = () => {
                     </Button>
                   </td>
                   <td>{gradeComposition.name}</td>
-                  <td>{gradeComposition.minGradeScale}</td>
-                  <td>{gradeComposition.maxGradeScale}</td>
-                  <td>{gradeComposition.position}</td>
+                  <td>{gradeComposition.scale}</td>
                   <td>{gradeComposition.isDeleted ? 'true' : 'false'}</td>
                   <td>{gradeComposition.createdBy}</td>
                   <td>
@@ -161,6 +162,13 @@ export const GradeComposition = () => {
                     {gradeComposition.lastModifiedDate ? (
                       <TextFormat type="date" value={gradeComposition.lastModifiedDate} format={APP_DATE_FORMAT} />
                     ) : null}
+                  </td>
+                  <td>
+                    <Translate contentKey={`webApp.GradeType.${gradeComposition.type}`} />
+                  </td>
+                  <td>{gradeComposition.isPublic ? 'true' : 'false'}</td>
+                  <td>
+                    {gradeComposition.course ? <Link to={`/course/${gradeComposition.course.id}`}>{gradeComposition.course.id}</Link> : ''}
                   </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">

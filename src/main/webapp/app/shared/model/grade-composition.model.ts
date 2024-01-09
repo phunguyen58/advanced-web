@@ -1,20 +1,25 @@
 import dayjs from 'dayjs';
-import { IGradeStructure } from 'app/shared/model/grade-structure.model';
+import { IAssignment } from 'app/shared/model/assignment.model';
+import { ICourse } from 'app/shared/model/course.model';
+import { GradeType } from 'app/shared/model/enumerations/grade-type.model';
 
 export interface IGradeComposition {
   id?: number;
   name?: string;
-  minGradeScale?: number;
-  maxGradeScale?: number;
-  position?: number;
+  scale?: number | null;
   isDeleted?: boolean | null;
   createdBy?: string;
-  createdDate?: string;
+  createdDate?: any;
   lastModifiedBy?: string;
-  lastModifiedDate?: string;
-  gradeStructures?: IGradeStructure[] | null;
+  lastModifiedDate?: any;
+  type?: GradeType;
+  isPublic?: boolean | null;
+  assignments?: IAssignment[] | null;
+  course?: ICourse | null;
+  position?: number | null;
 }
 
 export const defaultValue: Readonly<IGradeComposition> = {
   isDeleted: false,
+  isPublic: false,
 };

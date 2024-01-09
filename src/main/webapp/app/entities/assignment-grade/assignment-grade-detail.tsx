@@ -12,10 +12,10 @@ import { getEntity } from './assignment-grade.reducer';
 export const AssignmentGradeDetail = () => {
   const dispatch = useAppDispatch();
 
-  const { id } = useParams<'id'>();
+  const { gradeId } = useParams<'gradeId'>();
 
   useEffect(() => {
-    dispatch(getEntity(id));
+    dispatch(getEntity(gradeId));
   }, []);
 
   const assignmentGradeEntity = useAppSelector(state => state.assignmentGrade.entity);
@@ -82,6 +82,10 @@ export const AssignmentGradeDetail = () => {
               <TextFormat value={assignmentGradeEntity.lastModifiedDate} type="date" format={APP_DATE_FORMAT} />
             ) : null}
           </dd>
+          <dt>
+            <Translate contentKey="webApp.assignmentGrade.assignment">Assignment</Translate>
+          </dt>
+          <dd>{assignmentGradeEntity.assignment ? assignmentGradeEntity.assignment.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/assignment-grade" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

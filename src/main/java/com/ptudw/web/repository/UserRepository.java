@@ -23,6 +23,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findOneByResetKey(String resetKey);
     Optional<User> findOneByEmailIgnoreCase(String email);
     Optional<User> findOneByLogin(String login);
+    Optional<User> findOneByStudentId(String studentId);
+    Optional<User> findOneById(Long id);
+    List<User> findByLoginIn(List<String> logins);
+    Page<User> findAllByIdIn(List<Long> ids, Pageable pageable);
+    List<User> findAllByIdIn(List<Long> ids);
+    List<User> findAllWithAuthoritiesByIdIn(List<Long> ids);
 
     @EntityGraph(attributePaths = "authorities")
     @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
