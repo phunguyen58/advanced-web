@@ -9,6 +9,7 @@ import com.ptudw.web.web.rest.errors.BadRequestAlertException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -173,7 +174,8 @@ public class CourseService {
         course.setOwnerId(user.getId());
         course.setCreatedBy(user.getLogin());
         course.setLastModifiedBy(user.getLogin());
-        course.invitationCode(course.getCode() + "-" + this.generateRandomString());
+        String classCode = course.getCode().replace(StringUtils.SPACE, "-");
+        course.invitationCode(classCode + "-" + this.generateRandomString());
         log.debug("Request to create Course: {}", course);
 
         UserCourse userCourse = new UserCourse();
@@ -193,7 +195,7 @@ public class CourseService {
     }
 
     public String generateRandomString() {
-        int length = 5; // Desired length of the random string
+        int length = 10; // Desired length of the random string
 
         // Characters allowed in the random string
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
