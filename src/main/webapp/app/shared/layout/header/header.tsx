@@ -178,15 +178,16 @@ const Header = (props: IHeaderProps) => {
                 onClick={() => redirectToAdmin()}
               />
             )}
-            {props.isAuthenticated && (
-              <Button
-                className="aw-btn-header mr-2"
-                label={translate('webApp.course.joinacourse')}
-                icon="pi pi-plus"
-                onClick={() => toggleJoinClassPanel(true)}
-              />
-            )}
-            {props.isAuthenticated && (
+            {props.isAuthenticated &&
+              (account.authorities.includes(AUTHORITIES.TEACHER) || account.authorities.includes(AUTHORITIES.STUDENT)) && (
+                <Button
+                  className="aw-btn-header mr-2"
+                  label={translate('webApp.course.joinacourse')}
+                  icon="pi pi-plus"
+                  onClick={() => toggleJoinClassPanel(true)}
+                />
+              )}
+            {props.isAuthenticated && account.authorities.includes(AUTHORITIES.STUDENT) && (
               <Button
                 className="aw-btn-header mr-2"
                 label={translate('webApp.course.home.myCourses')}
