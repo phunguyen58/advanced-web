@@ -49,7 +49,7 @@ export const GradeReviewUpdate = () => {
   const updateSuccess = useAppSelector(state => state.gradeReview.updateSuccess);
 
   const handleClose = () => {
-    // window.history.back();
+    window.history.back();
     return;
   };
 
