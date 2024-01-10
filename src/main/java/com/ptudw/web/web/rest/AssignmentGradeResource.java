@@ -2,10 +2,13 @@ package com.ptudw.web.web.rest;
 
 import com.ptudw.web.domain.Assignment;
 import com.ptudw.web.domain.AssignmentGrade;
+import com.ptudw.web.domain.Authority;
 import com.ptudw.web.domain.GradeBoard;
+import com.ptudw.web.domain.GradeComposition;
 import com.ptudw.web.domain.User;
 import com.ptudw.web.domain.UserCourse;
 import com.ptudw.web.repository.AssignmentGradeRepository;
+import com.ptudw.web.repository.AssignmentRepository;
 import com.ptudw.web.security.AuthoritiesConstants;
 import com.ptudw.web.service.AssignmentGradeQueryService;
 import com.ptudw.web.service.AssignmentGradeService;
@@ -187,6 +190,41 @@ public class AssignmentGradeResource {
     ) {
         log.debug("REST request to get AssignmentGrades by criteria: {}", criteria);
         Page<AssignmentGrade> page = assignmentGradeQueryService.findByCriteria(criteria, pageable);
+
+        Optional<User> user = userService.getUserWithAuthorities();
+        if (user.isPresent()) {
+            if (
+                user
+                    .get()
+                    .getAuthorities()
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .map(Authority::getName)
+                    .collect(Collectors.toList())
+                    .contains(AuthoritiesConstants.STUDENT)
+            ) {
+                Long assignmentId = Optional
+                    .ofNullable(criteria)
+                    .map(AssignmentGradeCriteria::getAssignmentId)
+                    .map(LongFilter::getEquals)
+                    .orElse(null);
+                if (Objects.nonNull(assignmentId)) {
+                    Optional<Assignment> assignment = assignmentService.findOne(assignmentId);
+
+                    if (
+                        assignment.isPresent() &&
+                        !Optional
+                            .ofNullable(assignment.get())
+                            .map(Assignment::getGradeComposition)
+                            .map(GradeComposition::getIsPublic)
+                            .orElse(false)
+                    ) {
+                        return ResponseEntity.ok().body(null);
+                    }
+                }
+            }
+        }
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
