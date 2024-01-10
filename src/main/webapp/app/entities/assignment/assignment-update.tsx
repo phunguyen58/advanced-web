@@ -75,6 +75,7 @@ export const AssignmentUpdate = () => {
     };
 
     if (isNew) {
+      entity.id = null;
       entity.course = { id };
       entity.gradeComposition = { id: values.gradeComposition };
       dispatch(createEntity(entity));
