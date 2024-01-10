@@ -127,7 +127,7 @@ export const GradeReviewUpdate = () => {
       });
     } else {
       dispatch(updateEntity(entity)).then(res => {
-        sendNotificationSubmitGradeReview('gradeReviewCompleted', entity.id, entity.studentId, 'notification');
+        sendNotificationSubmitGradeReview('gradeReviewCompleted', entity.id, entity.courseId, entity.studentId, 'notification');
       });
     }
   };

@@ -73,11 +73,17 @@ export const sendNotificationStudentCommentOnGradeReview = (message: string, gra
   }
 };
 
-export const sendNotificationSubmitGradeReview = (message: string, gradeReviewId: number, studentId: string, type: string) => {
+export const sendNotificationSubmitGradeReview = (
+  message: string,
+  gradeReviewId: number,
+  courseId: string,
+  studentId: string,
+  type: string
+) => {
   if (stompClient !== null && stompClient.connected) {
     stompClient.send(
       '/notification-student', // destination
-      JSON.stringify({ message, gradeReviewId, studentId, type }), // body
+      JSON.stringify({ message, gradeReviewId, studentId, type, courseId }), // body
       {} // header
     );
   }
