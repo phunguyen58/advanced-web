@@ -8,6 +8,7 @@ import { locales, languages } from 'app/config/translation';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getSession } from 'app/shared/reducers/authentication';
 import { saveAccountSettings, reset } from './settings.reducer';
+import { AUTHORITIES } from 'app/config/constants';
 
 export const SettingsPage = () => {
   const dispatch = useAppDispatch();
@@ -54,14 +55,16 @@ export const SettingsPage = () => {
               data-cy="login"
               disabled={true}
             />
-            <ValidatedField
-              name="studentId"
-              label={translate('settings.form.studentId')}
-              labelClass="aw-label-input"
-              id="studentId"
-              data-cy="studentId"
-              disabled={true}
-            />
+            {account.authorities.includes(AUTHORITIES.STUDENT) && (
+              <ValidatedField
+                name="studentId"
+                label={translate('settings.form.studentId')}
+                labelClass="aw-label-input"
+                id="studentId"
+                data-cy="studentId"
+                disabled={true}
+              />
+            )}
             <ValidatedField
               name="firstName"
               label={translate('settings.form.firstname')}
