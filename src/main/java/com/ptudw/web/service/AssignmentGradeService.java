@@ -100,6 +100,8 @@ public class AssignmentGradeService {
         List<Assignment> assignmentsInCourse = assignmentRepository
             .findAllByCourseId(courseId)
             .stream()
+            .filter(Objects::nonNull)
+            .filter(assignment -> assignment.getGradeComposition() != null)
             .filter(assignment -> {
                 log.debug("assignment.getGradeComposition().getIsPublic() {}", assignment.getGradeComposition().getIsPublic());
                 return (
@@ -117,6 +119,10 @@ public class AssignmentGradeService {
                 List<AssignmentGrade> userAssignmentGrades = assignmentGradeRepository
                     .findAllByStudentId(user.getStudentId())
                     .stream()
+                    .filter(Objects::nonNull)
+                    .filter(grade ->
+                        Optional.ofNullable(grade).map(AssignmentGrade::getAssignment).map(Assignment::getGradeComposition).isPresent()
+                    )
                     .filter(grade ->
                         currentUser.get().getAuthorities().contains(authorityRepository.findOneByName("ROLE_TEACHER")) ||
                         grade.getAssignment().getGradeComposition().getIsPublic()
