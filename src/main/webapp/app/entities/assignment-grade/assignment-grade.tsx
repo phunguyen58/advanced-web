@@ -268,6 +268,7 @@ export const AssignmentGrade = () => {
                             size="sm"
                             data-cy="entityEditButton"
                             className="ms-2"
+                            disabled={account.authorities.includes(AUTHORITIES.TEACHER) && !assignmentGrade.gradeReviewId}
                           >
                             <span className="d-none d-md-inline">
                               <Translate contentKey="webApp.gradeReview.detail.title">Grade Review</Translate>

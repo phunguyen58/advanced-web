@@ -2,7 +2,6 @@ package com.ptudw.web.service;
 
 import com.ptudw.web.domain.Assignment;
 import com.ptudw.web.domain.AssignmentGrade;
-import com.ptudw.web.domain.Authority;
 import com.ptudw.web.domain.Course;
 import com.ptudw.web.domain.GradeBoard;
 import com.ptudw.web.domain.GradeComposition;
@@ -17,11 +16,11 @@ import com.ptudw.web.repository.GradeCompositionRepository;
 import com.ptudw.web.repository.UserCourseRepository;
 import com.ptudw.web.repository.UserRepository;
 import com.ptudw.web.security.SecurityUtils;
-import com.ptudw.web.web.rest.AssignmentResource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,9 +100,14 @@ public class AssignmentGradeService {
         List<Assignment> assignmentsInCourse = assignmentRepository
             .findAllByCourseId(courseId)
             .stream()
+            .filter(Objects::nonNull)
+            .filter(assignment -> assignment.getGradeComposition() != null)
             .filter(assignment -> {
                 log.debug("assignment.getGradeComposition().getIsPublic() {}", assignment.getGradeComposition().getIsPublic());
-                return assignment.getGradeComposition().getIsPublic();
+                return (
+                    currentUser.get().getAuthorities().contains(authorityRepository.findOneByName("ROLE_TEACHER")) ||
+                    assignment.getGradeComposition().getIsPublic()
+                );
             })
             .collect(Collectors.toList());
         List<Long> assignmentsIdInCourse = assignmentsInCourse.stream().map(assignment -> assignment.getId()).collect(Collectors.toList());
@@ -115,16 +119,30 @@ public class AssignmentGradeService {
                 List<AssignmentGrade> userAssignmentGrades = assignmentGradeRepository
                     .findAllByStudentId(user.getStudentId())
                     .stream()
-                    .filter(grade -> grade.getAssignment().getGradeComposition().getIsPublic())
+                    .filter(Objects::nonNull)
+                    .filter(grade ->
+                        Optional.ofNullable(grade).map(AssignmentGrade::getAssignment).map(Assignment::getGradeComposition).isPresent()
+                    )
+                    .filter(grade ->
+                        currentUser.get().getAuthorities().contains(authorityRepository.findOneByName("ROLE_TEACHER")) ||
+                        grade.getAssignment().getGradeComposition().getIsPublic()
+                    )
                     .collect(Collectors.toList());
 
                 List<AssignmentGrade> userAssignmentGradesInCourse = userAssignmentGrades
                     .stream()
                     .filter(assignmentGrade -> assignmentsIdInCourse.contains(assignmentGrade.getAssignment().getId()))
                     .collect(Collectors.toList());
-                GradeComposition gradeComposition = assignmentsInCourse.get(0).getGradeComposition();
+                GradeComposition gradeComposition = Optional
+                    .ofNullable(assignmentsInCourse)
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .map(Assignment::getGradeComposition)
+                    .orElse(null);
                 Double finalGrade = 0D;
-                if (gradeComposition.getType() != null && userAssignmentGradesInCourse.size() > 0) {
+                if (Objects.nonNull(gradeComposition) && gradeComposition.getType() != null && userAssignmentGradesInCourse.size() > 0) {
                     if (gradeComposition.getType().equals(GradeType.PERCENTAGE)) {
                         Double a = userAssignmentGradesInCourse
                             .stream()
@@ -158,7 +176,7 @@ public class AssignmentGradeService {
                         userAssignmentGradesInCourse,
                         assignmentsInCourse,
                         finalGrade,
-                        gradeComposition.getType(),
+                        Objects.nonNull(gradeComposition) ? gradeComposition.getType() : null,
                         course
                     )
                 );
