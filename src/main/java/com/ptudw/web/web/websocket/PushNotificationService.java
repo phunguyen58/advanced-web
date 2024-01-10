@@ -1,6 +1,7 @@
 package com.ptudw.web.web.websocket;
 
 import com.ptudw.web.domain.Authority;
+import com.ptudw.web.domain.GradeReview;
 import com.ptudw.web.domain.Notification;
 import com.ptudw.web.domain.User;
 import com.ptudw.web.domain.UserCourse;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
@@ -73,6 +75,14 @@ public class PushNotificationService implements ApplicationListener<SessionDisco
     ) {
         log.debug("Sending notification to student {}", notificationDTO);
 
+        String courseId = StringUtils.isNotBlank(notificationDTO.getCourseId())
+            ? notificationDTO.getCourseId()
+            : gradeReviewService
+                .findOne(Long.valueOf(notificationDTO.getGradeReviewId()))
+                .map(GradeReview::getCourseId)
+                .map(id -> Long.toString(id))
+                .orElse(null);
+
         userRepository
             .findOneByStudentId(notificationDTO.getStudentId())
             .ifPresent(u -> {
@@ -81,9 +91,7 @@ public class PushNotificationService implements ApplicationListener<SessionDisco
                 notification.setTopic(notificationDTO.getTopic());
                 notification.setReceivers(u.getLogin());
                 notification.setSender(principal.getName());
-                notification.setLink(
-                    "/course/" + notificationDTO.getCourseId() + "/detail/grade-review/" + notificationDTO.getGradeReviewId() + "/edit"
-                );
+                notification.setLink("/course/" + courseId + "/detail/grade-review/" + notificationDTO.getGradeReviewId() + "/edit");
                 notification.setIsRead(false);
                 notificationRepository.save(notification);
             });
@@ -184,7 +192,9 @@ public class PushNotificationService implements ApplicationListener<SessionDisco
                                 notification.setTopic(notificationDTO.getTopic());
                                 notification.setReceivers(u.getLogin());
                                 notification.setSender(principal.getName());
-                                notification.setLink("/grade-review/" + gradeReview.getId() + "/edit");
+                                notification.setLink(
+                                    "/course/" + gradeReview.getCourseId() + "/detail/grade-review/" + gradeReview.getId() + "/edit"
+                                );
                                 notification.setIsRead(false);
                                 notifications.add(notification);
 
