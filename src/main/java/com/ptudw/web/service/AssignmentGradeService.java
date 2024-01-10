@@ -102,7 +102,10 @@ public class AssignmentGradeService {
             .stream()
             .filter(assignment -> {
                 log.debug("assignment.getGradeComposition().getIsPublic() {}", assignment.getGradeComposition().getIsPublic());
-                return assignment.getGradeComposition().getIsPublic();
+                return (
+                    currentUser.get().getAuthorities().contains(authorityRepository.findOneByName("ROLE_TEACHER")) ||
+                    assignment.getGradeComposition().getIsPublic()
+                );
             })
             .collect(Collectors.toList());
         List<Long> assignmentsIdInCourse = assignmentsInCourse.stream().map(assignment -> assignment.getId()).collect(Collectors.toList());
@@ -114,7 +117,10 @@ public class AssignmentGradeService {
                 List<AssignmentGrade> userAssignmentGrades = assignmentGradeRepository
                     .findAllByStudentId(user.getStudentId())
                     .stream()
-                    .filter(grade -> grade.getAssignment().getGradeComposition().getIsPublic())
+                    .filter(grade ->
+                        currentUser.get().getAuthorities().contains(authorityRepository.findOneByName("ROLE_TEACHER")) ||
+                        grade.getAssignment().getGradeComposition().getIsPublic()
+                    )
                     .collect(Collectors.toList());
 
                 List<AssignmentGrade> userAssignmentGradesInCourse = userAssignmentGrades
