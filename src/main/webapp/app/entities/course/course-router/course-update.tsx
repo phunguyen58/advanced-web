@@ -63,6 +63,7 @@ export const CourseUpdate = ({ onEventTrigger }) => {
     };
 
     if (isNew) {
+      entity.id = null;
       dispatch(createEntity(entity));
     } else {
       dispatch(updateEntity(entity));
