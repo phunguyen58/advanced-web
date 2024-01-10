@@ -126,6 +126,7 @@ export const GradeReviewUpdate = () => {
         sendNotificationCreateGradeReview('gradeReviewCreated', payload.data.id, 'notification');
       });
     } else {
+      entity.comment = JSON.stringify(comments);
       dispatch(updateEntity(entity)).then(res => {
         sendNotificationSubmitGradeReview('gradeReviewCompleted', entity.id, entity.courseId, entity.studentId, 'notification');
       });
